@@ -1,12 +1,91 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Primitive Colors - Blue */
+  --color-blue-50: #eff6ff;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb; /* Brand Color */
+  --color-blue-900: #1e3a8a;
+
+  /* Primitive Colors - Slate */
+  --color-slate-50: #f8fafc;
+  --color-slate-900: #0f172a;
+
+  /* Primitive Colors - Other */
+  --color-white: #ffffff;
+  --color-red-500: #ef4444;
+
+  /* Chalkboard Theme Colors */
+  --color-chalkboard-bg: #2F4F4F; /* Dark Slate Green */
+  --color-wood-frame: #8B4513; /* Saddle Brown */
+  --color-chalk-white: #F5F5F5; /* Off-White */
+  --color-chalk-yellow: #FFFF33; /* Vibrant Yellow */
+  --color-chalk-blue: #87CEEB; /* Sky Blue */
+
+  /* Semantic Colors */
+  --color-primary: var(--color-blue-600);
+  --color-primary-hover: var(--color-blue-900);
+  --color-background: var(--color-slate-50);
+  --color-surface: var(--color-white);
+  --color-text-main: var(--color-slate-900);
+  --color-text-inverse: var(--color-white);
+  --color-danger: var(--color-red-500);
+
+  /* Spacing */
+  --spacing-4: 1rem;
+  --spacing-8: 2rem;
+
+  /* Border Radius */
+  --radius-md: 0.375rem;
+  --radius-full: 9999px;
+  --radius-card: var(--radius-md);
+  --radius-button: var(--radius-full);
+
+  /* Legacy values for compatibility */
+  --background: var(--color-background);
+  --foreground: var(--color-text-main);
 }
 
 @theme inline {
-  --color-background: var(--background);
+  /* Colors */
+  --color-blue-50: var(--color-blue-50);
+  --color-blue-500: var(--color-blue-500);
+  --color-blue-600: var(--color-blue-600);
+  --color-blue-900: var(--color-blue-900);
+
+  --color-slate-50: var(--color-slate-50);
+  --color-slate-900: var(--color-slate-900);
+
+  --color-white: var(--color-white);
+  --color-red-500: var(--color-red-500);
+
+  /* Chalkboard Theme Colors */
+  --color-chalkboard-bg: var(--color-chalkboard-bg);
+  --color-wood-frame: var(--color-wood-frame);
+  --color-chalk-white: var(--color-chalk-white);
+  --color-chalk-yellow: var(--color-chalk-yellow);
+  --color-chalk-blue: var(--color-chalk-blue);
+
+  /* Semantic colors */
+  --color-primary: var(--color-primary);
+  --color-primary-hover: var(--color-primary-hover);
+  --color-background: var(--color-background);
+  --color-surface: var(--color-surface);
+  --color-text-main: var(--color-text-main);
+  --color-text-inverse: var(--color-text-inverse);
+  --color-danger: var(--color-danger);
+
+  /* Spacing */
+  --spacing-4: var(--spacing-4);
+  --spacing-8: var(--spacing-8);
+
+  /* Border Radius */
+  --radius-md: var(--radius-md);
+  --radius-full: var(--radius-full);
+  --radius-card: var(--radius-card);
+  --radius-button: var(--radius-button);
+
+  /* Legacy */
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -14,8 +93,10 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --color-background: var(--color-slate-900);
+    --color-text-main: var(--color-white);
+    --background: var(--color-slate-900);
+    --foreground: var(--color-white);
   }
 }
 
