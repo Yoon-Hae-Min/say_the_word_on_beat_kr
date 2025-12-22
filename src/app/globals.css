@@ -89,6 +89,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-hand: var(--font-hand);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -104,4 +105,73 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Chalk Aesthetic Utilities */
+@layer utilities {
+  /* Chalk Text Effect */
+  .chalk-text {
+    font-family: var(--font-hand);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Rough Chalk Border */
+  .chalk-border {
+    border-width: 4px;
+    border-style: solid;
+    border-radius: 8px;
+    position: relative;
+  }
+
+  .chalk-border::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border: 4px solid inherit;
+    border-radius: inherit;
+    opacity: 0.3;
+    transform: rotate(0.5deg);
+    pointer-events: none;
+  }
+
+  /* Chalk Dust Shadow */
+  .chalk-dust {
+    box-shadow:
+      0 4px 6px rgba(255, 255, 255, 0.1),
+      0 1px 3px rgba(255, 255, 255, 0.08),
+      inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Wiggle Animation */
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(-1deg); }
+    50% { transform: rotate(1deg); }
+  }
+
+  .hover-wiggle:hover {
+    animation: wiggle 0.3s ease-in-out;
+  }
+
+  /* Organic Rotation */
+  .organic-rotate-1 {
+    transform: rotate(0.5deg);
+  }
+
+  .organic-rotate-2 {
+    transform: rotate(-0.5deg);
+  }
+
+  .organic-rotate-3 {
+    transform: rotate(1deg);
+  }
+
+  /* Fade In Animation */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
 }

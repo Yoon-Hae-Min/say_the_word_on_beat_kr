@@ -1,0 +1,164 @@
+{
+	"designMetadata": {
+		"layout": {
+			"description": "나무 프레임이 있는 칠판 스타일의 인터페이스로, 중앙에 메인 콘텐츠 그리드가 배치된 구조입니다.",
+			"container": {
+				"style": "Chalkboard with wooden frame",
+				"orientation": "Landscape"
+			},
+			"header": {
+				"position": "Top center",
+				"elements": [
+					{
+						"type": "Text",
+						"content": "ROUND 1/5",
+						"style": "Hand-drawn chalk"
+					}
+				],
+				"note": "상단 좌측 및 우측 영역은 비어 있음"
+			},
+			"grid": {
+				"position": "Center",
+				"structure": {
+					"rows": 2,
+					"columns": 4,
+					"totalItems": 8
+				},
+				"items": [
+					{
+						"index": 0,
+						"row": 1,
+						"col": 1,
+						"state": "Highlighted",
+						"content": "Yellow pigeon head icon"
+					},
+					{
+						"index": 1,
+						"row": 1,
+						"col": 2,
+						"state": "Default",
+						"content": "White bubbles icon"
+					},
+					{
+						"index": 2,
+						"row": 1,
+						"col": 3,
+						"state": "Default",
+						"content": "Yellow butter icon"
+					},
+					{
+						"index": 3,
+						"row": 1,
+						"col": 4,
+						"state": "Default",
+						"content": "Blue pigeon head icon"
+					},
+					{
+						"index": 4,
+						"row": 2,
+						"col": 1,
+						"state": "Default",
+						"content": "White bubbles icon"
+					},
+					{
+						"index": 5,
+						"row": 2,
+						"col": 2,
+						"state": "Default",
+						"content": "Yellow butter icon"
+					},
+					{
+						"index": 6,
+						"row": 2,
+						"col": 3,
+						"state": "Default",
+						"content": "White bubbles icon"
+					},
+					{
+						"index": 7,
+						"row": 2,
+						"col": 4,
+						"state": "Default",
+						"content": "Yellow butter icon"
+					}
+				],
+				"cardStyle": {
+					"shape": "Rounded rectangle",
+					"borderStyle": "Hand-drawn rough chalk line"
+				}
+			},
+			"footer": {
+				"position": "Bottom",
+				"elements": [
+					{
+						"type": "Decoration",
+						"description": "Accumulated chalk dust on the frame ledge"
+					}
+				]
+			}
+		},
+		"style": {
+			"description": "전반적으로 거칠고 아날로그적인 칠판 및 분필 질감을 시각적 특징으로 합니다.",
+			"color": {
+				"palette": {
+					"backgrounds": {
+						"primary": "#2F4F4F (Dark Slate Green)",
+						"secondary": "#8B4513 (Saddle Brown)"
+					},
+					"chalks": {
+						"white": "#F5F5F5 (Off-White)",
+						"yellow": "#FFFF33 (Vibrant Yellow)",
+						"blue": "#87CEEB (Sky Blue)"
+					}
+				},
+				"mapping": {
+					"chalkboardBg": "palette.backgrounds.primary",
+					"woodenFrame": "palette.backgrounds.secondary",
+					"defaultLinesAndText": "palette.chalks.white",
+					"highlightedElements": "palette.chalks.yellow",
+					"accentIcons": {
+						"bluePigeon": "palette.chalks.blue",
+						"butter": "palette.chalks.yellow"
+					}
+				}
+			},
+			"texture": {
+				"description": "실제 칠판과 분필 사용 시 나타나는 물리적인 질감을 상세히 표현합니다.",
+				"elements": {
+					"chalkboardSurface": {
+						"type": "Matte, rough slate",
+						"characteristics": [
+							"Smudges from erasing",
+							"Fine scratches",
+							"Non-uniform dark green color"
+						]
+					},
+					"chalkStrokes": {
+						"type": "Dry, powdery chalk on slate",
+						"characteristics": [
+							"Rough, uneven edges",
+							"Granular texture apparent in lines",
+							"Varying opacity (pressure simulation)",
+							"Dust particles around strokes"
+						]
+					},
+					"woodenFrame": {
+						"type": "Aged wood",
+						"characteristics": [
+							"Visible wood grain",
+							"Worn edges and corners",
+							"Slightly rough finish"
+						]
+					},
+					"chalkDust": {
+						"type": "Loose powder accumulation",
+						"characteristics": [
+							"Particulate and cloudy appearance",
+							"Settled randomly on the bottom ledge"
+						]
+					}
+				}
+			}
+		}
+	}
+}
