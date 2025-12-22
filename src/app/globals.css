@@ -1,5 +1,21 @@
 @import "tailwindcss";
 
+/* Global box-sizing reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  box-sizing: border-box;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
 :root {
   /* Primitive Colors - Blue */
   --color-blue-50: #eff6ff;
@@ -197,6 +213,7 @@ body {
       #3d2817 100%
     ); */
     position: relative;
+    height: 100vh;
     /* Thick beveled border that protrudes outward */
     border: 16px solid;
     border-color: #a67c52 #7d5a3a #6b4423 #8b6b4f;

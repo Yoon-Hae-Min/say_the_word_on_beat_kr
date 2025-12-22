@@ -10,7 +10,9 @@ export default function PlayPage() {
   const params = useParams();
   const challengeId = params.id as string;
 
-  const [challengeData, setChallengeData] = useState<ChallengeData | null>(null);
+  const [challengeData, setChallengeData] = useState<ChallengeData | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -28,7 +30,10 @@ export default function PlayPage() {
             ...parsed,
             viewCount: currentViewCount + 1,
           };
-          localStorage.setItem(`challenge_${challengeId}`, JSON.stringify(updated));
+          localStorage.setItem(
+            `challenge_${challengeId}`,
+            JSON.stringify(updated)
+          );
         } else {
           console.error("Challenge not found");
         }
@@ -74,7 +79,7 @@ export default function PlayPage() {
 
   return (
     <WoodFrame>
-      <div className="min-h-screen p-4 md:p-8">
+      <div className="h-full bg-chalkboard-bg">
         <GameStage challengeData={challengeData} />
       </div>
     </WoodFrame>
