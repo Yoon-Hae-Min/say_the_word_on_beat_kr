@@ -1,3 +1,4 @@
+import { X } from "lucide-react";
 import Image from "next/image";
 import type { Slot } from "@/entities/challenge";
 import type { Resource } from "@/entities/resource";
@@ -5,15 +6,15 @@ import type { Resource } from "@/entities/resource";
 interface StageGridProps {
 	slots: Slot[];
 	resources: Resource[];
-	selectedResource: Resource | null;
 	onSlotClick: (index: number) => void;
+	onSlotClear?: (index: number) => void;
 }
 
 export default function StageGrid({
 	slots,
 	resources,
-	selectedResource,
 	onSlotClick,
+	onSlotClear,
 }: StageGridProps) {
 	const getResourceById = (id: string | null) => {
 		if (!id) return null;
@@ -58,7 +59,6 @@ export default function StageGrid({
                 hover:scale-105 hover:brightness-110
               `
 							}
-              ${selectedResource && isEmpty ? "ring-2 ring-chalk-yellow ring-offset-2 ring-offset-chalkboard-bg" : ""}
             `}
 					>
 						{isEmpty ? (
@@ -84,9 +84,17 @@ export default function StageGrid({
 										{resource.name || "이름 없음"}
 									</p>
 								</div>
-								<div className="absolute top-1 right-1 bg-black/50 rounded-full w-6 h-6 flex items-center justify-center">
-									<span className="text-chalk-yellow text-xs font-bold">{index + 1}</span>
-								</div>
+								{/* Clear button */}
+								<button
+									onClick={(e) => {
+										e.stopPropagation();
+										onSlotClear?.(index);
+									}}
+									className="absolute top-1 right-1 bg-chalk-white/20 hover:bg-chalk-white/30 rounded-full w-6 h-6 flex items-center justify-center transition-colors z-10 backdrop-blur-sm"
+									aria-label="슬롯 비우기"
+								>
+									<X size={14} className="text-chalk-white" strokeWidth={2.5} />
+								</button>
 							</>
 						)}
 					</div>
