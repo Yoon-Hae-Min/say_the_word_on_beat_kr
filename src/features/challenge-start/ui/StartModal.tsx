@@ -3,7 +3,7 @@
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import ChalkButton from "@/components/ui/ChalkButton";
+import { ChalkButton } from "@/shared/ui";
 
 interface StartModalProps {
 	isOpen: boolean;

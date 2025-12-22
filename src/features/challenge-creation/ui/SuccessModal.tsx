@@ -4,7 +4,7 @@ import { Copy, Play, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import ChalkButton from "@/components/ui/ChalkButton";
+import { ChalkButton } from "@/shared/ui";
 
 interface SuccessModalProps {
 	isOpen: boolean;

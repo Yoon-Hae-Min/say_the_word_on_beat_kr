@@ -1,4 +1,4 @@
-import ChalkButton from "@/components/ui/ChalkButton";
+import { ChalkButton } from "@/shared/ui";
 
 interface FooterSectionProps {
 	onGenerate: () => void;

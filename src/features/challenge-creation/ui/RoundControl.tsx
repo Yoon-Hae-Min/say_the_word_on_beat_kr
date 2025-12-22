@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import ChalkButton from "@/components/ui/ChalkButton";
+import { ChalkButton } from "@/shared/ui";
 
 interface RoundControlProps {
 	currentRound: number;

@@ -3,8 +3,8 @@
 import { Upload } from "lucide-react";
 import Image from "next/image";
 import { useRef } from "react";
-import ChalkButton from "@/components/ui/ChalkButton";
-import type { Resource } from "@/types/resource";
+import type { Resource } from "@/entities/resource";
+import { ChalkButton } from "@/shared/ui";
 
 interface ResourcePanelProps {
 	resources: Resource[];

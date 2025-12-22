@@ -1,7 +1,7 @@
 "use client";
 
-import ChalkCard from "@/components/ui/ChalkCard";
-import { mockChallenges } from "@/data/mockChallenges";
+import { mockChallenges } from "@/entities/challenge";
+import { ChalkCard } from "@/shared/ui";
 
 export default function FeedSection() {
 	// Filter and sort challenges

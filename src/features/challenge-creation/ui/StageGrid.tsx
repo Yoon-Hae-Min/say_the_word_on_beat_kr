@@ -1,6 +1,6 @@
 import Image from "next/image";
-import type { Slot } from "@/types/challenge";
-import type { Resource } from "@/types/resource";
+import type { Slot } from "@/entities/challenge";
+import type { Resource } from "@/entities/resource";
 
 interface StageGridProps {
 	slots: Slot[];

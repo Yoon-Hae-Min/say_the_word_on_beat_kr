@@ -1,4 +1,4 @@
-import type { Resource } from "./resource";
+import type { Resource } from "@/entities/resource/model/types";
 
 export interface Challenge {
 	id: string;

@@ -1,17 +1,17 @@
-import FeatureShowcase from "@/components/landing/FeatureShowcase";
-import FeedSection from "@/components/landing/FeedSection";
-import Footer from "@/components/landing/Footer";
-import HeroSection from "@/components/landing/HeroSection";
-import WoodFrame from "@/components/ui/WoodFrame";
+import { WoodFrame } from "@/shared/ui";
+import { FeatureShowcase } from "@/widgets/feature-showcase";
+import { LandingFeed } from "@/widgets/landing-feed";
+import { LandingFooter } from "@/widgets/landing-footer";
+import { LandingHero } from "@/widgets/landing-hero";
 
 export default function Home() {
 	return (
 		<WoodFrame>
 			<div className="bg-chalkboard-bg">
-				<HeroSection />
+				<LandingHero />
 				<FeatureShowcase />
-				<FeedSection />
-				<Footer />
+				<LandingFeed />
+				<LandingFooter />
 			</div>
 		</WoodFrame>
 	);

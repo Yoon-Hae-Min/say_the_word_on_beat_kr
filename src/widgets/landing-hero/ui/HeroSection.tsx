@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import StartModal from "@/components/modals/StartModal";
-import ChalkButton from "@/components/ui/ChalkButton";
-import ChalkDust from "@/components/ui/ChalkDust";
+import { ChallengeStart } from "@/features/challenge-start";
+import { ChalkButton, ChalkDust } from "@/shared/ui";
 
 export default function HeroSection() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -47,7 +46,7 @@ export default function HeroSection() {
 			</div>
 
 			{/* Start Modal */}
-			<StartModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+			<ChallengeStart isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 		</section>
 	);
 }
