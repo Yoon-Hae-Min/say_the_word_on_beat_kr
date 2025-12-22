@@ -16,11 +16,11 @@
   --color-red-500: #ef4444;
 
   /* Chalkboard Theme Colors */
-  --color-chalkboard-bg: #2F4F4F; /* Dark Slate Green */
-  --color-wood-frame: #8B4513; /* Saddle Brown */
-  --color-chalk-white: #F5F5F5; /* Off-White */
-  --color-chalk-yellow: #FFFF33; /* Vibrant Yellow */
-  --color-chalk-blue: #87CEEB; /* Sky Blue */
+  --color-chalkboard-bg: #2f4f4f; /* Dark Slate Green */
+  --color-wood-frame: #8b4513; /* Saddle Brown */
+  --color-chalk-white: #f5f5f5; /* Off-White */
+  --color-chalk-yellow: #ffff33; /* Vibrant Yellow */
+  --color-chalk-blue: #87ceeb; /* Sky Blue */
 
   /* Semantic Colors */
   --color-primary: var(--color-blue-600);
@@ -124,7 +124,7 @@ body {
   }
 
   .chalk-border::before {
-    content: '';
+    content: "";
     position: absolute;
     inset: -4px;
     border: 4px solid inherit;
@@ -136,16 +136,19 @@ body {
 
   /* Chalk Dust Shadow */
   .chalk-dust {
-    box-shadow:
-      0 4px 6px rgba(255, 255, 255, 0.1),
-      0 1px 3px rgba(255, 255, 255, 0.08),
-      inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1),
+      0 1px 3px rgba(255, 255, 255, 0.08), inset 0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
   /* Wiggle Animation */
   @keyframes wiggle {
-    0%, 100% { transform: rotate(-1deg); }
-    50% { transform: rotate(1deg); }
+    0%,
+    100% {
+      transform: rotate(-1deg);
+    }
+    50% {
+      transform: rotate(1deg);
+    }
   }
 
   .hover-wiggle:hover {
@@ -167,11 +170,37 @@ body {
 
   /* Fade In Animation */
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .animate-fade-in {
     animation: fadeIn 0.5s ease-out;
+  }
+
+  /* Wood Frame Texture - 3D Protruding Effect */
+  .wood-frame {
+    /* background: linear-gradient(
+      135deg,
+      #4a3319 0%,
+      #654321 15%,
+      #8b4513 30%,
+      #a0522d 50%,
+      #8b4513 70%,
+      #654321 85%,
+      #3d2817 100%
+    ); */
+    position: relative;
+    /* Thick beveled border that protrudes outward */
+    border: 16px solid;
+    border-color: #a67c52 #7d5a3a #6b4423 #8b6b4f;
+    border-style: solid;
+    /* Strong 3D shadow for protruding effect */
   }
 }
