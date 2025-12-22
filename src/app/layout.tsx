@@ -1,43 +1,44 @@
 import type { Metadata } from "next";
 import { Gamja_Flower, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import LocationJsProvider from "@/shared/provider/LocationJsProvider";
 
 const geistSans = Geist({
-	variable: "--font-geist-sans",
-	subsets: ["latin"],
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
-	variable: "--font-geist-mono",
-	subsets: ["latin"],
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
 });
 
 const gamjaFlower = Gamja_Flower({
-	weight: "400",
-	variable: "--font-hand",
-	subsets: ["latin"],
-	display: "swap",
+  weight: "400",
+  variable: "--font-hand",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-	title: "단어리듬게임 - Say The Word On Beat",
-	description:
-		"웹에서 누구나 쉽게 'Say The Word On Beat' 챌린지를 만들고 공유하는 리듬 퀴즈 플랫폼",
-	keywords: ["리듬게임", "단어게임", "퀴즈", "챌린지"],
+  title: "단어리듬게임 - Say The Word On Beat",
+  description:
+    "웹에서 누구나 쉽게 'Say The Word On Beat' 챌린지를 만들고 공유하는 리듬 퀴즈 플랫폼",
+  keywords: ["리듬게임", "단어게임", "퀴즈", "챌린지"],
 };
 
 export default function RootLayout({
-	children,
+  children,
 }: Readonly<{
-	children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-	return (
-		<html lang="ko">
-			<body
-				className={`${geistSans.variable} ${geistMono.variable} ${gamjaFlower.variable} antialiased`}
-			>
-				{children}
-			</body>
-		</html>
-	);
+  return (
+    <html lang="ko">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} ${gamjaFlower.variable} antialiased`}
+      >
+        <LocationJsProvider>{children}</LocationJsProvider>
+      </body>
+    </html>
+  );
 }
