@@ -1,4 +1,5 @@
 import { supabase } from "@/shared/api/supabase/client";
+import type { GameConfigStruct } from "../model/types";
 
 /**
  * Create a challenge in the database
@@ -6,13 +7,15 @@ import { supabase } from "@/shared/api/supabase/client";
 export async function createChallenge(input: {
 	title: string;
 	isPublic: boolean;
-	gameConfig: Record<string, unknown>;
+	thumbnailUrl?: string;
+	gameConfig: GameConfigStruct[];
 }): Promise<{ id: string }> {
 	const { data, error } = await supabase
 		.from("challenges")
 		.insert({
 			title: input.title,
 			is_public: input.isPublic,
+			thumbnail_url: input.thumbnailUrl || null,
 			game_config: input.gameConfig,
 		})
 		.select("id")
@@ -37,12 +40,13 @@ export async function getChallengeById(id: string): Promise<{
 	title: string;
 	isPublic: boolean;
 	viewCount: number;
-	gameConfig: Record<string, unknown>;
+	thumbnailUrl: string | null;
+	gameConfig: GameConfigStruct[];
 	createdAt: string;
 } | null> {
 	const { data, error } = await supabase
 		.from("challenges")
-		.select("id, title, is_public, view_count, game_config, created_at")
+		.select("id, title, is_public, view_count, thumbnail_url, game_config, created_at")
 		.eq("id", id)
 		.single();
 
@@ -63,32 +67,22 @@ export async function getChallengeById(id: string): Promise<{
 		title: data.title,
 		isPublic: data.is_public,
 		viewCount: data.view_count,
-		gameConfig: data.game_config as Record<string, unknown>,
+		thumbnailUrl: data.thumbnail_url,
+		gameConfig: (data.game_config as GameConfigStruct[]) || [],
 		createdAt: data.created_at,
 	};
 }
 
 /**
- * Increment view count
+ * Increment view count using Supabase Database Function
  */
 export async function incrementViewCount(id: string): Promise<void> {
-	// First, get current view count
-	const { data: currentData } = await supabase
-		.from("challenges")
-		.select("view_count")
-		.eq("id", id)
-		.single();
+	const { error } = await supabase.rpc("increment_view_count", {
+		row_id: id,
+	});
 
-	if (currentData) {
-		// Then increment it
-		const { error } = await supabase
-			.from("challenges")
-			.update({ view_count: currentData.view_count + 1 })
-			.eq("id", id);
-
-		if (error) {
-			console.error("Failed to increment view count:", error);
-		}
+	if (error) {
+		console.error("Failed to increment view count:", error);
 	}
 }
 
@@ -106,7 +100,7 @@ export async function getPopularChallenges(limit: number = 9): Promise<
 > {
 	const { data, error } = await supabase
 		.from("challenges")
-		.select("id, title, view_count, game_config, created_at")
+		.select("id, title, view_count, thumbnail_url, game_config, created_at")
 		.eq("is_public", true)
 		.order("view_count", { ascending: false })
 		.limit(limit);
@@ -120,25 +114,27 @@ export async function getPopularChallenges(limit: number = 9): Promise<
 		return [];
 	}
 
-	// Extract thumbnail from first slot of first round
 	return data.map((challenge) => {
-		const gameConfig = challenge.game_config as {
-			rounds?: Array<{ slots?: Array<{ imagePath?: string }> }>;
-		};
+		// Use thumbnail_url if available, otherwise extract from first slot
+		let thumbnailUrl = challenge.thumbnail_url;
 
-		const firstImagePath =
-			gameConfig.rounds?.[0]?.slots?.[0]?.imagePath || "";
+		if (!thumbnailUrl) {
+			const gameConfig = challenge.game_config as GameConfigStruct[] | null;
+			const firstImagePath = gameConfig?.[0]?.slots?.[0]?.imagePath;
 
-		// Get public URL for thumbnail
-		const { data: publicData } = supabase.storage
-			.from("challenge-images")
-			.getPublicUrl(firstImagePath);
+			if (firstImagePath) {
+				const { data: publicData } = supabase.storage
+					.from("challenge-images")
+					.getPublicUrl(firstImagePath);
+				thumbnailUrl = publicData.publicUrl;
+			}
+		}
 
 		return {
 			id: challenge.id,
 			title: challenge.title,
 			viewCount: challenge.view_count,
-			thumbnail: firstImagePath ? publicData.publicUrl : "/placeholder.svg",
+			thumbnail: thumbnailUrl || "/placeholder.svg",
 			createdAt: challenge.created_at,
 		};
 	});

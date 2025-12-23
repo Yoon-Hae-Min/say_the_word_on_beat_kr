@@ -1,7 +1,7 @@
 import type {
 	ChallengeData,
-	GameConfig,
-	GameConfigRound,
+	GameConfigStruct,
+	BeatSlot,
 } from "@/entities/challenge";
 import { createChallenge as createChallengeInDB } from "@/entities/challenge";
 import { compressImage } from "@/shared/lib/image";
@@ -113,34 +113,41 @@ export async function createChallenge(
 			uploadedResources.map((r) => [r.resourceId, r])
 		);
 
-		// Step 2: Build game_config JSONB structure
-		const gameConfigRounds: GameConfigRound[] = challengeData.rounds.map(
+		// Step 2: Build game_config array structure matching database schema
+		const gameConfig: GameConfigStruct[] = challengeData.rounds.map(
 			(round) => ({
 				roundIndex: round.id,
-				slots: round.slots
-					.map((slot) => {
-						if (!slot.resourceId) return null;
-						const uploadedResource = resourcePathMap.get(slot.resourceId);
-						if (!uploadedResource) return null;
-
+				slots: round.slots.map((slot): BeatSlot => {
+					if (!slot.resourceId) {
 						return {
-							imagePath: uploadedResource.path,
-							displayText: uploadedResource.displayText,
+							imagePath: null,
+							displayText: null,
 						};
-					})
-					.filter((slot) => slot !== null),
+					}
+					const uploadedResource = resourcePathMap.get(slot.resourceId);
+					if (!uploadedResource) {
+						return {
+							imagePath: null,
+							displayText: null,
+						};
+					}
+
+					return {
+						imagePath: uploadedResource.path,
+						displayText: uploadedResource.displayText,
+					};
+				}),
 			})
 		);
 
-		const gameConfig: GameConfig = {
-			rounds: gameConfigRounds,
-			songUrl: challengeData.songUrl,
-		};
+		// Get thumbnail from first slot of first round
+		const thumbnailUrl = gameConfig[0]?.slots?.[0]?.imagePath || null;
 
 		// Step 3: Insert challenge into database
 		const result = await createChallengeInDB({
 			title: challengeData.title,
 			isPublic: challengeData.isPublic,
+			thumbnailUrl,
 			gameConfig,
 		});
 

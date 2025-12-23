@@ -27,9 +27,11 @@ export async function getChallengeById(
 		// Extract unique resources from all rounds
 		const resourceMap = new Map<string, Resource>();
 
-		gameConfig.rounds.forEach((round) => {
+		gameConfig.forEach((round) => {
+			if (!round.slots) return;
+
 			round.slots.forEach((slot) => {
-				if (!resourceMap.has(slot.imagePath)) {
+				if (slot.imagePath && !resourceMap.has(slot.imagePath)) {
 					// Get public URL for the image
 					const { data } = supabase.storage
 						.from("challenge-images")
@@ -37,7 +39,7 @@ export async function getChallengeById(
 
 					resourceMap.set(slot.imagePath, {
 						id: slot.imagePath, // Use path as ID
-						name: slot.displayText,
+						name: slot.displayText || "",
 						imageUrl: data.publicUrl,
 					});
 				}
@@ -47,10 +49,10 @@ export async function getChallengeById(
 		const resources = Array.from(resourceMap.values());
 
 		// Build rounds with resource references
-		const rounds: Round[] = gameConfig.rounds.map((round) => ({
-			id: round.roundIndex,
-			slots: round.slots.map((slot) => ({
-				resourceId: slot.imagePath, // Reference by path
+		const rounds: Round[] = gameConfig.map((round) => ({
+			id: round.roundIndex ?? 0,
+			slots: (round.slots || []).map((slot) => ({
+				resourceId: slot.imagePath, // Reference by path (can be null)
 			})),
 		}));
 
@@ -59,7 +61,7 @@ export async function getChallengeById(
 			rounds,
 			resources,
 			isPublic: dbChallenge.isPublic,
-			songUrl: gameConfig.songUrl,
+			songUrl: undefined, // songUrl is not stored in database
 		};
 
 		return challengeData;

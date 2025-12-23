@@ -27,20 +27,16 @@ export interface ChallengeData {
 }
 
 // Database schema types for Supabase integration
+// These match the composite types defined in database.types.ts
 
-export interface GameConfigSlot {
-	imagePath: string;
-	displayText: string;
+export interface BeatSlot {
+	imagePath: string | null;
+	displayText: string | null;
 }
 
-export interface GameConfigRound {
-	roundIndex: number;
-	slots: GameConfigSlot[];
-}
-
-export interface GameConfig {
-	rounds: GameConfigRound[];
-	songUrl?: string;
+export interface GameConfigStruct {
+	roundIndex: number | null;
+	slots: BeatSlot[] | null;
 }
 
 export interface DatabaseChallenge {
@@ -48,6 +44,7 @@ export interface DatabaseChallenge {
 	title: string;
 	is_public: boolean;
 	view_count: number;
-	game_config: GameConfig;
+	thumbnail_url: string | null;
+	game_config: GameConfigStruct[] | null;
 	created_at: string;
 }

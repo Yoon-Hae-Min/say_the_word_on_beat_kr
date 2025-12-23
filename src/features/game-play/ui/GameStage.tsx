@@ -4,6 +4,8 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import type { ChallengeData } from "@/entities/challenge";
 import { ChalkButton } from "@/shared/ui";
+import IdleGameStage from "./IdleGameStage";
+import CountDownGameState from "./CountDownGameState";
 
 interface GameStageProps {
   challengeData: ChallengeData;
@@ -18,7 +20,6 @@ export default function GameStage({ challengeData }: GameStageProps) {
   const [currentRound, setCurrentRound] = useState(1);
   const [gamePhase, setGamePhase] = useState<GamePhase>("idle");
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
-  const [countdown, setCountdown] = useState(3);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const totalRounds = challengeData.rounds.length;
@@ -38,30 +39,6 @@ export default function GameStage({ challengeData }: GameStageProps) {
       }
     };
   }, [challengeData.songUrl]);
-
-  // 카운트다운 시작
-  const startCountdown = () => {
-    setGamePhase("countdown");
-    let count = 3;
-    setCountdown(count);
-
-    const timer = setInterval(() => {
-      count--;
-      setCountdown(count);
-
-      if (count === 0) {
-        clearInterval(timer);
-        setGamePhase("playing");
-        // 음악 재생
-        if (audioRef.current) {
-          audioRef.current.play().catch((error) => {
-            console.error("음악 재생 실패:", error);
-          });
-        }
-        startBeating();
-      }
-    }, 1000);
-  };
 
   // 비트 실행
   const startBeating = () => {
@@ -126,33 +103,32 @@ export default function GameStage({ challengeData }: GameStageProps) {
   // Idle 화면
   if (gamePhase === "idle") {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="flex flex-col items-center gap-6">
-          <h1 className="chalk-text text-chalk-yellow text-2xl md:text-3xl lg:text-4xl font-bold">
-            "{challengeData.title}"
-          </h1>
-          <ChalkButton
-            variant="yellow"
-            onClick={startCountdown}
-            className="px-8 py-4 text-xl"
-          >
-            시작하기
-          </ChalkButton>
-        </div>
-      </div>
+      <IdleGameStage
+        challengeData={challengeData}
+        onStartClick={() => {
+          setGamePhase("countdown");
+        }}
+      />
     );
   }
 
   // Countdown 화면
   if (gamePhase === "countdown") {
     return (
-      <div className="flex items-center justify-center h-full p-4 md:p-6">
-        <p className="chalk-text text-chalk-yellow text-7xl md:text-8xl lg:text-9xl font-bold animate-pulse">
-          {countdown}
-        </p>
-      </div>
+      <CountDownGameState
+        onCountdownEnd={() => {
+          setGamePhase("playing");
+        }}
+        initialCount={3}
+      />
     );
   }
+
+  // if(gamePhase === "playing"){
+  //   return(
+
+  //   )
+  // }
 
   // Playing / Finished 화면
   return (

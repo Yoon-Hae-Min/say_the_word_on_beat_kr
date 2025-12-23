@@ -1,4 +1,4 @@
-import { supabaseServer } from "@/shared/api/supabase/server.server";
+import { supabaseServer } from "@/shared/api/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
 interface PresignedUrlRequest {
