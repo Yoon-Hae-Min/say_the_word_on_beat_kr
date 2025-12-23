@@ -1,4 +1,4 @@
-import { supabase } from "@/shared/api/supabase";
+import { supabase } from "@/shared/api/supabase/client";
 
 /**
  * Create a challenge in the database

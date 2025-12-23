@@ -4,7 +4,7 @@ import {
 	getChallengeById as getChallengeFromDB,
 	incrementViewCount as incrementViewCountInDB,
 } from "@/entities/challenge";
-import { supabase } from "@/shared/api/supabase";
+import { supabase } from "@/shared/api/supabase/client";
 
 /**
  * Fetch a challenge by ID from the database
