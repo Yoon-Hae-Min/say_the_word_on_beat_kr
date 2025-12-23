@@ -11,6 +11,7 @@ html,
 body {
   box-sizing: border-box;
   min-height: 100vh;
+  height: 100%;
   margin: 0;
   padding: 0;
 }
@@ -117,7 +118,7 @@ body {
 }
 
 body {
-  background: var(--background);
+  background: var(--color-chalkboard-bg);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
@@ -197,16 +198,5 @@ body {
 
   .animate-fade-in {
     animation: fadeIn 0.5s ease-out;
-  }
-
-  /* Wood Frame Texture - 3D Protruding Effect */
-  .wood-frame {
-    position: relative;
-    height: 100%;
-    /* Thick beveled border that protrudes outward */
-    border: 16px solid;
-    border-color: #a67c52 #7d5a3a #6b4423 #8b6b4f;
-    border-style: solid;
-    /* Strong 3D shadow for protruding effect */
   }
 }

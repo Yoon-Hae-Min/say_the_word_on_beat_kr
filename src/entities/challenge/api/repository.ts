@@ -91,3 +91,55 @@ export async function incrementViewCount(id: string): Promise<void> {
 		}
 	}
 }
+
+/**
+ * Get popular public challenges ordered by view count
+ */
+export async function getPopularChallenges(limit: number = 9): Promise<
+	Array<{
+		id: string;
+		title: string;
+		viewCount: number;
+		thumbnail: string;
+		createdAt: string;
+	}>
+> {
+	const { data, error } = await supabase
+		.from("challenges")
+		.select("id, title, view_count, game_config, created_at")
+		.eq("is_public", true)
+		.order("view_count", { ascending: false })
+		.limit(limit);
+
+	if (error) {
+		console.error("Failed to fetch popular challenges:", error);
+		return [];
+	}
+
+	if (!data || data.length === 0) {
+		return [];
+	}
+
+	// Extract thumbnail from first slot of first round
+	return data.map((challenge) => {
+		const gameConfig = challenge.game_config as {
+			rounds?: Array<{ slots?: Array<{ imagePath?: string }> }>;
+		};
+
+		const firstImagePath =
+			gameConfig.rounds?.[0]?.slots?.[0]?.imagePath || "";
+
+		// Get public URL for thumbnail
+		const { data: publicData } = supabase.storage
+			.from("challenge-images")
+			.getPublicUrl(firstImagePath);
+
+		return {
+			id: challenge.id,
+			title: challenge.title,
+			viewCount: challenge.view_count,
+			thumbnail: firstImagePath ? publicData.publicUrl : "/placeholder.svg",
+			createdAt: challenge.created_at,
+		};
+	});
+}

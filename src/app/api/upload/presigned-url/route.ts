@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     // Generate unique file path
     const fileExtension = fileName.split(".").pop() || "jpg";
     const uniqueId = crypto.randomUUID();
-    const path = `challenge-images/${uniqueId}.${fileExtension}`;
+    const path = `${uniqueId}.${fileExtension}`;
 
     // Create presigned URL for upload (60 second expiry)
     const { data: signedData, error: signError } = await supabaseServer.storage

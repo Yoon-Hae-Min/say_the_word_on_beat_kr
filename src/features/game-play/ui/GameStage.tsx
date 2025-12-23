@@ -126,7 +126,7 @@ export default function GameStage({ challengeData }: GameStageProps) {
   // Idle 화면
   if (gamePhase === "idle") {
     return (
-      <div className="flex items-center justify-center h-full p-4 md:p-6">
+      <div className="flex items-center justify-center h-full">
         <div className="flex flex-col items-center gap-6">
           <h1 className="chalk-text text-chalk-yellow text-2xl md:text-3xl lg:text-4xl font-bold">
             "{challengeData.title}"
