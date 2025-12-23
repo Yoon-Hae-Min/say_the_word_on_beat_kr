@@ -23,4 +23,31 @@ export interface ChallengeData {
 	rounds: Round[];
 	resources: Resource[];
 	isPublic: boolean;
+	songUrl?: string;
+}
+
+// Database schema types for Supabase integration
+
+export interface GameConfigSlot {
+	imagePath: string;
+	displayText: string;
+}
+
+export interface GameConfigRound {
+	roundIndex: number;
+	slots: GameConfigSlot[];
+}
+
+export interface GameConfig {
+	rounds: GameConfigRound[];
+	songUrl?: string;
+}
+
+export interface DatabaseChallenge {
+	id: string;
+	title: string;
+	is_public: boolean;
+	view_count: number;
+	game_config: GameConfig;
+	created_at: string;
 }

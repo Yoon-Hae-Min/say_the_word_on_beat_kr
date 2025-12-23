@@ -2,9 +2,10 @@
 
 import { Upload } from "lucide-react";
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import type { Resource } from "@/entities/resource";
 import { ChalkButton } from "@/shared/ui";
+import { compressImage, fileToDataURL } from "@/lib/image/compression";
 
 interface ResourcePanelProps {
   resources: Resource[];
@@ -23,32 +24,46 @@ export default function ResourcePanel({
 }: ResourcePanelProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const [isCompressing, setIsCompressing] = useState(false);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
 
-    Array.from(files).forEach((file) => {
-      if (!file.type.startsWith("image/")) {
-        alert("이미지 파일만 업로드 가능합니다");
-        return;
+    setIsCompressing(true);
+
+    try {
+      for (const file of Array.from(files)) {
+        if (!file.type.startsWith("image/")) {
+          alert("이미지 파일만 업로드 가능합니다");
+          continue;
+        }
+
+        try {
+          // Compress the image
+          const compressedFile = await compressImage(file);
+
+          // Convert to data URL for preview
+          const dataUrl = await fileToDataURL(compressedFile);
+
+          const newResource: Resource = {
+            id: crypto.randomUUID(),
+            imageUrl: dataUrl,
+            name: "",
+            file: compressedFile, // Store compressed file
+          };
+          onUpload(newResource);
+        } catch (error) {
+          console.error("Error processing image:", error);
+          alert(`이미지 처리 실패: ${file.name}`);
+        }
       }
-
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const newResource: Resource = {
-          id: crypto.randomUUID(),
-          imageUrl: event.target?.result as string,
-          name: "",
-          file: file,
-        };
-        onUpload(newResource);
-      };
-      reader.readAsDataURL(file);
-    });
-
-    // Reset input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+    } finally {
+      setIsCompressing(false);
+      // Reset input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     }
   };
 
@@ -68,9 +83,10 @@ export default function ResourcePanel({
           variant="blue"
           onClick={() => fileInputRef.current?.click()}
           className="w-full flex items-center justify-center gap-2"
+          disabled={isCompressing}
         >
           <Upload size={20} />
-          이미지 업로드
+          {isCompressing ? "압축 중..." : "이미지 업로드"}
         </ChalkButton>
       </div>
 

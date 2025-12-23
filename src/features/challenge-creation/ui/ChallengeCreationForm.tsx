@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import type { Challenge, ChallengeData, Slot } from "@/entities/challenge";
+import type { ChallengeData, Slot } from "@/entities/challenge";
 import type { Resource } from "@/entities/resource";
 import { ChalkDust } from "@/shared/ui";
+import { createChallenge } from "../api/challengeService";
 import FooterSection from "./FooterSection";
 import HeaderSection from "./HeaderSection";
 import ResourcePanel from "./ResourcePanel";
@@ -45,6 +46,8 @@ export default function ChallengeCreationForm({
   );
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [generatedChallengeId, setGeneratedChallengeId] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   // Handlers
   const handleTitleChange = (title: string) => {
@@ -121,31 +124,30 @@ export default function ChallengeCreationForm({
     return true;
   };
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     if (!isValid()) {
       alert("모든 슬롯을 채우고 이미지 이름을 입력해주세요");
       return;
     }
 
-    const newChallenge: Challenge = {
-      id: crypto.randomUUID(),
-      title: challengeData.title,
-      thumbnail: challengeData.resources[0]?.imageUrl || "/placeholder.svg",
-      viewCount: 0,
-      isPublic: challengeData.isPublic,
-      createdAt: new Date().toISOString(),
-    };
+    setIsUploading(true);
+    setUploadError(null);
 
-    localStorage.setItem(
-      `challenge_${newChallenge.id}`,
-      JSON.stringify({
-        ...newChallenge,
-        data: challengeData,
-      })
-    );
+    try {
+      // Upload images and create challenge in Supabase
+      const challengeId = await createChallenge(challengeData);
 
-    setGeneratedChallengeId(newChallenge.id);
-    setIsSuccessModalOpen(true);
+      setGeneratedChallengeId(challengeId);
+      setIsSuccessModalOpen(true);
+    } catch (error) {
+      console.error("Failed to create challenge:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : "챌린지 생성에 실패했습니다";
+      setUploadError(errorMessage);
+      alert(`오류: ${errorMessage}`);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
@@ -215,10 +217,22 @@ export default function ChallengeCreationForm({
 
             {/* Generate Button */}
             <div className="border-2 border-dashed border-chalk-blue/50 bg-chalkboard-bg/50 rounded-md p-6">
+              {uploadError && (
+                <div className="mb-4 p-3 bg-red-500/20 border border-red-500 rounded-md">
+                  <p className="text-chalk-white text-sm">{uploadError}</p>
+                </div>
+              )}
               <FooterSection
                 onGenerate={handleGenerate}
-                disabled={!isValid()}
+                disabled={!isValid() || isUploading}
               />
+              {isUploading && (
+                <div className="mt-4 text-center">
+                  <p className="chalk-text text-chalk-yellow text-sm animate-pulse">
+                    이미지 업로드 중... 잠시만 기다려주세요
+                  </p>
+                </div>
+              )}
             </div>
           </main>
         </div>

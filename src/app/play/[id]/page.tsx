@@ -2,9 +2,13 @@
 
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import type { Challenge, ChallengeData } from "@/entities/challenge";
+import type { ChallengeData } from "@/entities/challenge";
 import { WoodFrame } from "@/shared/ui";
 import GameStage from "@/features/game-play/ui/GameStage";
+import {
+	getChallengeById,
+	incrementViewCount,
+} from "@/features/game-play/api/challengeService";
 
 export default function PlayPage() {
   const params = useParams();
@@ -16,24 +20,16 @@ export default function PlayPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Load challenge data from localStorage
-    const loadChallenge = () => {
+    // Load challenge data from Supabase
+    const loadChallenge = async () => {
       try {
-        const stored = localStorage.getItem(`challenge_${challengeId}`);
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          setChallengeData(parsed.data);
+        const data = await getChallengeById(challengeId);
 
-          // Increment view count
-          const currentViewCount = parsed.viewCount || 0;
-          const updated = {
-            ...parsed,
-            viewCount: currentViewCount + 1,
-          };
-          localStorage.setItem(
-            `challenge_${challengeId}`,
-            JSON.stringify(updated)
-          );
+        if (data) {
+          setChallengeData(data);
+
+          // Increment view count (non-blocking)
+          incrementViewCount(challengeId);
         } else {
           console.error("Challenge not found");
         }
