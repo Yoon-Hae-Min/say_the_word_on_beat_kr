@@ -1,9 +1,9 @@
-import { supabase } from "./client";
+import { supabase } from "@/shared/api/supabase";
 
 /**
- * Create a challenge using Supabase client
+ * Create a challenge in the database
  */
-export async function createChallengeMutation(input: {
+export async function createChallenge(input: {
 	title: string;
 	isPublic: boolean;
 	gameConfig: Record<string, unknown>;
@@ -30,9 +30,9 @@ export async function createChallengeMutation(input: {
 }
 
 /**
- * Get challenge by ID using Supabase client
+ * Get challenge by ID
  */
-export async function getChallengeByIdQuery(id: string): Promise<{
+export async function getChallengeById(id: string): Promise<{
 	id: string;
 	title: string;
 	isPublic: boolean;
@@ -69,9 +69,9 @@ export async function getChallengeByIdQuery(id: string): Promise<{
 }
 
 /**
- * Increment view count using Supabase client
+ * Increment view count
  */
-export async function incrementViewCountMutation(id: string): Promise<void> {
+export async function incrementViewCount(id: string): Promise<void> {
 	// First, get current view count
 	const { data: currentData } = await supabase
 		.from("challenges")

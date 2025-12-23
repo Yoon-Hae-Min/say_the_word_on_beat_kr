@@ -3,8 +3,8 @@ import type {
 	GameConfig,
 	GameConfigRound,
 } from "@/entities/challenge";
-import { createChallengeMutation } from "@/lib/supabase/graphql";
-import { compressImage } from "@/lib/image/compression";
+import { createChallenge as createChallengeInDB } from "@/entities/challenge";
+import { compressImage } from "@/shared/lib/image";
 
 interface PresignedUrlResponse {
 	uploadUrl: string;
@@ -137,8 +137,8 @@ export async function createChallenge(
 			songUrl: challengeData.songUrl,
 		};
 
-		// Step 3: Insert challenge into database via GraphQL
-		const result = await createChallengeMutation({
+		// Step 3: Insert challenge into database
+		const result = await createChallengeInDB({
 			title: challengeData.title,
 			isPublic: challengeData.isPublic,
 			gameConfig,

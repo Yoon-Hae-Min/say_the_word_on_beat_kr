@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import type { Resource } from "@/entities/resource";
 import { ChalkButton } from "@/shared/ui";
-import { compressImage, fileToDataURL } from "@/lib/image/compression";
+import { compressImage, fileToDataURL } from "@/shared/lib/image";
 
 interface ResourcePanelProps {
   resources: Resource[];

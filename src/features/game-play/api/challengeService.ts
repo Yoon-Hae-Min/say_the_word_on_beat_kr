@@ -1,10 +1,10 @@
 import type { ChallengeData, Round } from "@/entities/challenge";
 import type { Resource } from "@/entities/resource";
 import {
-	getChallengeByIdQuery,
-	incrementViewCountMutation,
-} from "@/lib/supabase/graphql";
-import { supabase } from "@/lib/supabase/client";
+	getChallengeById as getChallengeFromDB,
+	incrementViewCount as incrementViewCountInDB,
+} from "@/entities/challenge";
+import { supabase } from "@/shared/api/supabase";
 
 /**
  * Fetch a challenge by ID from the database
@@ -15,7 +15,7 @@ export async function getChallengeById(
 	id: string
 ): Promise<ChallengeData | null> {
 	try {
-		const dbChallenge = await getChallengeByIdQuery(id);
+		const dbChallenge = await getChallengeFromDB(id);
 
 		if (!dbChallenge) {
 			return null;
@@ -77,7 +77,7 @@ export async function getChallengeById(
  */
 export async function incrementViewCount(id: string): Promise<void> {
 	try {
-		await incrementViewCountMutation(id);
+		await incrementViewCountInDB(id);
 	} catch (error) {
 		console.error("Error incrementing view count:", error);
 		// Don't throw - view count increment shouldn't block gameplay
