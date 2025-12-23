@@ -10,10 +10,9 @@
 html,
 body {
   box-sizing: border-box;
-  height: 100vh;
+  min-height: 100vh;
   margin: 0;
   padding: 0;
-  overflow: hidden;
 }
 
 :root {
@@ -202,18 +201,8 @@ body {
 
   /* Wood Frame Texture - 3D Protruding Effect */
   .wood-frame {
-    /* background: linear-gradient(
-      135deg,
-      #4a3319 0%,
-      #654321 15%,
-      #8b4513 30%,
-      #a0522d 50%,
-      #8b4513 70%,
-      #654321 85%,
-      #3d2817 100%
-    ); */
     position: relative;
-    height: 100vh;
+    height: 100%;
     /* Thick beveled border that protrudes outward */
     border: 16px solid;
     border-color: #a67c52 #7d5a3a #6b4423 #8b6b4f;
