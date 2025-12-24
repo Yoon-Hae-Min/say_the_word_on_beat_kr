@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import type { ChallengeData } from "@/entities/challenge";
+import type { DatabaseChallenge } from "@/entities/challenge";
 import { WoodFrame } from "@/shared/ui";
 import GameStage from "@/features/game-play/ui/GameStage";
 import {
@@ -14,7 +14,7 @@ export default function PlayPage() {
   const params = useParams();
   const challengeId = params.id as string;
 
-  const [challengeData, setChallengeData] = useState<ChallengeData | null>(
+  const [challengeData, setChallengeData] = useState<DatabaseChallenge | null>(
     null
   );
   const [isLoading, setIsLoading] = useState(true);

@@ -1,1 +1,11 @@
-export type { Challenge, ChallengeData, Round, Slot } from "./types";
+export type {
+	Challenge,
+	ChallengeData,
+	Round,
+	Slot,
+	BeatSlot,
+	GameConfigStruct,
+	DatabaseChallenge,
+	ChallengeInsert,
+	ChallengeUpdate,
+} from "./types";

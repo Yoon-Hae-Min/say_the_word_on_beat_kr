@@ -5,4 +5,14 @@ export {
 	incrementViewCount,
 	getPopularChallenges,
 } from "./api";
-export type { Challenge, ChallengeData, Round, Slot } from "./model";
+export type {
+	Challenge,
+	ChallengeData,
+	Round,
+	Slot,
+	BeatSlot,
+	GameConfigStruct,
+	DatabaseChallenge,
+	ChallengeInsert,
+	ChallengeUpdate,
+} from "./model";

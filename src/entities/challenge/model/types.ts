@@ -1,4 +1,15 @@
 import type { Resource } from "@/entities/resource/model/types";
+import type { Database } from "../../../../database.types";
+
+// Type aliases from Supabase Database schema
+export type BeatSlot = Database["public"]["CompositeTypes"]["beat_slot"];
+export type GameConfigStruct =
+	Database["public"]["CompositeTypes"]["game_config_struct"];
+export type DatabaseChallenge = Database["public"]["Tables"]["challenges"]["Row"];
+export type ChallengeInsert = Database["public"]["Tables"]["challenges"]["Insert"];
+export type ChallengeUpdate = Database["public"]["Tables"]["challenges"]["Update"];
+
+// Application-level types (used in UI/business logic)
 
 export interface Challenge {
 	id: string;
@@ -24,27 +35,4 @@ export interface ChallengeData {
 	resources: Resource[];
 	isPublic: boolean;
 	songUrl?: string;
-}
-
-// Database schema types for Supabase integration
-// These match the composite types defined in database.types.ts
-
-export interface BeatSlot {
-	imagePath: string | null;
-	displayText: string | null;
-}
-
-export interface GameConfigStruct {
-	roundIndex: number | null;
-	slots: BeatSlot[] | null;
-}
-
-export interface DatabaseChallenge {
-	id: string;
-	title: string;
-	is_public: boolean;
-	view_count: number;
-	thumbnail_url: string | null;
-	game_config: GameConfigStruct[] | null;
-	created_at: string;
 }

@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import type { Database } from "../../../../database.types";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -16,7 +17,8 @@ if (!supabaseUrl || !supabaseServiceRoleKey) {
 // Server-side Supabase client with service role key
 // Use ONLY in API routes or server-side code
 // DO NOT expose this client to the browser
-export const supabaseServer = createClient(
+// Typed with Database schema for type safety
+export const supabaseServer = createClient<Database>(
   supabaseUrl,
   supabaseServiceRoleKey,
   {

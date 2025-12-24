@@ -1,8 +1,37 @@
 import { supabase } from "@/shared/api/supabase/client";
-import type { GameConfigStruct } from "../model/types";
+import type {
+	GameConfigStruct,
+	ChallengeInsert,
+	DatabaseChallenge,
+} from "../model/types";
 
 /**
- * Create a challenge in the database
+ * Helper function to convert storage image paths to public URLs
+ * Handles both thumbnail_url and fallback to first slot image
+ */
+function convertImagePathToUrl(challenge: DatabaseChallenge): string {
+	// Get image path from thumbnail_url or first slot
+	let imagePath = challenge.thumbnail_url;
+
+	if (!imagePath) {
+		// Fallback to first slot of first round
+		const gameConfig = challenge.game_config;
+		imagePath = gameConfig?.[0]?.slots?.[0]?.imagePath ?? null;
+	}
+
+	// Convert image path to full public URL
+	if (imagePath) {
+		const { data: publicData } = supabase.storage
+			.from("challenge-images")
+			.getPublicUrl(imagePath);
+		return publicData.publicUrl;
+	}
+
+	return "/placeholder.svg";
+}
+
+/**
+ * Create a challenge in the database using REST API
  */
 export async function createChallenge(input: {
 	title: string;
@@ -25,52 +54,61 @@ export async function createChallenge(input: {
 		throw new Error(`Failed to create challenge: ${error.message}`);
 	}
 
-	if (!data) {
-		throw new Error("Failed to create challenge: no data returned");
+	if (!data?.id) {
+		throw new Error("Failed to create challenge: no ID returned");
 	}
 
 	return { id: data.id };
 }
 
 /**
- * Get challenge by ID
+ * Get challenge by ID using REST API
+ * Returns database row with imagePath converted to public URLs
  */
-export async function getChallengeById(id: string): Promise<{
-	id: string;
-	title: string;
-	isPublic: boolean;
-	viewCount: number;
-	thumbnailUrl: string | null;
-	gameConfig: GameConfigStruct[];
-	createdAt: string;
-} | null> {
-	const { data, error } = await supabase
-		.from("challenges")
-		.select("id, title, is_public, view_count, thumbnail_url, game_config, created_at")
-		.eq("id", id)
-		.single();
+export async function getChallengeById(
+	id: string
+): Promise<DatabaseChallenge | null> {
+	try {
+		const { data, error } = await supabase
+			.from("challenges")
+			.select("*")
+			.eq("id", id)
+			.single();
 
-	if (error) {
-		if (error.code === "PGRST116") {
-			// Not found
+		if (error) {
+			console.error("Error fetching challenge:", error);
 			return null;
 		}
-		throw new Error(`Failed to fetch challenge: ${error.message}`);
-	}
 
-	if (!data) {
+		if (!data) {
+			return null;
+		}
+
+		// Convert image paths to public URLs in game_config slots
+		const transformedGameConfig = data.game_config?.map((round) => ({
+			...round,
+			slots: round.slots?.map((slot) => {
+				if (slot.imagePath) {
+					const { data: publicData } = supabase.storage
+						.from("challenge-images")
+						.getPublicUrl(slot.imagePath);
+					return {
+						...slot,
+						imagePath: publicData.publicUrl,
+					};
+				}
+				return slot;
+			}) ?? null,
+		}));
+
+		return {
+			...data,
+			game_config: transformedGameConfig ?? null,
+		};
+	} catch (error) {
+		console.error("Error fetching challenge:", error);
 		return null;
 	}
-
-	return {
-		id: data.id,
-		title: data.title,
-		isPublic: data.is_public,
-		viewCount: data.view_count,
-		thumbnailUrl: data.thumbnail_url,
-		gameConfig: (data.game_config as GameConfigStruct[]) || [],
-		createdAt: data.created_at,
-	};
 }
 
 /**
@@ -87,7 +125,7 @@ export async function incrementViewCount(id: string): Promise<void> {
 }
 
 /**
- * Get popular public challenges ordered by view count
+ * Get popular public challenges ordered by view count using REST API
  */
 export async function getPopularChallenges(limit: number = 9): Promise<
 	Array<{
@@ -98,44 +136,34 @@ export async function getPopularChallenges(limit: number = 9): Promise<
 		createdAt: string;
 	}>
 > {
-	const { data, error } = await supabase
-		.from("challenges")
-		.select("id, title, view_count, thumbnail_url, game_config, created_at")
-		.eq("is_public", true)
-		.order("view_count", { ascending: false })
-		.limit(limit);
+	try {
+		const { data, error } = await supabase
+			.from("challenges")
+			.select("*")
+			.eq("is_public", true)
+			.order("view_count", { ascending: false })
+			.limit(limit);
 
-	if (error) {
+		if (error) {
+			console.error("Failed to fetch popular challenges:", error);
+			return [];
+		}
+
+		const challenges = (data || []).map((node) => {
+			const thumbnailUrl = convertImagePathToUrl(node);
+
+			return {
+				id: node.id,
+				title: node.title,
+				viewCount: node.view_count,
+				thumbnail: thumbnailUrl,
+				createdAt: node.created_at,
+			};
+		});
+
+		return challenges;
+	} catch (error) {
 		console.error("Failed to fetch popular challenges:", error);
 		return [];
 	}
-
-	if (!data || data.length === 0) {
-		return [];
-	}
-
-	return data.map((challenge) => {
-		// Use thumbnail_url if available, otherwise extract from first slot
-		let thumbnailUrl = challenge.thumbnail_url;
-
-		if (!thumbnailUrl) {
-			const gameConfig = challenge.game_config as GameConfigStruct[] | null;
-			const firstImagePath = gameConfig?.[0]?.slots?.[0]?.imagePath;
-
-			if (firstImagePath) {
-				const { data: publicData } = supabase.storage
-					.from("challenge-images")
-					.getPublicUrl(firstImagePath);
-				thumbnailUrl = publicData.publicUrl;
-			}
-		}
-
-		return {
-			id: challenge.id,
-			title: challenge.title,
-			viewCount: challenge.view_count,
-			thumbnail: thumbnailUrl || "/placeholder.svg",
-			createdAt: challenge.created_at,
-		};
-	});
 }
