@@ -4,14 +4,14 @@ interface UseAudioBeatOptions {
   src: string;
   bpm: number;
   onBeat: (beat: number) => void;
-  phaseRatio?: number; // 0~1 (박자 길이 대비 앞당길 비율)
+  offsetSec?: number; // 🔑 박자 구간을 앞당길 시간 (초)
 }
 
 export function useAudioBeat({
   src,
   bpm,
   onBeat,
-  phaseRatio = 0, // 예: 0.33
+  offsetSec = 0,
 }: UseAudioBeatOptions) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const rafRef = useRef<number | null>(null);
@@ -32,9 +32,8 @@ export function useAudioBeat({
 
     const beatLength = 60 / bpm;
 
-    // 🔑 박자 구간 자체를 앞당김
-    const phaseOffset = beatLength * phaseRatio;
-    const shiftedElapsed = elapsed + phaseOffset;
+    // ✅ 핵심: 박자 구간을 offsetSec 만큼 앞으로 당김
+    const shiftedElapsed = elapsed + offsetSec;
 
     const beatIndex = Math.floor(shiftedElapsed / beatLength);
 
@@ -62,7 +61,7 @@ export function useAudioBeat({
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       audio.pause();
     };
-  }, [src, bpm, phaseRatio]);
+  }, [src, bpm, offsetSec]);
 
   return null;
 }

@@ -25,10 +25,9 @@ const PlayingGameStage = ({ challengeData }: PlayingGameStage) => {
     src: "/song.mp3",
     bpm: BPM,
     onBeat: (beat) => {
-      console.log(beat);
-      setFocusedIndex(beat % slots.length);
+      setFocusedIndex(beat % 8);
     },
-    offsetMs: 150,
+    offsetSec: 0.03,
   });
 
   return (
@@ -48,7 +47,7 @@ const PlayingGameStage = ({ challengeData }: PlayingGameStage) => {
                 key={index}
                 className={`
                     relative aspect-square rounded-md overflow-hidden
-                    transition-transform duration-150
+                    transition-transform duration-300
                     ${isFocused ? "ring-4 ring-chalk-yellow" : ""}
                   `}
               >
