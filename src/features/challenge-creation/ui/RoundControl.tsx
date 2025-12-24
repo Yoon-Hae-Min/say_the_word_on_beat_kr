@@ -15,17 +15,17 @@ export default function RoundControl({
 	onNext,
 }: RoundControlProps) {
 	return (
-		<div className="mt-6 flex items-center justify-center gap-4">
+		<div className="mt-6 flex items-center justify-center gap-2 md:gap-4">
 			<ChalkButton
 				variant="white"
 				onClick={onPrevious}
 				disabled={currentRound === 1}
-				className="px-4 py-2"
+				className="px-2 py-1 md:px-4 md:py-2"
 			>
-				<ChevronLeft size={20} />
+				<ChevronLeft className="w-4 h-4 md:w-5 md:h-5" />
 			</ChalkButton>
 
-			<div className="chalk-text text-2xl text-chalk-yellow">
+			<div className="chalk-text text-lg md:text-2xl text-chalk-yellow">
 				Round <span className="font-bold">{currentRound}</span> / {totalRounds}
 			</div>
 
@@ -33,9 +33,9 @@ export default function RoundControl({
 				variant="white"
 				onClick={onNext}
 				disabled={currentRound === totalRounds}
-				className="px-4 py-2"
+				className="px-2 py-1 md:px-4 md:py-2"
 			>
-				<ChevronRight size={20} />
+				<ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
 			</ChalkButton>
 		</div>
 	);
