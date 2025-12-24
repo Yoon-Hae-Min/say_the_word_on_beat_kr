@@ -17,9 +17,7 @@ export type Database = {
       challenges: {
         Row: {
           created_at: string
-          game_config:
-            | Database["public"]["CompositeTypes"]["game_config_struct"][]
-            | null
+          game_config: Database["public"]["CompositeTypes"]["game_config_struct"][]
           id: string
           is_public: boolean
           thumbnail_url: string | null
@@ -28,9 +26,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          game_config?:
-            | Database["public"]["CompositeTypes"]["game_config_struct"][]
-            | null
+          game_config: Database["public"]["CompositeTypes"]["game_config_struct"][]
           id?: string
           is_public?: boolean
           thumbnail_url?: string | null
@@ -39,9 +35,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
-          game_config?:
-            | Database["public"]["CompositeTypes"]["game_config_struct"][]
-            | null
+          game_config?: Database["public"]["CompositeTypes"]["game_config_struct"][]
           id?: string
           is_public?: boolean
           thumbnail_url?: string | null
