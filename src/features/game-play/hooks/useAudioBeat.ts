@@ -19,11 +19,6 @@ export function useAudioBeat({
   const isPlayingRef = useRef(false);
   const lastBeatRef = useRef(-1);
   const beatStartTimeRef = useRef(0);
-  const onBeatRef = useRef(onBeat);
-
-  useEffect(() => {
-    onBeatRef.current = onBeat;
-  }, [onBeat]);
 
   const tick = () => {
     if (!isPlayingRef.current || !audioRef.current) return;
@@ -39,7 +34,7 @@ export function useAudioBeat({
 
     if (beatIndex > lastBeatRef.current && beatIndex >= 0) {
       lastBeatRef.current = beatIndex;
-      onBeatRef.current(beatIndex);
+      onBeat(beatIndex);
     }
 
     rafRef.current = requestAnimationFrame(tick);

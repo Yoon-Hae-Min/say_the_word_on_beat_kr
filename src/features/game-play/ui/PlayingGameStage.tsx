@@ -12,7 +12,9 @@ interface PlayingGameStage {
 }
 
 const BPM = 182;
-const COUNT = 8;
+const BLOCK_SIZE = 8;
+const STEPS = 8;
+const ROUND_BEATS = 16;
 
 const PlayingGameStage = ({ challengeData }: PlayingGameStage) => {
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
@@ -20,14 +22,30 @@ const PlayingGameStage = ({ challengeData }: PlayingGameStage) => {
 
   const slots = challengeData.game_config?.[currentRound - 1].slots;
   const totalRounds = challengeData.game_config?.length;
-  /** 👇 박자 구독 */
+
   useAudioBeat({
     src: "/song.mp3",
     bpm: BPM,
-    onBeat: (beat) => {
-      setFocusedIndex(beat % 8);
-    },
     offsetSec: 0.03,
+    onBeat: (beat) => {
+      console.log(beat);
+      const round = Math.floor(beat / ROUND_BEATS) + 1;
+      if (round > totalRounds) {
+        setFocusedIndex(null);
+        return;
+      }
+
+      setCurrentRound(round);
+
+      const blockIndex = Math.floor(beat / BLOCK_SIZE);
+      const isActiveBlock = blockIndex % 2 === 1;
+
+      if (!isActiveBlock) {
+        setFocusedIndex(null);
+      } else {
+        setFocusedIndex(beat % STEPS);
+      }
+    },
   });
 
   return (
