@@ -1,14 +1,11 @@
-import {
-  DatabaseChallenge,
-  GameConfigStruct,
-  Slot,
-} from "@/entities/challenge";
+import { DatabaseChallenge } from "@/entities/challenge";
 import Image from "next/image";
-import { useRef, useEffect, useState } from "react";
+import { useState } from "react";
 import { useAudioBeat } from "../hooks/useAudioBeat";
 
 interface PlayingGameStage {
   challengeData: DatabaseChallenge;
+  onPlayingEnd: () => void;
 }
 
 const BPM = 182;
@@ -16,7 +13,10 @@ const BLOCK_SIZE = 8;
 const STEPS = 8;
 const ROUND_BEATS = 16;
 
-const PlayingGameStage = ({ challengeData }: PlayingGameStage) => {
+const PlayingGameStage = ({
+  challengeData,
+  onPlayingEnd,
+}: PlayingGameStage) => {
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
   const [currentRound, setCurrentRound] = useState(1);
 
@@ -27,6 +27,9 @@ const PlayingGameStage = ({ challengeData }: PlayingGameStage) => {
     src: "/song.mp3",
     bpm: BPM,
     offsetSec: 0.03,
+    onBeatEnd: () => {
+      onPlayingEnd();
+    },
     onBeat: (beat) => {
       console.log(beat);
       const round = Math.floor(beat / ROUND_BEATS) + 1;
@@ -49,12 +52,32 @@ const PlayingGameStage = ({ challengeData }: PlayingGameStage) => {
   });
 
   return (
-    <div className="flex items-center justify-center h-full p-4 md:p-6">
-      <div className="w-full max-w-4xl space-y-4">
-        <p className="chalk-text text-chalk-white text-lg md:text-xl text-center">
+    <div className="relative flex items-center justify-center h-full p-4 md:p-6">
+      <div className="relative w-full max-w-4xl space-y-8">
+        {/* 좌측 상단 - loud-speaker */}
+        <div className="absolute -top-6 -left-20 md:-top-10 md:-left-28 w-32 h-32 md:w-30 md:h-30 animate-wiggle-1">
+          <Image
+            src="/loud-speaker.png"
+            alt="loud-speaker"
+            fill
+            className="object-cover opacity-80"
+          />
+        </div>
+
+        {/* 우측 상단 - question */}
+        <div className="absolute -top-8 -right-20 md:-top-10 md:-right-28 w-32 h-32 md:w-28 md:h-28 animate-wiggle-2">
+          <Image
+            src="/question.png"
+            alt="question"
+            fill
+            className="object-cover opacity-80"
+          />
+        </div>
+
+        <p className="chalk-text text-chalk-white text-3xl md:text-3xl text-center">
           라운드 {currentRound} / {totalRounds}
         </p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 lg:gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-2 lg:gap-3">
           {slots?.map((slot, index) => {
             const imagePath = slot.imagePath;
             const isFocused = focusedIndex === index;

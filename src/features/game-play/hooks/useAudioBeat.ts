@@ -3,7 +3,8 @@ import { useEffect, useRef } from "react";
 interface UseAudioBeatOptions {
   src: string;
   bpm: number;
-  onBeat: (beat: number) => void;
+  onBeat?: (beat: number) => void;
+  onBeatEnd?: () => void;
   offsetSec?: number; // 🔑 박자 구간을 앞당길 시간 (초)
 }
 
@@ -11,6 +12,7 @@ export function useAudioBeat({
   src,
   bpm,
   onBeat,
+  onBeatEnd,
   offsetSec = 0,
 }: UseAudioBeatOptions) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -34,7 +36,7 @@ export function useAudioBeat({
 
     if (beatIndex > lastBeatRef.current && beatIndex >= 0) {
       lastBeatRef.current = beatIndex;
-      onBeat(beatIndex);
+      onBeat?.(beatIndex);
     }
 
     rafRef.current = requestAnimationFrame(tick);
@@ -43,6 +45,15 @@ export function useAudioBeat({
   useEffect(() => {
     const audio = new Audio(src);
     audioRef.current = audio;
+
+    // 음악이 끝났을 때 호출
+    const handleEnded = () => {
+      isPlayingRef.current = false;
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      onBeatEnd?.();
+    };
+
+    audio.addEventListener("ended", handleEnded);
 
     audio.play().then(() => {
       isPlayingRef.current = true;
@@ -54,6 +65,7 @@ export function useAudioBeat({
     return () => {
       isPlayingRef.current = false;
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      audio.removeEventListener("ended", handleEnded);
       audio.pause();
     };
   }, [src, bpm, offsetSec]);
