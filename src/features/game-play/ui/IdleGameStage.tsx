@@ -1,9 +1,9 @@
-import { ChallengeData } from "@/entities/challenge";
+import { DatabaseChallenge } from "@/entities/challenge";
 import { ChalkButton } from "@/shared/ui";
 import React from "react";
 
 interface IdleGameStageProps {
-  challengeData: ChallengeData;
+  challengeData: DatabaseChallenge;
   onStartClick: () => void;
 }
 
