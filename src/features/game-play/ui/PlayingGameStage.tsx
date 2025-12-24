@@ -52,32 +52,36 @@ const PlayingGameStage = ({
   });
 
   return (
-    <div className="relative flex items-center justify-center h-full p-4 md:p-6">
-      <div className="relative w-full max-w-4xl space-y-8">
-        {/* 좌측 상단 - loud-speaker */}
-        <div className="absolute -top-6 -left-20 md:-top-10 md:-left-28 w-32 h-32 md:w-30 md:h-30 animate-wiggle-1">
-          <Image
-            src="/loud-speaker.png"
-            alt="loud-speaker"
-            fill
-            className="object-cover opacity-80"
-          />
-        </div>
+    <div className="relative flex items-center justify-center h-full p-2 md:p-6">
+      {/* 좌측 상단 - loud-speaker (전체 화면 기준 고정) */}
+      <div className="fixed top-4 left-4 md:top-8 md:left-8 w-16 h-16 md:w-32 md:h-32 animate-wiggle-1 z-10">
+        <Image
+          src="/loud-speaker.png"
+          alt="loud-speaker"
+          fill
+          className="object-cover opacity-80"
+        />
+      </div>
 
-        {/* 우측 상단 - question */}
-        <div className="absolute -top-8 -right-20 md:-top-10 md:-right-28 w-32 h-32 md:w-28 md:h-28 animate-wiggle-2">
-          <Image
-            src="/question.png"
-            alt="question"
-            fill
-            className="object-cover opacity-80"
-          />
-        </div>
+      {/* 우측 상단 - question (전체 화면 기준 고정) */}
+      <div className="fixed top-4 right-4 md:top-8 md:right-8 w-16 h-16 md:w-32 md:h-32 animate-wiggle-2 z-10">
+        <Image
+          src="/question.png"
+          alt="question"
+          fill
+          className="object-cover opacity-80"
+        />
+      </div>
 
-        <p className="chalk-text text-chalk-white text-3xl md:text-3xl text-center">
+      {/* 라운드 텍스트 (전체 화면 중앙 상단 고정) */}
+      <div className="fixed top-16 left-1/2 -translate-x-1/2 md:top-16 z-10">
+        <p className="chalk-text text-chalk-white text-xl md:text-3xl text-center">
           라운드 {currentRound} / {totalRounds}
         </p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-2 lg:gap-3">
+      </div>
+
+      <div className="relative w-full max-w-4xl pt-16 md:pt-20">
+        <div className="grid grid-cols-4 gap-1 md:gap-2 lg:gap-3">
           {slots?.map((slot, index) => {
             const imagePath = slot.imagePath;
             const isFocused = focusedIndex === index;
@@ -101,8 +105,8 @@ const PlayingGameStage = ({
                       className="object-cover"
                       sizes="(max-width: 768px) 50vw, 25vw"
                     />
-                    <div className="absolute bottom-0 left-0 right-0 bg-black/70 p-2">
-                      <p className="chalk-text text-chalk-yellow text-center text-sm md:text-base font-bold truncate">
+                    <div className="absolute bottom-0 left-0 right-0 bg-black/70 p-1 md:p-2">
+                      <p className="chalk-text text-chalk-yellow text-center text-xs md:text-base font-bold truncate">
                         {name}
                       </p>
                     </div>
