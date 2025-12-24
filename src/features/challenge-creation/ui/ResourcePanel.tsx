@@ -2,7 +2,7 @@
 
 import { Upload } from "lucide-react";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import type { Resource } from "@/entities/resource";
 import { ChalkButton } from "@/shared/ui";
 import { compressImage, fileToDataURL } from "@/shared/lib/image";
@@ -26,14 +26,14 @@ export default function ResourcePanel({
 
   const [isCompressing, setIsCompressing] = useState(false);
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
+  // Helper function to process image files (shared by file input and paste)
+  const processImageFiles = async (files: File[]) => {
+    if (files.length === 0) return;
 
     setIsCompressing(true);
 
     try {
-      for (const file of Array.from(files)) {
+      for (const file of files) {
         if (!file.type.startsWith("image/")) {
           alert("이미지 파일만 업로드 가능합니다");
           continue;
@@ -60,12 +60,49 @@ export default function ResourcePanel({
       }
     } finally {
       setIsCompressing(false);
-      // Reset input
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
     }
   };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    await processImageFiles(Array.from(files));
+
+    // Reset input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  // Handle paste event
+  const handlePaste = async (e: ClipboardEvent) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+
+    const imageFiles: File[] = [];
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.startsWith("image/")) {
+        const file = items[i].getAsFile();
+        if (file) {
+          imageFiles.push(file);
+        }
+      }
+    }
+
+    if (imageFiles.length > 0) {
+      e.preventDefault();
+      await processImageFiles(imageFiles);
+    }
+  };
+
+  // Add paste event listener
+  useEffect(() => {
+    document.addEventListener("paste", handlePaste);
+    return () => {
+      document.removeEventListener("paste", handlePaste);
+    };
+  }, []);
 
   return (
     <div className="space-y-4">
@@ -88,6 +125,9 @@ export default function ResourcePanel({
           <Upload size={20} />
           {isCompressing ? "압축 중..." : "이미지 업로드"}
         </ChalkButton>
+        <p className="text-chalk-white/60 text-xs text-center mt-2">
+          클릭하거나 이미지를 붙여넣기 (Ctrl+V)
+        </p>
       </div>
 
       {/* Resources list - Grid layout */}
