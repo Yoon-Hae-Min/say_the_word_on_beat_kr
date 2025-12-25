@@ -103,7 +103,7 @@ const PlayingGameStage = ({
                       alt={name}
                       fill
                       className="object-cover"
-                      sizes="(max-width: 768px) 50vw, 25vw"
+                      unoptimized
                     />
                     {challengeData.show_names && name && (
                       <div className="absolute bottom-0 left-0 right-0 bg-black/70 p-1 md:p-2">

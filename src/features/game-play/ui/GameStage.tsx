@@ -43,6 +43,7 @@ export default function GameStage({ challengeData }: GameStageProps) {
           // startBeating();
         }}
         initialCount={3}
+        challengeData={challengeData}
       />
     );
   }

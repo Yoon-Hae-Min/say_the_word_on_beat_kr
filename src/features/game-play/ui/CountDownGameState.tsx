@@ -1,15 +1,51 @@
 import { useEffect, useState } from "react";
+import type { DatabaseChallenge } from "@/entities/challenge";
 
 interface CountDownGameStateProps {
 	onCountdownEnd: () => void;
 	initialCount?: number;
+	challengeData: DatabaseChallenge;
 }
 
 const CountDownGameState = ({
 	onCountdownEnd,
 	initialCount = 3,
+	challengeData,
 }: CountDownGameStateProps) => {
 	const [countdown, setCountdown] = useState(initialCount);
+
+	// Preload images during countdown (matches unoptimized prop in PlayingGameStage)
+	useEffect(() => {
+		// Extract all unique image paths from first round only
+		const imagePaths = new Set<string>();
+		const firstRound = challengeData.game_config?.[0];
+		firstRound?.slots?.forEach((slot) => {
+			if (slot.imagePath) {
+				imagePaths.add(slot.imagePath);
+			}
+		});
+
+		const imageArray = Array.from(imagePaths);
+
+		// Preload unoptimized images (raw URLs without Next.js optimization)
+		imageArray.forEach((imagePath) => {
+			const link = document.createElement("link");
+			link.rel = "preload";
+			link.as = "image";
+			link.href = imagePath; // Use original URL directly
+			document.head.appendChild(link);
+		});
+
+		// Cleanup on unmount
+		return () => {
+			imageArray.forEach((imagePath) => {
+				const links = document.querySelectorAll(
+					`link[rel="preload"][href="${imagePath}"]`,
+				);
+				links.forEach((link) => link.remove());
+			});
+		};
+	}, [challengeData]);
 
 	useEffect(() => {
 		// 카운트가 0이 되면 다음 단계로 이동
