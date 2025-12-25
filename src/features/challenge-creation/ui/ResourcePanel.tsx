@@ -1,6 +1,6 @@
 "use client";
 
-import { Upload } from "lucide-react";
+import { Upload, X } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState, useEffect } from "react";
 import type { Resource } from "@/entities/resource";
@@ -13,6 +13,7 @@ interface ResourcePanelProps {
   onUpload: (resource: Resource) => void;
   onSelect: (resource: Resource) => void;
   onNameChange: (id: string, name: string) => void;
+  onDelete: (id: string) => void;
   showNames: boolean;
 }
 
@@ -22,6 +23,7 @@ export default function ResourcePanel({
   onUpload,
   onSelect,
   onNameChange,
+  onDelete,
   showNames,
 }: ResourcePanelProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -166,6 +168,17 @@ export default function ResourcePanel({
                   className="object-cover"
                   fill
                 />
+                {/* Delete button */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(resource.id);
+                  }}
+                  className="absolute top-1 right-1 bg-chalk-white/20 hover:bg-chalk-white/30 rounded-full w-6 h-6 flex items-center justify-center transition-colors z-10 backdrop-blur-sm"
+                  aria-label="이미지 삭제"
+                >
+                  <X size={14} className="text-chalk-white" strokeWidth={2.5} />
+                </button>
               </div>
 
               {/* Name input - conditional based on showNames */}

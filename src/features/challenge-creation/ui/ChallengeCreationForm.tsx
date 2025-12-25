@@ -73,6 +73,32 @@ export default function ChallengeCreationForm({
     }));
   };
 
+  const handleResourceDelete = (id: string) => {
+    setChallengeData((prev) => {
+      // Remove resource from resources array
+      const newResources = prev.resources.filter((r) => r.id !== id);
+
+      // Clear slots that used this resource
+      const newRounds = prev.rounds.map((round) => ({
+        ...round,
+        slots: round.slots.map((slot) =>
+          slot.resourceId === id ? { resourceId: null } : slot
+        ),
+      }));
+
+      return {
+        ...prev,
+        resources: newResources,
+        rounds: newRounds,
+      };
+    });
+
+    // Deselect if this resource was selected
+    if (selectedResource?.id === id) {
+      setSelectedResource(null);
+    }
+  };
+
   const handleShowNamesToggle = (showNames: boolean) => {
     setChallengeData((prev) => ({ ...prev, showNames }));
   };
@@ -219,6 +245,7 @@ export default function ChallengeCreationForm({
                 onUpload={handleResourceUpload}
                 onSelect={handleResourceSelect}
                 onNameChange={handleResourceNameChange}
+                onDelete={handleResourceDelete}
                 showNames={challengeData.showNames}
               />
             </div>
