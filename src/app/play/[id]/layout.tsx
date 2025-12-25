@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { getChallengeById } from "@/features/game-play/api/challengeService";
+import { supabase } from "@/shared/api/supabase/client";
 
 interface PlayLayoutProps {
 	children: React.ReactNode;
@@ -27,7 +28,15 @@ export async function generateMetadata({
 
 		const title = `${challengeData.title} - 단어리듬게임`;
 		const description = `${challengeData.title} 챌린지를 플레이해보세요! Say The Word On Beat 리듬 퀴즈 게임`;
-		const thumbnail = challengeData.thumbnail_url || "/placeholder.svg";
+
+		// Convert thumbnail_url (storage path) to public URL
+		let thumbnail = "/placeholder.svg";
+		if (challengeData.thumbnail_url) {
+			const { data: publicData } = supabase.storage
+				.from("challenge-images")
+				.getPublicUrl(challengeData.thumbnail_url);
+			thumbnail = publicData.publicUrl;
+		}
 
 		return {
 			title,
