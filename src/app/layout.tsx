@@ -26,6 +26,30 @@ export const metadata: Metadata = {
   description:
     "웹에서 누구나 쉽게 'Say The Word On Beat' 챌린지를 만들고 공유하는 리듬 퀴즈 플랫폼",
   keywords: ["리듬게임", "단어게임", "퀴즈", "챌린지"],
+  openGraph: {
+    type: "website",
+    locale: "ko_KR",
+    url: "https://say-the-word-on-beat.vercel.app",
+    siteName: "단어리듬게임",
+    title: "단어리듬게임 - Say The Word On Beat",
+    description:
+      "웹에서 누구나 쉽게 'Say The Word On Beat' 챌린지를 만들고 공유하는 리듬 퀴즈 플랫폼",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "단어리듬게임 - Say The Word On Beat",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "단어리듬게임 - Say The Word On Beat",
+    description:
+      "웹에서 누구나 쉽게 'Say The Word On Beat' 챌린지를 만들고 공유하는 리듬 퀴즈 플랫폼",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({
