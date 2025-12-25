@@ -228,12 +228,12 @@ export default function ChallengeCreationForm({
                       onChange={(e) => handleShowNamesToggle(e.target.checked)}
                       className="sr-only"
                     />
-                    <div className={`w-12 h-6 rounded-full transition-colors ${
+                    <div className={`w-11 h-6 rounded-full transition-colors flex items-center p-0.5 ${
                       challengeData.showNames ? 'bg-chalk-yellow' : 'bg-chalk-white/30'
                     }`}>
                       <div className={`w-5 h-5 bg-chalkboard-bg rounded-full transition-transform transform ${
-                        challengeData.showNames ? 'translate-x-6' : 'translate-x-1'
-                      } mt-0.5`} />
+                        challengeData.showNames ? 'translate-x-5' : 'translate-x-0'
+                      }`} />
                     </div>
                   </div>
                 </label>
