@@ -1,6 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ChalkButton } from "@/shared/ui";
@@ -100,7 +101,24 @@ export default function StartModal({ isOpen, onClose }: StartModalProps) {
             className="mt-1 h-5 w-5 accent-chalk-yellow"
           />
           <p className="text-sm text-chalk-white/90">
-            서비스 이용약관 및 개인정보 처리방침에 동의합니다
+            <Link
+              href="/terms"
+              target="_blank"
+              className="text-chalk-yellow hover:underline font-bold"
+              onClick={(e) => e.stopPropagation()}
+            >
+              서비스 이용약관
+            </Link>
+            {" 및 "}
+            <Link
+              href="/privacy"
+              target="_blank"
+              className="text-chalk-yellow hover:underline font-bold"
+              onClick={(e) => e.stopPropagation()}
+            >
+              개인정보 처리방침
+            </Link>
+            에 동의합니다
           </p>
         </label>
 
