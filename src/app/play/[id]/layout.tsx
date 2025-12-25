@@ -3,17 +3,17 @@ import { getChallengeById } from "@/features/game-play/api/challengeService";
 
 interface PlayLayoutProps {
 	children: React.ReactNode;
-	params: {
+	params: Promise<{
 		id: string;
-	};
+	}>;
 }
 
 export async function generateMetadata({
 	params,
 }: {
-	params: { id: string };
+	params: Promise<{ id: string }>;
 }): Promise<Metadata> {
-	const challengeId = params.id;
+	const { id: challengeId } = await params;
 
 	try {
 		const challengeData = await getChallengeById(challengeId);
