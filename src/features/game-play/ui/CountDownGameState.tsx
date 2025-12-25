@@ -16,13 +16,14 @@ const CountDownGameState = ({
 
 	// Preload images during countdown (matches unoptimized prop in PlayingGameStage)
 	useEffect(() => {
-		// Extract all unique image paths from first round only
+		// Extract all unique image paths from all rounds
 		const imagePaths = new Set<string>();
-		const firstRound = challengeData.game_config?.[0];
-		firstRound?.slots?.forEach((slot) => {
-			if (slot.imagePath) {
-				imagePaths.add(slot.imagePath);
-			}
+		challengeData.game_config?.forEach((round) => {
+			round.slots?.forEach((slot) => {
+				if (slot.imagePath) {
+					imagePaths.add(slot.imagePath);
+				}
+			});
 		});
 
 		const imageArray = Array.from(imagePaths);
