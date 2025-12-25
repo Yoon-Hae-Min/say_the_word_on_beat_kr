@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Gamja_Flower, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import LocationJsProvider from "@/shared/provider/LocationJsProvider";
+import GoogleAnalytics from "@/shared/components/GoogleAnalytics";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,6 +35,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
+      <head>
+        <GoogleAnalytics />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${gamjaFlower.variable} antialiased`}
       >
