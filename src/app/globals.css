@@ -128,7 +128,6 @@ body {
   /* Chalk Text Effect */
   .chalk-text {
     font-family: var(--font-hand);
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
   }
 
   /* Rough Chalk Border */

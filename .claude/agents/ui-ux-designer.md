@@ -23,7 +23,7 @@ You must strictly adhere to the **"Digital Chalkboard"** aesthetic based on the 
 
 - **Background:** Deep Green Board Color (Use `bg-board-green`). Ideally, suggest a subtle noise texture overlay.
 - **Stroke Style:** "Rough & Organic". Avoid perfect geometric sharpness.
-- **Dusty Effect:** Use `box-shadow` or `text-shadow` to simulate the smudged look of chalk.
+- **Dusty Effect:** Use `box-shadow` to simulate the smudged look of chalk.
 
 ### 🖍️ Color Palette (Chalk Colors)
 
