@@ -39,7 +39,6 @@ export default function ChalkCard({
         p-4
         transition-all duration-300
         hover:scale-105 hover:brightness-110
-        organic-rotate-1
         ${className}
       `}
     >

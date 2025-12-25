@@ -66,25 +66,27 @@ export default function FeedSection() {
         {!isLoading && challenges.length > 0 && (
           <>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {challenges.map((challenge, index) => (
-                <div
-                  key={challenge.id}
-                  className="animate-fade-in"
-                  style={{
-                    animationDelay: `${index * 100}ms`,
-                    animationFillMode: "backwards",
-                  }}
-                >
-                  <ChalkCard
-                    title={challenge.title}
-                    thumbnail={challenge.thumbnail}
-                    viewCount={challenge.viewCount}
-                    onClick={() => {
-                      router.push(`/play/${challenge.id}`);
+              {challenges.map((challenge, index) => {
+                return (
+                  <div
+                    key={challenge.id}
+                    className="animate-fade-in"
+                    style={{
+                      animationDelay: `${index * 100}ms`,
+                      animationFillMode: "backwards",
                     }}
-                  />
-                </div>
-              ))}
+                  >
+                    <ChalkCard
+                      title={challenge.title}
+                      thumbnail={challenge.thumbnail}
+                      viewCount={challenge.viewCount}
+                      onClick={() => {
+                        router.push(`/play/${challenge.id}`);
+                      }}
+                    />
+                  </div>
+                );
+              })}
             </div>
 
             {/* View all button */}
