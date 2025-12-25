@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Gamja_Flower, Geist, Geist_Mono } from "next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import LocationJsProvider from "@/shared/provider/LocationJsProvider";
 import GoogleAnalytics from "@/shared/components/GoogleAnalytics";
@@ -67,6 +68,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${gamjaFlower.variable} antialiased`}
       >
         <LocationJsProvider>{children}</LocationJsProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
