@@ -105,11 +105,13 @@ const PlayingGameStage = ({
                       className="object-cover"
                       sizes="(max-width: 768px) 50vw, 25vw"
                     />
-                    <div className="absolute bottom-0 left-0 right-0 bg-black/70 p-1 md:p-2">
-                      <p className="chalk-text text-chalk-yellow text-center text-xs md:text-base font-bold truncate">
-                        {name}
-                      </p>
-                    </div>
+                    {challengeData.show_names && name && (
+                      <div className="absolute bottom-0 left-0 right-0 bg-black/70 p-1 md:p-2">
+                        <p className="chalk-text text-chalk-yellow text-center text-xs md:text-base font-bold truncate">
+                          {name}
+                        </p>
+                      </div>
+                    )}
                   </>
                 ) : (
                   <div className="flex items-center justify-center h-full">

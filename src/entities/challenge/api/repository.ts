@@ -36,6 +36,7 @@ function convertImagePathToUrl(challenge: DatabaseChallenge): string {
 export async function createChallenge(input: {
 	title: string;
 	isPublic: boolean;
+	showNames: boolean;
 	thumbnailUrl?: string;
 	gameConfig: GameConfigStruct[];
 }): Promise<{ id: string }> {
@@ -44,6 +45,7 @@ export async function createChallenge(input: {
 		.insert({
 			title: input.title,
 			is_public: input.isPublic,
+			show_names: input.showNames,
 			thumbnail_url: input.thumbnailUrl || null,
 			game_config: input.gameConfig,
 		})
@@ -133,6 +135,7 @@ export async function getPopularChallenges(limit: number = 9): Promise<
 		title: string;
 		viewCount: number;
 		thumbnail: string;
+		showNames: boolean;
 		createdAt: string;
 	}>
 > {
@@ -157,6 +160,7 @@ export async function getPopularChallenges(limit: number = 9): Promise<
 				title: node.title,
 				viewCount: node.view_count,
 				thumbnail: thumbnailUrl,
+				showNames: node.show_names,
 				createdAt: node.created_at,
 			};
 		});
@@ -180,6 +184,7 @@ export async function getAllChallenges(
 		title: string;
 		viewCount: number;
 		thumbnail: string;
+		showNames: boolean;
 		createdAt: string;
 	}>
 > {
@@ -204,6 +209,7 @@ export async function getAllChallenges(
 				title: node.title,
 				viewCount: node.view_count,
 				thumbnail: thumbnailUrl,
+				showNames: node.show_names,
 				createdAt: node.created_at,
 			};
 		});

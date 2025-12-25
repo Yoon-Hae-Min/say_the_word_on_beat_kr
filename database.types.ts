@@ -20,6 +20,7 @@ export type Database = {
           game_config: Database["public"]["CompositeTypes"]["game_config_struct"][]
           id: string
           is_public: boolean
+          show_names: boolean
           thumbnail_url: string | null
           title: string
           view_count: number
@@ -29,6 +30,7 @@ export type Database = {
           game_config: Database["public"]["CompositeTypes"]["game_config_struct"][]
           id?: string
           is_public?: boolean
+          show_names?: boolean
           thumbnail_url?: string | null
           title: string
           view_count?: number
@@ -38,6 +40,7 @@ export type Database = {
           game_config?: Database["public"]["CompositeTypes"]["game_config_struct"][]
           id?: string
           is_public?: boolean
+          show_names?: boolean
           thumbnail_url?: string | null
           title?: string
           view_count?: number

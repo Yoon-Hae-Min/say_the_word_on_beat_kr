@@ -13,6 +13,7 @@ interface ResourcePanelProps {
   onUpload: (resource: Resource) => void;
   onSelect: (resource: Resource) => void;
   onNameChange: (id: string, name: string) => void;
+  showNames: boolean;
 }
 
 export default function ResourcePanel({
@@ -21,6 +22,7 @@ export default function ResourcePanel({
   onUpload,
   onSelect,
   onNameChange,
+  showNames,
 }: ResourcePanelProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -166,29 +168,36 @@ export default function ResourcePanel({
                 />
               </div>
 
-              {/* Name input */}
-              <input
-                type="text"
-                value={resource.name}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  onNameChange(resource.id, e.target.value);
-                }}
-                onClick={(e) => e.stopPropagation()}
-                className="
-                  w-full
-                  py-1 px-2
-                  bg-chalkboard-bg
-                  border border-chalk-white/50
-                  text-chalk-white text-sm text-center
-                  placeholder:text-chalk-white/30
-                  rounded
-                  focus:outline-none focus:border-chalk-yellow
-                  transition-colors
-                "
-                placeholder="이름 입력..."
-                maxLength={20}
-              />
+              {/* Name input - conditional based on showNames */}
+              {showNames && (
+                <input
+                  type="text"
+                  value={resource.name}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    onNameChange(resource.id, e.target.value);
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  className="
+                    w-full
+                    py-1 px-2
+                    bg-chalkboard-bg
+                    border border-chalk-white/50
+                    text-chalk-white text-sm text-center
+                    placeholder:text-chalk-white/30
+                    rounded
+                    focus:outline-none focus:border-chalk-yellow
+                    transition-colors
+                  "
+                  placeholder="이름 입력..."
+                  maxLength={20}
+                />
+              )}
+              {!showNames && (
+                <p className="text-chalk-white/50 text-xs italic text-center py-1">
+                  이름 표시가 비활성화되어 있습니다
+                </p>
+              )}
             </div>
           ))}
         </div>

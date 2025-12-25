@@ -8,6 +8,7 @@ interface StageGridProps {
 	resources: Resource[];
 	onSlotClick: (index: number) => void;
 	onSlotClear?: (index: number) => void;
+	showNames: boolean;
 }
 
 export default function StageGrid({
@@ -15,6 +16,7 @@ export default function StageGrid({
 	resources,
 	onSlotClick,
 	onSlotClear,
+	showNames,
 }: StageGridProps) {
 	const getResourceById = (id: string | null) => {
 		if (!id) return null;
@@ -79,11 +81,13 @@ export default function StageGrid({
 									className="object-cover"
 									sizes="(max-width: 768px) 50vw, 25vw"
 								/>
-								<div className="absolute bottom-0 left-0 right-0 bg-black/70 p-2">
-									<p className="chalk-text text-chalk-yellow text-center text-sm truncate">
-										{resource.name || "이름 없음"}
-									</p>
-								</div>
+								{showNames && (
+									<div className="absolute bottom-0 left-0 right-0 bg-black/70 p-2">
+										<p className="chalk-text text-chalk-yellow text-center text-sm truncate">
+											{resource.name || "이름 없음"}
+										</p>
+									</div>
+								)}
 								{/* Clear button */}
 								<button
 									onClick={(e) => {

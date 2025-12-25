@@ -104,7 +104,8 @@ export async function createChallenge(
       return {
         resourceId: resource.id,
         path,
-        displayText: resource.name,
+        // Only set displayText if showNames is enabled
+        displayText: challengeData.showNames ? resource.name : null,
       };
     });
 
@@ -149,6 +150,7 @@ export async function createChallenge(
     const result = await createChallengeInDB({
       title: challengeData.title,
       isPublic: challengeData.isPublic,
+      showNames: challengeData.showNames,
       thumbnailUrl: thumbnailUrl ?? undefined,
       gameConfig,
     });

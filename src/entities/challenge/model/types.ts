@@ -17,6 +17,7 @@ export interface Challenge {
 	thumbnail: string;
 	viewCount: number;
 	isPublic: boolean;
+	showNames: boolean;
 	createdAt: string;
 }
 
@@ -34,5 +35,6 @@ export interface ChallengeData {
 	rounds: Round[];
 	resources: Resource[];
 	isPublic: boolean;
+	showNames: boolean;
 	songUrl?: string;
 }

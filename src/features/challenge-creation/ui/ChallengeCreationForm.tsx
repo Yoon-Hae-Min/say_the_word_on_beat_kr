@@ -38,6 +38,7 @@ export default function ChallengeCreationForm({
       })),
     resources: [],
     isPublic,
+    showNames: true,
   });
 
   const [currentRound, setCurrentRound] = useState(1);
@@ -70,6 +71,10 @@ export default function ChallengeCreationForm({
       ...prev,
       resources: prev.resources.map((r) => (r.id === id ? { ...r, name } : r)),
     }));
+  };
+
+  const handleShowNamesToggle = (showNames: boolean) => {
+    setChallengeData((prev) => ({ ...prev, showNames }));
   };
 
   const handleSlotClick = (slotIndex: number) => {
@@ -116,10 +121,13 @@ export default function ChallengeCreationForm({
     );
     if (!allSlotsFilled) return false;
 
-    const allResourcesNamed = challengeData.resources.every(
-      (resource) => resource.name.trim() !== ""
-    );
-    if (!allResourcesNamed) return false;
+    // Only require names if showNames is enabled
+    if (challengeData.showNames) {
+      const allResourcesNamed = challengeData.resources.every(
+        (resource) => resource.name.trim() !== ""
+      );
+      if (!allResourcesNamed) return false;
+    }
 
     return true;
   };
@@ -175,12 +183,43 @@ export default function ChallengeCreationForm({
               <p className="text-chalk-white/60 text-sm mb-4">
                 이미지를 업로드하고 이름을 지정하세요
               </p>
+
+              {/* Name Display Toggle */}
+              <div className="mb-4 p-4 border-2 border-chalk-white/30 rounded-md bg-chalkboard-bg/30">
+                <label className="flex items-center justify-between cursor-pointer">
+                  <div>
+                    <p className="chalk-text text-chalk-white font-bold text-sm">
+                      이름 표시
+                    </p>
+                    <p className="text-chalk-white/60 text-xs mt-1">
+                      게임 플레이 시 이미지 이름 표시 여부
+                    </p>
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      checked={challengeData.showNames}
+                      onChange={(e) => handleShowNamesToggle(e.target.checked)}
+                      className="sr-only"
+                    />
+                    <div className={`w-12 h-6 rounded-full transition-colors ${
+                      challengeData.showNames ? 'bg-chalk-yellow' : 'bg-chalk-white/30'
+                    }`}>
+                      <div className={`w-5 h-5 bg-chalkboard-bg rounded-full transition-transform transform ${
+                        challengeData.showNames ? 'translate-x-6' : 'translate-x-1'
+                      } mt-0.5`} />
+                    </div>
+                  </div>
+                </label>
+              </div>
+
               <ResourcePanel
                 resources={challengeData.resources}
                 selectedResource={selectedResource}
                 onUpload={handleResourceUpload}
                 onSelect={handleResourceSelect}
                 onNameChange={handleResourceNameChange}
+                showNames={challengeData.showNames}
               />
             </div>
           </aside>
@@ -203,6 +242,7 @@ export default function ChallengeCreationForm({
                 resources={challengeData.resources}
                 onSlotClick={handleSlotClick}
                 onSlotClear={handleSlotClear}
+                showNames={challengeData.showNames}
               />
 
               <div className="mt-6">
