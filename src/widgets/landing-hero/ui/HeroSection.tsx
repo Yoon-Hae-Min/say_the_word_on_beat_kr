@@ -10,7 +10,6 @@ export default function HeroSection() {
 	return (
 		<section className="relative flex min-h-[80vh] flex-col items-center justify-center px-4 py-16">
 			{/* Decorative chalk dust particles */}
-			<ChalkDust position="top-left" intensity="medium" color="yellow" />
 			<ChalkDust position="top-right" intensity="low" color="blue" />
 			<ChalkDust position="bottom-left" intensity="low" color="white" />
 

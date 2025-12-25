@@ -4,4 +4,5 @@ export {
 	getChallengeById,
 	incrementViewCount,
 	getPopularChallenges,
+	getAllChallenges,
 } from "./repository";

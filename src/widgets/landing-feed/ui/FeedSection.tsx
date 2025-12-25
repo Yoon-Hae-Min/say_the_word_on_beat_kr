@@ -64,27 +64,39 @@ export default function FeedSection() {
 
         {/* Challenge grid */}
         {!isLoading && challenges.length > 0 && (
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {challenges.map((challenge, index) => (
-              <div
-                key={challenge.id}
-                className="animate-fade-in"
-                style={{
-                  animationDelay: `${index * 100}ms`,
-                  animationFillMode: "backwards",
-                }}
-              >
-                <ChalkCard
-                  title={challenge.title}
-                  thumbnail={challenge.thumbnail}
-                  viewCount={challenge.viewCount}
-                  onClick={() => {
-                    router.push(`/play/${challenge.id}`);
+          <>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {challenges.map((challenge, index) => (
+                <div
+                  key={challenge.id}
+                  className="animate-fade-in"
+                  style={{
+                    animationDelay: `${index * 100}ms`,
+                    animationFillMode: "backwards",
                   }}
-                />
-              </div>
-            ))}
-          </div>
+                >
+                  <ChalkCard
+                    title={challenge.title}
+                    thumbnail={challenge.thumbnail}
+                    viewCount={challenge.viewCount}
+                    onClick={() => {
+                      router.push(`/play/${challenge.id}`);
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* View all button */}
+            <div className="mt-12 text-center">
+              <button
+                onClick={() => router.push("/challenges")}
+                className="chalk-text inline-block rounded-lg border-2 border-chalk-yellow bg-chalkboard-bg/60 px-8 py-4 text-xl font-bold text-chalk-yellow hover:bg-chalk-yellow hover:text-chalkboard-bg transition-all md:text-2xl"
+              >
+                모든 챌린지 보기 →
+              </button>
+            </div>
+          </>
         )}
       </div>
     </section>

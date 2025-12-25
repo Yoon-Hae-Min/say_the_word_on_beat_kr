@@ -167,3 +167,50 @@ export async function getPopularChallenges(limit: number = 9): Promise<
 		return [];
 	}
 }
+
+/**
+ * Get all public challenges ordered by creation date using REST API
+ */
+export async function getAllChallenges(
+	limit: number = 50,
+	offset: number = 0
+): Promise<
+	Array<{
+		id: string;
+		title: string;
+		viewCount: number;
+		thumbnail: string;
+		createdAt: string;
+	}>
+> {
+	try {
+		const { data, error } = await supabase
+			.from("challenges")
+			.select("*")
+			.eq("is_public", true)
+			.order("created_at", { ascending: false })
+			.range(offset, offset + limit - 1);
+
+		if (error) {
+			console.error("Failed to fetch all challenges:", error);
+			return [];
+		}
+
+		const challenges = (data || []).map((node) => {
+			const thumbnailUrl = convertImagePathToUrl(node);
+
+			return {
+				id: node.id,
+				title: node.title,
+				viewCount: node.view_count,
+				thumbnail: thumbnailUrl,
+				createdAt: node.created_at,
+			};
+		});
+
+		return challenges;
+	} catch (error) {
+		console.error("Failed to fetch all challenges:", error);
+		return [];
+	}
+}
