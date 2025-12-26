@@ -14,12 +14,14 @@ interface StartModalProps {
 export default function StartModal({ isOpen, onClose }: StartModalProps) {
   const router = useRouter();
   const [agreed, setAgreed] = useState(false);
+  const [contentPolicyAgreed, setContentPolicyAgreed] = useState(false);
   const [visibility, setVisibility] = useState<"public" | "private">("public");
 
   if (!isOpen) return null;
 
   const handleSubmit = () => {
     if (!agreed) return;
+    if (visibility === "public" && !contentPolicyAgreed) return;
     router.push(`/maker?visibility=${visibility}`);
   };
 
@@ -100,34 +102,53 @@ export default function StartModal({ isOpen, onClose }: StartModalProps) {
         </div>
 
         {/* Terms agreement */}
-        <label className="mb-6 flex cursor-pointer items-start gap-3">
-          <input
-            type="checkbox"
-            checked={agreed}
-            onChange={(e) => setAgreed(e.target.checked)}
-            className="mt-1 h-5 w-5 accent-chalk-yellow"
-          />
-          <p className="text-sm text-chalk-white/90">
-            <Link
-              href="/terms"
-              target="_blank"
-              className="text-chalk-yellow hover:underline font-bold"
-              onClick={(e) => e.stopPropagation()}
-            >
-              서비스 이용약관
-            </Link>
-            {" 및 "}
-            <Link
-              href="/privacy"
-              target="_blank"
-              className="text-chalk-yellow hover:underline font-bold"
-              onClick={(e) => e.stopPropagation()}
-            >
-              개인정보 처리방침
-            </Link>
-            에 동의합니다
-          </p>
-        </label>
+        <div className="mb-6 space-y-3">
+          <label className="flex cursor-pointer items-start gap-3">
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+              className="mt-0.5 h-5 w-5 shrink-0 accent-chalk-yellow"
+            />
+            <p className="text-sm text-chalk-white/90">
+              <Link
+                href="/terms"
+                target="_blank"
+                className="text-chalk-yellow hover:underline font-bold"
+                onClick={(e) => e.stopPropagation()}
+              >
+                서비스 이용약관
+              </Link>
+              {" 및 "}
+              <Link
+                href="/privacy"
+                target="_blank"
+                className="text-chalk-yellow hover:underline font-bold"
+                onClick={(e) => e.stopPropagation()}
+              >
+                개인정보 처리방침
+              </Link>
+              에 동의합니다
+            </p>
+          </label>
+
+          {/* Content policy agreement - only shown for public challenges */}
+          {visibility === "public" && (
+            <label className="flex cursor-pointer items-start gap-3">
+              <input
+                type="checkbox"
+                checked={contentPolicyAgreed}
+                onChange={(e) => setContentPolicyAgreed(e.target.checked)}
+                className="mt-0.5 h-5 w-5 shrink-0 accent-chalk-yellow"
+              />
+              <p className="text-sm text-chalk-white/90">
+                공개 챌린지에 적합하지 않은 콘텐츠는{" "}
+                <span className="text-chalk-yellow font-bold">검토 후 삭제될 수 있음</span>을
+                확인했습니다
+              </p>
+            </label>
+          )}
+        </div>
 
         {/* Action buttons */}
         <div className="flex gap-3">
@@ -137,7 +158,7 @@ export default function StartModal({ isOpen, onClose }: StartModalProps) {
           <ChalkButton
             variant="yellow"
             onClick={handleSubmit}
-            disabled={!agreed}
+            disabled={!agreed || (visibility === "public" && !contentPolicyAgreed)}
             className="flex-1"
           >
             만들기 시작
