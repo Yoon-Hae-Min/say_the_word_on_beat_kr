@@ -5,6 +5,7 @@ import type {
 } from "@/entities/challenge";
 import { createChallenge as createChallengeInDB } from "@/entities/challenge";
 import { compressImage } from "@/shared/lib/image";
+import { getUserId } from "@/shared/lib/user/fingerprint";
 
 interface PresignedUrlResponse {
   uploadUrl: string;
@@ -146,6 +147,9 @@ export async function createChallenge(
     // Get thumbnail from first slot of first round
     const thumbnailUrl = gameConfig[0]?.slots?.[0]?.imagePath || null;
 
+    // Get user ID (browser fingerprint)
+    const creatorId = getUserId();
+
     // Step 3: Insert challenge into database
     const result = await createChallengeInDB({
       title: challengeData.title,
@@ -153,6 +157,7 @@ export async function createChallenge(
       showNames: challengeData.showNames,
       thumbnailUrl: thumbnailUrl ?? undefined,
       gameConfig,
+      creatorId,
     });
 
     return result.id;

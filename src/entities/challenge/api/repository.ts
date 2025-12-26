@@ -39,6 +39,7 @@ export async function createChallenge(input: {
 	showNames: boolean;
 	thumbnailUrl?: string;
 	gameConfig: GameConfigStruct[];
+	creatorId?: string;
 }): Promise<{ id: string }> {
 	const { data, error } = await supabase
 		.from("challenges")
@@ -48,6 +49,7 @@ export async function createChallenge(input: {
 			show_names: input.showNames,
 			thumbnail_url: input.thumbnailUrl || null,
 			game_config: input.gameConfig,
+			creator_id: input.creatorId || null,
 		})
 		.select("id")
 		.single();

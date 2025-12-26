@@ -7,16 +7,37 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "14.1"
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
   }
   public: {
     Tables: {
       challenges: {
         Row: {
           created_at: string
+          creator_id: string | null
           game_config: Database["public"]["CompositeTypes"]["game_config_struct"][]
           id: string
           is_public: boolean
@@ -27,6 +48,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          creator_id?: string | null
           game_config: Database["public"]["CompositeTypes"]["game_config_struct"][]
           id?: string
           is_public?: boolean
@@ -37,6 +59,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          creator_id?: string | null
           game_config?: Database["public"]["CompositeTypes"]["game_config_struct"][]
           id?: string
           is_public?: boolean
@@ -49,9 +72,21 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      creator_stats: {
+        Row: {
+          creator_id: string | null
+          first_created_at: string | null
+          last_created_at: string | null
+          private_challenges: number | null
+          public_challenges: number | null
+          total_challenges: number | null
+          total_views: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      delete_old_private_challenges: { Args: never; Returns: undefined }
       increment_view_count: { Args: { row_id: string }; Returns: undefined }
     }
     Enums: {
@@ -188,7 +223,11 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {},
   },
 } as const
+
