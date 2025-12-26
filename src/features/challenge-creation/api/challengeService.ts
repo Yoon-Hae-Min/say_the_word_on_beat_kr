@@ -6,6 +6,7 @@ import type {
 import { createChallenge as createChallengeInDB } from "@/entities/challenge";
 import { compressImage } from "@/shared/lib/image";
 import { getUserId } from "@/shared/lib/user/fingerprint";
+import { sendGAEvent } from "@/shared/lib/analytics/gtag";
 
 interface PresignedUrlResponse {
   uploadUrl: string;
@@ -158,6 +159,16 @@ export async function createChallenge(
       thumbnailUrl: thumbnailUrl ?? undefined,
       gameConfig,
       creatorId,
+    });
+
+    // Step 4: Send GA event
+    sendGAEvent({
+      action: "create_challenge",
+      category: "engagement",
+      label: challengeData.isPublic ? "public" : "private",
+      value: 1,
+      user_id: creatorId,
+      challenge_id: result.id,
     });
 
     return result.id;
