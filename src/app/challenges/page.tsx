@@ -51,7 +51,7 @@ export default function ChallengesPage() {
 
           {/* Page title */}
           <h1 className="chalk-text mb-12 text-center text-3xl md:text-5xl font-bold text-chalk-white">
-            모든 챌린지
+            공개된 챌린지
           </h1>
 
           {/* Loading state */}
