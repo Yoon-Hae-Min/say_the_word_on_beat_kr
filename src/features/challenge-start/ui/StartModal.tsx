@@ -75,20 +75,27 @@ export default function StartModal({ isOpen, onClose }: StartModalProps) {
               </div>
             </label>
 
-            {/* <label className="flex cursor-pointer items-center gap-3 rounded-md border-2 border-chalk-white/30 p-3 transition-colors hover:border-chalk-white/60">
-							<input
-								type="radio"
-								name="visibility"
-								value="private"
-								checked={visibility === "private"}
-								onChange={(e) => setVisibility(e.target.value as "public" | "private")}
-								className="h-5 w-5 accent-chalk-yellow"
-							/>
-							<div>
-								<p className="text-chalk-white">비공개</p>
-								<p className="text-sm text-chalk-white/70">나만 볼 수 있는 챌린지를 만듭니다</p>
-							</div>
-						</label> */}
+            <label className="flex cursor-pointer items-center gap-3 rounded-md border-2 border-chalk-white/30 p-3 transition-colors hover:border-chalk-white/60">
+              <input
+                type="radio"
+                name="visibility"
+                value="private"
+                checked={visibility === "private"}
+                onChange={(e) =>
+                  setVisibility(e.target.value as "public" | "private")
+                }
+                className="h-5 w-5 accent-chalk-yellow"
+              />
+              <div className="flex-1">
+                <p className="text-chalk-white">비공개</p>
+                <p className="text-sm text-chalk-white/70">
+                  링크를 아는 사람만 볼 수 있습니다
+                </p>
+                <p className="text-xs text-chalk-yellow/80 mt-1">
+                  ⚠️ 48시간 후 자동 삭제됩니다
+                </p>
+              </div>
+            </label>
           </div>
         </div>
 
