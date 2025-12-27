@@ -10,7 +10,7 @@ import HeaderSection from "./HeaderSection";
 import ResourcePanel from "./ResourcePanel";
 import RoundControl from "./RoundControl";
 import StageGrid from "./StageGrid";
-import SuccessModal from "./SuccessModal";
+import SuccessScreen from "./SuccessScreen";
 
 const TOTAL_ROUNDS = 5;
 const SLOTS_PER_ROUND = 8;
@@ -45,7 +45,7 @@ export default function ChallengeCreationForm({
   const [selectedResource, setSelectedResource] = useState<Resource | null>(
     null
   );
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [viewState, setViewState] = useState<"form" | "success">("form");
   const [generatedChallengeId, setGeneratedChallengeId] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -172,7 +172,7 @@ export default function ChallengeCreationForm({
       const challengeId = await createChallenge(challengeData);
 
       setGeneratedChallengeId(challengeId);
-      setIsSuccessModalOpen(true);
+      setViewState("success");
     } catch (error) {
       console.error("Failed to create challenge:", error);
       const errorMessage =
@@ -184,6 +184,17 @@ export default function ChallengeCreationForm({
     }
   };
 
+  // Show success screen after challenge creation
+  if (viewState === "success") {
+    return (
+      <SuccessScreen
+        challengeId={generatedChallengeId}
+        thumbnail={challengeData.resources[0]?.imageUrl || "/placeholder.svg"}
+      />
+    );
+  }
+
+  // Show challenge creation form
   return (
     <div className="min-h-screen bg-chalkboard-bg p-4 md:p-8">
       <ChalkDust position="top-left" intensity="low" color="white" />
@@ -304,13 +315,6 @@ export default function ChallengeCreationForm({
           </main>
         </div>
       </div>
-
-      <SuccessModal
-        isOpen={isSuccessModalOpen}
-        onClose={() => setIsSuccessModalOpen(false)}
-        challengeId={generatedChallengeId}
-        thumbnail={challengeData.resources[0]?.imageUrl || "/placeholder.svg"}
-      />
     </div>
   );
 }
