@@ -6,9 +6,7 @@ export default function NotFound() {
 		<WoodFrame>
 			<div className="min-h-screen flex items-center justify-center bg-chalkboard-bg">
 				<div className="text-center">
-					<p className="text-chalk-white chalk-text text-2xl mb-4">
-						챌린지를 찾을 수 없습니다
-					</p>
+					<p className="text-chalk-white chalk-text text-2xl mb-4">챌린지를 찾을 수 없습니다</p>
 					<Link
 						href="/"
 						className="text-chalk-yellow hover:text-chalk-yellow/80 underline chalk-text text-lg"

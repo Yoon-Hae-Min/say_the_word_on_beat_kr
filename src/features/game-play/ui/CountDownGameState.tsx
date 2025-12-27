@@ -40,9 +40,7 @@ const CountDownGameState = ({
 		// Cleanup on unmount
 		return () => {
 			imageArray.forEach((imagePath) => {
-				const links = document.querySelectorAll(
-					`link[rel="preload"][href="${imagePath}"]`,
-				);
+				const links = document.querySelectorAll(`link[rel="preload"][href="${imagePath}"]`);
 				links.forEach((link) => link.remove());
 			});
 		};

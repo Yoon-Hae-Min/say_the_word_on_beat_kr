@@ -3,8 +3,7 @@ import type { Database } from "../../../../database.types";
 
 // Type aliases from Supabase Database schema
 export type BeatSlot = Database["public"]["CompositeTypes"]["beat_slot"];
-export type GameConfigStruct =
-	Database["public"]["CompositeTypes"]["game_config_struct"];
+export type GameConfigStruct = Database["public"]["CompositeTypes"]["game_config_struct"];
 export type DatabaseChallenge = Database["public"]["Tables"]["challenges"]["Row"];
 export type ChallengeInsert = Database["public"]["Tables"]["challenges"]["Insert"];
 export type ChallengeUpdate = Database["public"]["Tables"]["challenges"]["Update"];
@@ -38,3 +37,6 @@ export interface ChallengeData {
 	showNames: boolean;
 	songUrl?: string;
 }
+
+// Sort options for challenge queries
+export type ChallengeSortBy = "latest" | "views";

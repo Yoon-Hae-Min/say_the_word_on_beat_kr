@@ -1,11 +1,12 @@
 export type {
+	BeatSlot,
 	Challenge,
 	ChallengeData,
+	ChallengeInsert,
+	ChallengeSortBy,
+	ChallengeUpdate,
+	DatabaseChallenge,
+	GameConfigStruct,
 	Round,
 	Slot,
-	BeatSlot,
-	GameConfigStruct,
-	DatabaseChallenge,
-	ChallengeInsert,
-	ChallengeUpdate,
 } from "./types";

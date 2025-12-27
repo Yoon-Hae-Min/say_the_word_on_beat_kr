@@ -5,14 +5,14 @@ import { LandingFooter } from "@/widgets/landing-footer";
 import { LandingHero } from "@/widgets/landing-hero";
 
 export default function Home() {
-  return (
-    <WoodFrame>
-      <div className="bg-chalkboard-bg">
-        <LandingHero />
-        <FeatureShowcase />
-        <LandingFeed />
-        <LandingFooter />
-      </div>
-    </WoodFrame>
-  );
+	return (
+		<WoodFrame>
+			<div className="bg-chalkboard-bg">
+				<LandingHero />
+				<FeatureShowcase />
+				<LandingFeed />
+				<LandingFooter />
+			</div>
+		</WoodFrame>
+	);
 }

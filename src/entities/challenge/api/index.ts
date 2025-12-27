@@ -1,8 +1,8 @@
 export {
-  createChallenge,
-  getChallengeById,
-  incrementViewCount,
-  getPopularChallenges,
-  getAllChallenges,
-  getPublicChallengesCount,
+	createChallenge,
+	getAllChallenges,
+	getChallengeById,
+	getPopularChallenges,
+	getPublicChallengesCount,
+	incrementViewCount,
 } from "./repository";

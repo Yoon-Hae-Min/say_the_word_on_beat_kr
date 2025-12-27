@@ -1,13 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
+	type ChallengeSortBy,
 	getAllChallenges,
 	getPublicChallengesCount,
 } from "@/entities/challenge";
-import { ChalkCard, ChalkButton, WoodFrame } from "@/shared/ui";
-import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChalkButton, ChalkCard, WoodFrame } from "@/shared/ui";
 
 interface Challenge {
 	id: string;
@@ -25,6 +26,7 @@ export default function ChallengesPage() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [totalCount, setTotalCount] = useState(0);
+	const [sortBy, setSortBy] = useState<ChallengeSortBy>("views");
 
 	const totalPages = Math.ceil(totalCount / CHALLENGES_PER_PAGE);
 
@@ -46,7 +48,7 @@ export default function ChallengesPage() {
 			setIsLoading(true);
 			try {
 				const offset = (currentPage - 1) * CHALLENGES_PER_PAGE;
-				const data = await getAllChallenges(CHALLENGES_PER_PAGE, offset);
+				const data = await getAllChallenges(CHALLENGES_PER_PAGE, offset, sortBy);
 				setChallenges(data);
 			} catch (error) {
 				console.error("Failed to load challenges:", error);
@@ -56,7 +58,13 @@ export default function ChallengesPage() {
 		};
 
 		loadChallenges();
-	}, [currentPage]);
+	}, [currentPage, sortBy]);
+
+	const handleSortChange = (newSort: ChallengeSortBy) => {
+		setSortBy(newSort);
+		setCurrentPage(1);
+		window.scrollTo({ top: 0, behavior: "smooth" });
+	};
 
 	const handlePreviousPage = () => {
 		if (currentPage > 1) {
@@ -139,29 +147,41 @@ export default function ChallengesPage() {
 
 					{/* Total count */}
 					{totalCount > 0 && (
-						<p className="mb-12 text-center text-chalk-white/60">
-							총 {totalCount}개의 챌린지
-						</p>
+						<p className="mb-12 text-center text-chalk-white/60">총 {totalCount}개의 챌린지</p>
+					)}
+
+					{/* Sorting buttons */}
+					{totalCount > 0 && (
+						<div className="mb-8 flex justify-center gap-3">
+							<ChalkButton
+								variant={sortBy === "latest" ? "yellow" : "white"}
+								onClick={() => handleSortChange("latest")}
+								className="px-6 py-2 text-base md:text-lg"
+							>
+								최신순
+							</ChalkButton>
+							<ChalkButton
+								variant={sortBy === "views" ? "yellow" : "white"}
+								onClick={() => handleSortChange("views")}
+								className="px-6 py-2 text-base md:text-lg"
+							>
+								조회순
+							</ChalkButton>
+						</div>
 					)}
 
 					{/* Loading state */}
 					{isLoading && (
 						<div className="py-12 text-center">
-							<p className="chalk-text animate-pulse text-xl text-chalk-white">
-								로딩 중...
-							</p>
+							<p className="chalk-text animate-pulse text-xl text-chalk-white">로딩 중...</p>
 						</div>
 					)}
 
 					{/* Empty state */}
 					{!isLoading && challenges.length === 0 && (
 						<div className="py-12 text-center">
-							<p className="chalk-text text-xl text-chalk-white">
-								아직 공개된 챌린지가 없습니다.
-							</p>
-							<p className="mt-2 text-chalk-white/60">
-								첫 번째 챌린지를 만들어보세요!
-							</p>
+							<p className="chalk-text text-xl text-chalk-white">아직 공개된 챌린지가 없습니다.</p>
+							<p className="mt-2 text-chalk-white/60">첫 번째 챌린지를 만들어보세요!</p>
 						</div>
 					)}
 

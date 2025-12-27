@@ -1,6 +1,6 @@
 "use client";
 
-import { DatabaseChallenge } from "@/entities/challenge";
+import type { DatabaseChallenge } from "@/entities/challenge";
 import { ChalkButton } from "@/shared/ui";
 
 interface IdleGameStageProps {
@@ -16,11 +16,7 @@ const IdleGameStage = ({ challengeData, onStartClick }: IdleGameStageProps) => {
 					"{challengeData.title}"
 				</h1>
 
-				<ChalkButton
-					variant="yellow"
-					onClick={onStartClick}
-					className="px-8 py-4 text-xl"
-				>
+				<ChalkButton variant="yellow" onClick={onStartClick} className="px-8 py-4 text-xl">
 					시작하기
 				</ChalkButton>
 			</div>

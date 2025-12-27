@@ -11,37 +11,37 @@ const USER_ID_KEY = "user_fingerprint_id";
  * - User Agent, Screen Resolution, Timezone 등 조합
  */
 function generateFingerprint(): string {
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-  let canvasFingerprint = "";
+	const canvas = document.createElement("canvas");
+	const ctx = canvas.getContext("2d");
+	let canvasFingerprint = "";
 
-  if (ctx) {
-    ctx.textBaseline = "top";
-    ctx.font = "14px Arial";
-    ctx.fillText("fingerprint", 2, 2);
-    canvasFingerprint = canvas.toDataURL();
-  }
+	if (ctx) {
+		ctx.textBaseline = "top";
+		ctx.font = "14px Arial";
+		ctx.fillText("fingerprint", 2, 2);
+		canvasFingerprint = canvas.toDataURL();
+	}
 
-  const fingerprint = {
-    userAgent: navigator.userAgent,
-    language: navigator.language,
-    platform: navigator.platform,
-    screenResolution: `${window.screen.width}x${window.screen.height}`,
-    colorDepth: window.screen.colorDepth,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    canvas: canvasFingerprint.slice(0, 50), // Canvas fingerprint (일부만 사용)
-  };
+	const fingerprint = {
+		userAgent: navigator.userAgent,
+		language: navigator.language,
+		platform: navigator.platform,
+		screenResolution: `${window.screen.width}x${window.screen.height}`,
+		colorDepth: window.screen.colorDepth,
+		timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+		canvas: canvasFingerprint.slice(0, 50), // Canvas fingerprint (일부만 사용)
+	};
 
-  // 간단한 해시 생성
-  const str = JSON.stringify(fingerprint);
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash = hash & hash; // Convert to 32bit integer
-  }
+	// 간단한 해시 생성
+	const str = JSON.stringify(fingerprint);
+	let hash = 0;
+	for (let i = 0; i < str.length; i++) {
+		const char = str.charCodeAt(i);
+		hash = (hash << 5) - hash + char;
+		hash = hash & hash; // Convert to 32bit integer
+	}
 
-  return `fp_${Math.abs(hash).toString(36)}_${Date.now().toString(36)}`;
+	return `fp_${Math.abs(hash).toString(36)}_${Date.now().toString(36)}`;
 }
 
 /**
@@ -50,41 +50,41 @@ function generateFingerprint(): string {
  * - 없으면 새로 생성하여 저장
  */
 export function getUserId(): string {
-  if (typeof window === "undefined") {
-    // SSR 환경에서는 빈 문자열 반환
-    return "";
-  }
+	if (typeof window === "undefined") {
+		// SSR 환경에서는 빈 문자열 반환
+		return "";
+	}
 
-  try {
-    let userId = localStorage.getItem(USER_ID_KEY);
+	try {
+		let userId = localStorage.getItem(USER_ID_KEY);
 
-    if (!userId) {
-      userId = generateFingerprint();
-      localStorage.setItem(USER_ID_KEY, userId);
-    }
+		if (!userId) {
+			userId = generateFingerprint();
+			localStorage.setItem(USER_ID_KEY, userId);
+		}
 
-    return userId;
-  } catch (error) {
-    // localStorage 접근 불가 시 (프라이빗 모드 등)
-    console.warn("Failed to access localStorage:", error);
-    return generateFingerprint(); // 임시 ID 생성
-  }
+		return userId;
+	} catch (error) {
+		// localStorage 접근 불가 시 (프라이빗 모드 등)
+		console.warn("Failed to access localStorage:", error);
+		return generateFingerprint(); // 임시 ID 생성
+	}
 }
 
 /**
  * 사용자 ID 초기화 (테스트용)
  */
 export function resetUserId(): void {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem(USER_ID_KEY);
-  }
+	if (typeof window !== "undefined") {
+		localStorage.removeItem(USER_ID_KEY);
+	}
 }
 
 /**
  * 사용자가 첫 방문인지 확인
  */
 export function isFirstVisit(): boolean {
-  if (typeof window === "undefined") return false;
+	if (typeof window === "undefined") return false;
 
-  return !localStorage.getItem(USER_ID_KEY);
+	return !localStorage.getItem(USER_ID_KEY);
 }

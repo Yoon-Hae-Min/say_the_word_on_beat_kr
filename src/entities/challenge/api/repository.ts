@@ -1,9 +1,5 @@
 import { supabase } from "@/shared/api/supabase/client";
-import type {
-	GameConfigStruct,
-	ChallengeInsert,
-	DatabaseChallenge,
-} from "../model/types";
+import type { ChallengeInsert, DatabaseChallenge, GameConfigStruct } from "../model/types";
 
 /**
  * Helper function to convert storage image paths to public URLs
@@ -21,9 +17,7 @@ function convertImagePathToUrl(challenge: DatabaseChallenge): string {
 
 	// Convert image path to full public URL
 	if (imagePath) {
-		const { data: publicData } = supabase.storage
-			.from("challenge-images")
-			.getPublicUrl(imagePath);
+		const { data: publicData } = supabase.storage.from("challenge-images").getPublicUrl(imagePath);
 		return publicData.publicUrl;
 	}
 
@@ -69,15 +63,9 @@ export async function createChallenge(input: {
  * Get challenge by ID using REST API
  * Returns database row with imagePath converted to public URLs
  */
-export async function getChallengeById(
-	id: string
-): Promise<DatabaseChallenge | null> {
+export async function getChallengeById(id: string): Promise<DatabaseChallenge | null> {
 	try {
-		const { data, error } = await supabase
-			.from("challenges")
-			.select("*")
-			.eq("id", id)
-			.single();
+		const { data, error } = await supabase.from("challenges").select("*").eq("id", id).single();
 
 		if (error) {
 			console.error("Error fetching challenge:", error);
@@ -91,18 +79,19 @@ export async function getChallengeById(
 		// Convert image paths to public URLs in game_config slots
 		const transformedGameConfig = data.game_config?.map((round) => ({
 			...round,
-			slots: round.slots?.map((slot) => {
-				if (slot.imagePath) {
-					const { data: publicData } = supabase.storage
-						.from("challenge-images")
-						.getPublicUrl(slot.imagePath);
-					return {
-						...slot,
-						imagePath: publicData.publicUrl,
-					};
-				}
-				return slot;
-			}) ?? null,
+			slots:
+				round.slots?.map((slot) => {
+					if (slot.imagePath) {
+						const { data: publicData } = supabase.storage
+							.from("challenge-images")
+							.getPublicUrl(slot.imagePath);
+						return {
+							...slot,
+							imagePath: publicData.publicUrl,
+						};
+					}
+					return slot;
+				}) ?? null,
 		}));
 
 		return {
@@ -201,7 +190,8 @@ export async function getPublicChallengesCount(): Promise<number> {
  */
 export async function getAllChallenges(
 	limit: number = 50,
-	offset: number = 0
+	offset: number = 0,
+	sortBy: import("../model/types").ChallengeSortBy = "latest"
 ): Promise<
 	Array<{
 		id: string;
@@ -213,11 +203,14 @@ export async function getAllChallenges(
 	}>
 > {
 	try {
+		// Determine sort configuration based on sortBy parameter
+		const orderColumn = sortBy === "views" ? "view_count" : "created_at";
+
 		const { data, error } = await supabase
 			.from("challenges")
 			.select("*")
 			.eq("is_public", true)
-			.order("created_at", { ascending: false })
+			.order(orderColumn, { ascending: false })
 			.range(offset, offset + limit - 1);
 
 		if (error) {

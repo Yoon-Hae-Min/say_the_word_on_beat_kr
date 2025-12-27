@@ -2,8 +2,8 @@
 
 import Script from "next/script";
 import { useEffect } from "react";
-import { getUserId } from "@/shared/lib/user/fingerprint";
 import { setGAUserId } from "@/shared/lib/analytics/gtag";
+import { getUserId } from "@/shared/lib/user/fingerprint";
 
 export default function GoogleAnalytics() {
 	const GA_ID = "G-XR0CC6JPB7";

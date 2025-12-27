@@ -11,10 +11,7 @@ interface SuccessScreenProps {
 	thumbnail: string;
 }
 
-export default function SuccessScreen({
-	challengeId,
-	thumbnail,
-}: SuccessScreenProps) {
+export default function SuccessScreen({ challengeId, thumbnail }: SuccessScreenProps) {
 	const router = useRouter();
 	const [copied, setCopied] = useState(false);
 
@@ -43,13 +40,7 @@ export default function SuccessScreen({
 
 				{/* Thumbnail */}
 				<div className="relative mb-6 aspect-video overflow-hidden rounded-md border-4 border-chalk-white">
-					<Image
-						src={thumbnail}
-						alt="챌린지 썸네일"
-						fill
-						className="object-cover"
-						sizes="400px"
-					/>
+					<Image src={thumbnail} alt="챌린지 썸네일" fill className="object-cover" sizes="400px" />
 				</div>
 
 				{/* Actions */}

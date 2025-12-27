@@ -14,11 +14,7 @@ type GTagEvent = {
 // gtag 함수 타입 선언
 declare global {
 	interface Window {
-		gtag: (
-			command: string,
-			targetId: string | Date,
-			config?: Record<string, unknown>,
-		) => void;
+		gtag: (command: string, targetId: string | Date, config?: Record<string, unknown>) => void;
 		dataLayer: unknown[];
 	}
 }

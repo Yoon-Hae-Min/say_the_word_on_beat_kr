@@ -16,305 +16,292 @@ const TOTAL_ROUNDS = 5;
 const SLOTS_PER_ROUND = 8;
 
 interface ChallengeCreationFormProps {
-  isPublic: boolean;
+	isPublic: boolean;
 }
 
-export default function ChallengeCreationForm({
-  isPublic,
-}: ChallengeCreationFormProps) {
-  const [challengeData, setChallengeData] = useState<ChallengeData>({
-    title: "",
-    rounds: Array(TOTAL_ROUNDS)
-      .fill(null)
-      .map((_, i) => ({
-        id: i + 1,
-        slots: Array(SLOTS_PER_ROUND)
-          .fill(null)
-          .map(
-            (): Slot => ({
-              resourceId: null,
-            })
-          ),
-      })),
-    resources: [],
-    isPublic,
-    showNames: true,
-  });
+export default function ChallengeCreationForm({ isPublic }: ChallengeCreationFormProps) {
+	const [challengeData, setChallengeData] = useState<ChallengeData>({
+		title: "",
+		rounds: Array(TOTAL_ROUNDS)
+			.fill(null)
+			.map((_, i) => ({
+				id: i + 1,
+				slots: Array(SLOTS_PER_ROUND)
+					.fill(null)
+					.map(
+						(): Slot => ({
+							resourceId: null,
+						})
+					),
+			})),
+		resources: [],
+		isPublic,
+		showNames: true,
+	});
 
-  const [currentRound, setCurrentRound] = useState(1);
-  const [selectedResource, setSelectedResource] = useState<Resource | null>(
-    null
-  );
-  const [viewState, setViewState] = useState<"form" | "success">("form");
-  const [generatedChallengeId, setGeneratedChallengeId] = useState("");
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadError, setUploadError] = useState<string | null>(null);
+	const [currentRound, setCurrentRound] = useState(1);
+	const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
+	const [viewState, setViewState] = useState<"form" | "success">("form");
+	const [generatedChallengeId, setGeneratedChallengeId] = useState("");
+	const [isUploading, setIsUploading] = useState(false);
+	const [uploadError, setUploadError] = useState<string | null>(null);
 
-  // Handlers
-  const handleTitleChange = (title: string) => {
-    setChallengeData((prev) => ({ ...prev, title }));
-  };
+	// Handlers
+	const handleTitleChange = (title: string) => {
+		setChallengeData((prev) => ({ ...prev, title }));
+	};
 
-  const handleResourceUpload = (resource: Resource) => {
-    setChallengeData((prev) => ({
-      ...prev,
-      resources: [...prev.resources, resource],
-    }));
-  };
+	const handleResourceUpload = (resource: Resource) => {
+		setChallengeData((prev) => ({
+			...prev,
+			resources: [...prev.resources, resource],
+		}));
+	};
 
-  const handleResourceSelect = (resource: Resource) => {
-    setSelectedResource(resource);
-  };
+	const handleResourceSelect = (resource: Resource) => {
+		setSelectedResource(resource);
+	};
 
-  const handleResourceNameChange = (id: string, name: string) => {
-    setChallengeData((prev) => ({
-      ...prev,
-      resources: prev.resources.map((r) => (r.id === id ? { ...r, name } : r)),
-    }));
-  };
+	const handleResourceNameChange = (id: string, name: string) => {
+		setChallengeData((prev) => ({
+			...prev,
+			resources: prev.resources.map((r) => (r.id === id ? { ...r, name } : r)),
+		}));
+	};
 
-  const handleResourceDelete = (id: string) => {
-    setChallengeData((prev) => {
-      // Remove resource from resources array
-      const newResources = prev.resources.filter((r) => r.id !== id);
+	const handleResourceDelete = (id: string) => {
+		setChallengeData((prev) => {
+			// Remove resource from resources array
+			const newResources = prev.resources.filter((r) => r.id !== id);
 
-      // Clear slots that used this resource
-      const newRounds = prev.rounds.map((round) => ({
-        ...round,
-        slots: round.slots.map((slot) =>
-          slot.resourceId === id ? { resourceId: null } : slot
-        ),
-      }));
+			// Clear slots that used this resource
+			const newRounds = prev.rounds.map((round) => ({
+				...round,
+				slots: round.slots.map((slot) => (slot.resourceId === id ? { resourceId: null } : slot)),
+			}));
 
-      return {
-        ...prev,
-        resources: newResources,
-        rounds: newRounds,
-      };
-    });
+			return {
+				...prev,
+				resources: newResources,
+				rounds: newRounds,
+			};
+		});
 
-    // Deselect if this resource was selected
-    if (selectedResource?.id === id) {
-      setSelectedResource(null);
-    }
-  };
+		// Deselect if this resource was selected
+		if (selectedResource?.id === id) {
+			setSelectedResource(null);
+		}
+	};
 
-  const handleShowNamesToggle = (showNames: boolean) => {
-    setChallengeData((prev) => ({ ...prev, showNames }));
-  };
+	const handleShowNamesToggle = (showNames: boolean) => {
+		setChallengeData((prev) => ({ ...prev, showNames }));
+	};
 
-  const handleSlotClick = (slotIndex: number) => {
-    if (!selectedResource) {
-      alert("먼저 좌측에서 이미지를 선택하세요");
-      return;
-    }
+	const handleSlotClick = (slotIndex: number) => {
+		if (!selectedResource) {
+			alert("먼저 좌측에서 이미지를 선택하세요");
+			return;
+		}
 
-    setChallengeData((prev) => {
-      const newRounds = [...prev.rounds];
-      newRounds[currentRound - 1].slots[slotIndex] = {
-        resourceId: selectedResource.id,
-      };
-      return { ...prev, rounds: newRounds };
-    });
+		setChallengeData((prev) => {
+			const newRounds = [...prev.rounds];
+			newRounds[currentRound - 1].slots[slotIndex] = {
+				resourceId: selectedResource.id,
+			};
+			return { ...prev, rounds: newRounds };
+		});
 
-    // Keep the resource selected for continuous placement
-    // User must click another resource to deselect
-  };
+		// Keep the resource selected for continuous placement
+		// User must click another resource to deselect
+	};
 
-  const handleSlotClear = (slotIndex: number) => {
-    setChallengeData((prev) => {
-      const newRounds = [...prev.rounds];
-      newRounds[currentRound - 1].slots[slotIndex] = {
-        resourceId: null,
-      };
-      return { ...prev, rounds: newRounds };
-    });
-  };
+	const handleSlotClear = (slotIndex: number) => {
+		setChallengeData((prev) => {
+			const newRounds = [...prev.rounds];
+			newRounds[currentRound - 1].slots[slotIndex] = {
+				resourceId: null,
+			};
+			return { ...prev, rounds: newRounds };
+		});
+	};
 
-  const handlePreviousRound = () => {
-    if (currentRound > 1) setCurrentRound(currentRound - 1);
-  };
+	const handlePreviousRound = () => {
+		if (currentRound > 1) setCurrentRound(currentRound - 1);
+	};
 
-  const handleNextRound = () => {
-    if (currentRound < TOTAL_ROUNDS) setCurrentRound(currentRound + 1);
-  };
+	const handleNextRound = () => {
+		if (currentRound < TOTAL_ROUNDS) setCurrentRound(currentRound + 1);
+	};
 
-  const isValid = () => {
-    if (!challengeData.title.trim()) return false;
+	const isValid = () => {
+		if (!challengeData.title.trim()) return false;
 
-    const allSlotsFilled = challengeData.rounds.every((round) =>
-      round.slots.every((slot) => slot.resourceId !== null)
-    );
-    if (!allSlotsFilled) return false;
+		const allSlotsFilled = challengeData.rounds.every((round) =>
+			round.slots.every((slot) => slot.resourceId !== null)
+		);
+		if (!allSlotsFilled) return false;
 
-    // Only require names if showNames is enabled
-    if (challengeData.showNames) {
-      const allResourcesNamed = challengeData.resources.every(
-        (resource) => resource.name.trim() !== ""
-      );
-      if (!allResourcesNamed) return false;
-    }
+		// Only require names if showNames is enabled
+		if (challengeData.showNames) {
+			const allResourcesNamed = challengeData.resources.every(
+				(resource) => resource.name.trim() !== ""
+			);
+			if (!allResourcesNamed) return false;
+		}
 
-    return true;
-  };
+		return true;
+	};
 
-  const handleGenerate = async () => {
-    if (!isValid()) {
-      alert("모든 슬롯을 채우고 이미지 이름을 입력해주세요");
-      return;
-    }
+	const handleGenerate = async () => {
+		if (!isValid()) {
+			alert("모든 슬롯을 채우고 이미지 이름을 입력해주세요");
+			return;
+		}
 
-    setIsUploading(true);
-    setUploadError(null);
+		setIsUploading(true);
+		setUploadError(null);
 
-    try {
-      // Upload images and create challenge in Supabase
-      const challengeId = await createChallenge(challengeData);
+		try {
+			// Upload images and create challenge in Supabase
+			const challengeId = await createChallenge(challengeData);
 
-      setGeneratedChallengeId(challengeId);
-      setViewState("success");
-    } catch (error) {
-      console.error("Failed to create challenge:", error);
-      const errorMessage =
-        error instanceof Error ? error.message : "챌린지 생성에 실패했습니다";
-      setUploadError(errorMessage);
-      alert(`오류: ${errorMessage}`);
-    } finally {
-      setIsUploading(false);
-    }
-  };
+			setGeneratedChallengeId(challengeId);
+			setViewState("success");
+		} catch (error) {
+			console.error("Failed to create challenge:", error);
+			const errorMessage = error instanceof Error ? error.message : "챌린지 생성에 실패했습니다";
+			setUploadError(errorMessage);
+			alert(`오류: ${errorMessage}`);
+		} finally {
+			setIsUploading(false);
+		}
+	};
 
-  // Show success screen after challenge creation
-  if (viewState === "success") {
-    return (
-      <SuccessScreen
-        challengeId={generatedChallengeId}
-        thumbnail={challengeData.resources[0]?.imageUrl || "/placeholder.svg"}
-      />
-    );
-  }
+	// Show success screen after challenge creation
+	if (viewState === "success") {
+		return (
+			<SuccessScreen
+				challengeId={generatedChallengeId}
+				thumbnail={challengeData.resources[0]?.imageUrl || "/placeholder.svg"}
+			/>
+		);
+	}
 
-  // Show challenge creation form
-  return (
-    <div className="min-h-screen bg-chalkboard-bg p-4 md:p-8">
-      <ChalkDust position="top-left" intensity="low" color="white" />
-      <ChalkDust position="bottom-right" intensity="low" color="yellow" />
+	// Show challenge creation form
+	return (
+		<div className="min-h-screen bg-chalkboard-bg p-4 md:p-8">
+			<ChalkDust position="top-left" intensity="low" color="white" />
+			<ChalkDust position="bottom-right" intensity="low" color="yellow" />
 
-      <div className="mx-auto max-w-[1600px] space-y-6 lg:space-y-0">
-        {/* Title Input - Always on top */}
-        <div className="border-2 border-dashed border-chalk-blue/50 bg-chalkboard-bg/50 rounded-md p-6 mb-6">
-          <HeaderSection
-            title={challengeData.title}
-            onTitleChange={handleTitleChange}
-          />
-        </div>
+			<div className="mx-auto max-w-[1600px] space-y-6 lg:space-y-0">
+				{/* Title Input - Always on top */}
+				<div className="border-2 border-dashed border-chalk-blue/50 bg-chalkboard-bg/50 rounded-md p-6 mb-6">
+					<HeaderSection title={challengeData.title} onTitleChange={handleTitleChange} />
+				</div>
 
-        {/* Mobile: Resource Panel below title, Desktop: Side by side layout */}
-        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
-          {/* Left Panel - Resource Management (30% on desktop) */}
-          <aside className="w-full lg:w-[30%] lg:min-w-[320px] order-1 lg:order-1">
-            <div className="border-2 border-dashed border-chalk-blue/50 bg-chalkboard-bg/50 rounded-md p-6 lg:sticky lg:top-4">
-              <h2 className="chalk-text text-chalk-white text-xl font-bold mb-1">
-                이미지 관리
-              </h2>
-              <p className="text-chalk-white/60 text-sm mb-4">
-                이미지를 업로드하고 이름을 지정하세요
-              </p>
+				{/* Mobile: Resource Panel below title, Desktop: Side by side layout */}
+				<div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+					{/* Left Panel - Resource Management (30% on desktop) */}
+					<aside className="w-full lg:w-[30%] lg:min-w-[320px] order-1 lg:order-1">
+						<div className="border-2 border-dashed border-chalk-blue/50 bg-chalkboard-bg/50 rounded-md p-6 lg:sticky lg:top-4">
+							<h2 className="chalk-text text-chalk-white text-xl font-bold mb-1">이미지 관리</h2>
+							<p className="text-chalk-white/60 text-sm mb-4">
+								이미지를 업로드하고 이름을 지정하세요
+							</p>
 
-              {/* Name Display Toggle */}
-              <div className="mb-4 p-4 border-2 border-chalk-white/30 rounded-md bg-chalkboard-bg/30">
-                <label className="flex items-center justify-between cursor-pointer">
-                  <div>
-                    <p className="chalk-text text-chalk-white font-bold text-sm">
-                      이름 표시
-                    </p>
-                    <p className="text-chalk-white/60 text-xs mt-1">
-                      게임 플레이 시 이미지 이름 표시 여부
-                    </p>
-                  </div>
-                  <div className="relative">
-                    <input
-                      type="checkbox"
-                      checked={challengeData.showNames}
-                      onChange={(e) => handleShowNamesToggle(e.target.checked)}
-                      className="sr-only"
-                    />
-                    <div className={`w-11 h-6 rounded-full transition-colors flex items-center p-0.5 ${
-                      challengeData.showNames ? 'bg-chalk-yellow' : 'bg-chalk-white/30'
-                    }`}>
-                      <div className={`w-5 h-5 bg-chalkboard-bg rounded-full transition-transform transform ${
-                        challengeData.showNames ? 'translate-x-5' : 'translate-x-0'
-                      }`} />
-                    </div>
-                  </div>
-                </label>
-              </div>
+							{/* Name Display Toggle */}
+							<div className="mb-4 p-4 border-2 border-chalk-white/30 rounded-md bg-chalkboard-bg/30">
+								<label className="flex items-center justify-between cursor-pointer">
+									<div>
+										<p className="chalk-text text-chalk-white font-bold text-sm">이름 표시</p>
+										<p className="text-chalk-white/60 text-xs mt-1">
+											게임 플레이 시 이미지 이름 표시 여부
+										</p>
+									</div>
+									<div className="relative">
+										<input
+											type="checkbox"
+											checked={challengeData.showNames}
+											onChange={(e) => handleShowNamesToggle(e.target.checked)}
+											className="sr-only"
+										/>
+										<div
+											className={`w-11 h-6 rounded-full transition-colors flex items-center p-0.5 ${
+												challengeData.showNames ? "bg-chalk-yellow" : "bg-chalk-white/30"
+											}`}
+										>
+											<div
+												className={`w-5 h-5 bg-chalkboard-bg rounded-full transition-transform transform ${
+													challengeData.showNames ? "translate-x-5" : "translate-x-0"
+												}`}
+											/>
+										</div>
+									</div>
+								</label>
+							</div>
 
-              <ResourcePanel
-                resources={challengeData.resources}
-                selectedResource={selectedResource}
-                onUpload={handleResourceUpload}
-                onSelect={handleResourceSelect}
-                onNameChange={handleResourceNameChange}
-                onDelete={handleResourceDelete}
-                showNames={challengeData.showNames}
-              />
-            </div>
-          </aside>
+							<ResourcePanel
+								resources={challengeData.resources}
+								selectedResource={selectedResource}
+								onUpload={handleResourceUpload}
+								onSelect={handleResourceSelect}
+								onNameChange={handleResourceNameChange}
+								onDelete={handleResourceDelete}
+								showNames={challengeData.showNames}
+							/>
+						</div>
+					</aside>
 
-          {/* Right Panel - Challenge Creation (70% on desktop) */}
-          <main className="flex-1 order-2 lg:order-2 space-y-6 lg:space-y-8">
-            {/* Stage Grid Section */}
-            <div className="border-2 border-dashed border-chalk-blue/50 bg-chalkboard-bg/50 rounded-md p-6 lg:p-8">
-              <div className="mb-6">
-                <h2 className="chalk-text text-chalk-white text-xl lg:text-2xl font-bold mb-2 text-center">
-                  라운드 {currentRound} / {TOTAL_ROUNDS}
-                </h2>
-                <p className="text-chalk-white/60 text-sm text-center">
-                  이미지를 선택한 후 슬롯을 클릭하여 배치하세요
-                </p>
-              </div>
+					{/* Right Panel - Challenge Creation (70% on desktop) */}
+					<main className="flex-1 order-2 lg:order-2 space-y-6 lg:space-y-8">
+						{/* Stage Grid Section */}
+						<div className="border-2 border-dashed border-chalk-blue/50 bg-chalkboard-bg/50 rounded-md p-6 lg:p-8">
+							<div className="mb-6">
+								<h2 className="chalk-text text-chalk-white text-xl lg:text-2xl font-bold mb-2 text-center">
+									라운드 {currentRound} / {TOTAL_ROUNDS}
+								</h2>
+								<p className="text-chalk-white/60 text-sm text-center">
+									이미지를 선택한 후 슬롯을 클릭하여 배치하세요
+								</p>
+							</div>
 
-              <StageGrid
-                slots={challengeData.rounds[currentRound - 1].slots}
-                resources={challengeData.resources}
-                onSlotClick={handleSlotClick}
-                onSlotClear={handleSlotClear}
-                showNames={challengeData.showNames}
-              />
+							<StageGrid
+								slots={challengeData.rounds[currentRound - 1].slots}
+								resources={challengeData.resources}
+								onSlotClick={handleSlotClick}
+								onSlotClear={handleSlotClear}
+								showNames={challengeData.showNames}
+							/>
 
-              <div className="mt-6">
-                <RoundControl
-                  currentRound={currentRound}
-                  totalRounds={TOTAL_ROUNDS}
-                  onPrevious={handlePreviousRound}
-                  onNext={handleNextRound}
-                />
-              </div>
-            </div>
+							<div className="mt-6">
+								<RoundControl
+									currentRound={currentRound}
+									totalRounds={TOTAL_ROUNDS}
+									onPrevious={handlePreviousRound}
+									onNext={handleNextRound}
+								/>
+							</div>
+						</div>
 
-            {/* Generate Button */}
-            <div className="border-2 border-dashed border-chalk-blue/50 bg-chalkboard-bg/50 rounded-md p-6">
-              {uploadError && (
-                <div className="mb-4 p-3 bg-red-500/20 border border-red-500 rounded-md">
-                  <p className="text-chalk-white text-sm">{uploadError}</p>
-                </div>
-              )}
-              <FooterSection
-                onGenerate={handleGenerate}
-                disabled={!isValid() || isUploading}
-              />
-              {isUploading && (
-                <div className="mt-4 text-center">
-                  <p className="chalk-text text-chalk-yellow text-sm animate-pulse">
-                    이미지 업로드 중... 잠시만 기다려주세요
-                  </p>
-                </div>
-              )}
-            </div>
-          </main>
-        </div>
-      </div>
-    </div>
-  );
+						{/* Generate Button */}
+						<div className="border-2 border-dashed border-chalk-blue/50 bg-chalkboard-bg/50 rounded-md p-6">
+							{uploadError && (
+								<div className="mb-4 p-3 bg-red-500/20 border border-red-500 rounded-md">
+									<p className="text-chalk-white text-sm">{uploadError}</p>
+								</div>
+							)}
+							<FooterSection onGenerate={handleGenerate} disabled={!isValid() || isUploading} />
+							{isUploading && (
+								<div className="mt-4 text-center">
+									<p className="chalk-text text-chalk-yellow text-sm animate-pulse">
+										이미지 업로드 중... 잠시만 기다려주세요
+									</p>
+								</div>
+							)}
+						</div>
+					</main>
+				</div>
+			</div>
+		</div>
+	);
 }

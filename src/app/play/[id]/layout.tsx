@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { getChallengeById } from "@/features/game-play/api/challengeService";
 import { supabase } from "@/shared/api/supabase/client";
 

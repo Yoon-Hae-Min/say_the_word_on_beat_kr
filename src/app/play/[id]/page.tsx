@@ -3,20 +3,15 @@
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { DatabaseChallenge } from "@/entities/challenge";
-import { WoodFrame } from "@/shared/ui";
+import { getChallengeById, incrementViewCount } from "@/features/game-play/api/challengeService";
 import GameStage from "@/features/game-play/ui/GameStage";
-import {
-	getChallengeById,
-	incrementViewCount,
-} from "@/features/game-play/api/challengeService";
+import { WoodFrame } from "@/shared/ui";
 
 export default function PlayPage() {
 	const params = useParams();
 	const challengeId = params.id as string;
 
-	const [challengeData, setChallengeData] = useState<DatabaseChallenge | null>(
-		null
-	);
+	const [challengeData, setChallengeData] = useState<DatabaseChallenge | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
@@ -58,13 +53,8 @@ export default function PlayPage() {
 			<WoodFrame>
 				<div className="min-h-screen flex items-center justify-center">
 					<div className="text-center">
-						<p className="text-chalk-white chalk-text text-2xl mb-4">
-							챌린지를 찾을 수 없습니다
-						</p>
-						<a
-							href="/"
-							className="text-chalk-yellow hover:text-chalk-yellow/80 underline"
-						>
+						<p className="text-chalk-white chalk-text text-2xl mb-4">챌린지를 찾을 수 없습니다</p>
+						<a href="/" className="text-chalk-yellow hover:text-chalk-yellow/80 underline">
 							홈으로 돌아가기
 						</a>
 					</div>
