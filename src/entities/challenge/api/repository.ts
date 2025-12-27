@@ -175,6 +175,28 @@ export async function getPopularChallenges(limit: number = 9): Promise<
 }
 
 /**
+ * Get total count of public challenges
+ */
+export async function getPublicChallengesCount(): Promise<number> {
+	try {
+		const { count, error } = await supabase
+			.from("challenges")
+			.select("*", { count: "exact", head: true })
+			.eq("is_public", true);
+
+		if (error) {
+			console.error("Failed to fetch challenges count:", error);
+			return 0;
+		}
+
+		return count || 0;
+	} catch (error) {
+		console.error("Failed to fetch challenges count:", error);
+		return 0;
+	}
+}
+
+/**
  * Get all public challenges ordered by creation date using REST API
  */
 export async function getAllChallenges(

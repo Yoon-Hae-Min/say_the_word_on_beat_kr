@@ -4,6 +4,7 @@ export {
   incrementViewCount,
   getPopularChallenges,
   getAllChallenges,
+  getPublicChallengesCount,
 } from "./api";
 export type {
   Challenge,
