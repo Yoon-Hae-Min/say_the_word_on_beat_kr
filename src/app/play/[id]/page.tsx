@@ -28,7 +28,7 @@ export default function PlayPage() {
 				if (data) {
 					setChallengeData(data);
 
-					// Increment view count (non-blocking)
+					// Increment view count (non-blocking, checks localStorage for duplicates)
 					incrementViewCount(challengeId);
 				} else {
 					console.error("Challenge not found");

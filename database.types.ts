@@ -7,37 +7,15 @@ export type Json =
   | Json[]
 
 export type Database = {
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json
-          operationName?: string
-          query?: string
-          variables?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
       challenges: {
         Row: {
           created_at: string
           creator_id: string | null
+          difficulty_easy: number | null
+          difficulty_hard: number | null
+          difficulty_normal: number | null
           game_config: Database["public"]["CompositeTypes"]["game_config_struct"][]
           id: string
           is_public: boolean
@@ -49,6 +27,9 @@ export type Database = {
         Insert: {
           created_at?: string
           creator_id?: string | null
+          difficulty_easy?: number | null
+          difficulty_hard?: number | null
+          difficulty_normal?: number | null
           game_config: Database["public"]["CompositeTypes"]["game_config_struct"][]
           id?: string
           is_public?: boolean
@@ -60,6 +41,9 @@ export type Database = {
         Update: {
           created_at?: string
           creator_id?: string | null
+          difficulty_easy?: number | null
+          difficulty_hard?: number | null
+          difficulty_normal?: number | null
           game_config?: Database["public"]["CompositeTypes"]["game_config_struct"][]
           id?: string
           is_public?: boolean
@@ -69,6 +53,38 @@ export type Database = {
           view_count?: number
         }
         Relationships: []
+      }
+      difficulty_votes: {
+        Row: {
+          challenge_id: string
+          created_at: string | null
+          difficulty_level: string
+          fingerprint: string
+          id: string
+        }
+        Insert: {
+          challenge_id: string
+          created_at?: string | null
+          difficulty_level: string
+          fingerprint: string
+          id?: string
+        }
+        Update: {
+          challenge_id?: string
+          created_at?: string | null
+          difficulty_level?: string
+          fingerprint?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "difficulty_votes_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
@@ -223,9 +239,6 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {},
   },
