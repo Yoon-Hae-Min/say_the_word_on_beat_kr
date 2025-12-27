@@ -1,11 +1,11 @@
 import { supabase } from "@/shared/api/supabase/client";
-import type { ChallengeInsert, DatabaseChallenge, GameConfigStruct } from "../model/types";
+import type { ChallengeInsert, ClientSafeChallenge, GameConfigStruct } from "../model/types";
 
 /**
  * Helper function to convert storage image paths to public URLs
  * Handles both thumbnail_url and fallback to first slot image
  */
-function convertImagePathToUrl(challenge: DatabaseChallenge): string {
+function convertImagePathToUrl(challenge: ClientSafeChallenge): string {
 	// Get image path from thumbnail_url or first slot
 	let imagePath = challenge.thumbnail_url;
 
@@ -63,9 +63,9 @@ export async function createChallenge(input: {
  * Get challenge by ID using REST API
  * Returns database row with imagePath converted to public URLs
  */
-export async function getChallengeById(id: string): Promise<DatabaseChallenge | null> {
+export async function getChallengeById(id: string): Promise<ClientSafeChallenge | null> {
 	try {
-		const { data, error } = await supabase.from("challenges").select("*").eq("id", id).single();
+		const { data, error } = await supabase.from("challenges").select("id, title, is_public, show_names, thumbnail_url, game_config, view_count, created_at, difficulty_easy, difficulty_hard, difficulty_normal").eq("id", id).single();
 
 		if (error) {
 			console.error("Error fetching challenge:", error);
@@ -133,7 +133,7 @@ export async function getPopularChallenges(limit: number = 9): Promise<
 	try {
 		const { data, error } = await supabase
 			.from("challenges")
-			.select("*")
+			.select("id, title, is_public, show_names, thumbnail_url, game_config, view_count, created_at, difficulty_easy, difficulty_hard, difficulty_normal")
 			.eq("is_public", true)
 			.order("view_count", { ascending: false })
 			.limit(limit);
@@ -208,7 +208,7 @@ export async function getAllChallenges(
 
 		const { data, error } = await supabase
 			.from("challenges")
-			.select("*")
+			.select("id, title, is_public, show_names, thumbnail_url, game_config, view_count, created_at, difficulty_easy, difficulty_hard, difficulty_normal")
 			.eq("is_public", true)
 			.order(orderColumn, { ascending: false })
 			.range(offset, offset + limit - 1);

@@ -1,4 +1,4 @@
-import type { DatabaseChallenge } from "@/entities/challenge";
+import type { ClientSafeChallenge } from "@/entities/challenge";
 import {
 	getChallengeById as getChallengeFromDB,
 	incrementViewCount as incrementViewCountInDB,
@@ -9,7 +9,7 @@ import { markChallengeAsViewed } from "@/shared/lib/user/viewTracking";
  * Fetch a challenge by ID from the database
  * Returns database row with imagePath as public URLs
  */
-export async function getChallengeById(id: string): Promise<DatabaseChallenge | null> {
+export async function getChallengeById(id: string): Promise<ClientSafeChallenge | null> {
 	return getChallengeFromDB(id);
 }
 

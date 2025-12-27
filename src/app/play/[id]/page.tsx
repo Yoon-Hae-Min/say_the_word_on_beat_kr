@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import type { DatabaseChallenge } from "@/entities/challenge";
+import type { ClientSafeChallenge } from "@/entities/challenge";
 import { getChallengeById, incrementViewCount } from "@/features/game-play/api/challengeService";
 import GameStage from "@/features/game-play/ui/GameStage";
 import { WoodFrame } from "@/shared/ui";
@@ -11,7 +11,7 @@ export default function PlayPage() {
 	const params = useParams();
 	const challengeId = params.id as string;
 
-	const [challengeData, setChallengeData] = useState<DatabaseChallenge | null>(null);
+	const [challengeData, setChallengeData] = useState<ClientSafeChallenge | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {

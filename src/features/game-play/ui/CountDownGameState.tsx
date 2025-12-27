@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import type { DatabaseChallenge } from "@/entities/challenge";
+import type { ClientSafeChallenge } from "@/entities/challenge";
 
 interface CountDownGameStateProps {
 	onCountdownEnd: () => void;
 	initialCount?: number;
-	challengeData: DatabaseChallenge;
+	challengeData: ClientSafeChallenge;
 }
 
 const CountDownGameState = ({

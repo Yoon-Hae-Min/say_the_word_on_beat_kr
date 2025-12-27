@@ -5,6 +5,7 @@ export type {
 	ChallengeInsert,
 	ChallengeSortBy,
 	ChallengeUpdate,
+	ClientSafeChallenge,
 	DatabaseChallenge,
 	GameConfigStruct,
 	Round,

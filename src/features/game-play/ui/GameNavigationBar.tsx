@@ -3,12 +3,11 @@
 import { Home, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import type { DatabaseChallenge } from "@/entities/challenge";
-import { getUserId } from "@/shared/lib/user/fingerprint";
+import type { ClientSafeChallenge } from "@/entities/challenge";
 import DeleteConfirmModal from "./DeleteConfirmModal";
 
 interface GameNavigationBarProps {
-	challengeData: DatabaseChallenge;
+	challengeData: ClientSafeChallenge;
 }
 
 export default function GameNavigationBar({
@@ -16,8 +15,6 @@ export default function GameNavigationBar({
 }: GameNavigationBarProps) {
 	const router = useRouter();
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-	const userId = getUserId();
-	const isOwner = challengeData.creator_id === userId;
 
 	return (
 		<>
@@ -32,17 +29,15 @@ export default function GameNavigationBar({
 					<Home className="h-6 w-6 text-chalk-white md:h-7 md:w-7" />
 				</button>
 
-				{/* Delete Button - Owner only */}
-				{isOwner && (
-					<button
-						type="button"
-						onClick={() => setIsDeleteModalOpen(true)}
-						className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-red-500 bg-transparent transition-all hover:scale-105 hover:bg-red-500/20 md:h-14 md:w-14"
-						aria-label="챌린지 삭제"
-					>
-						<Trash2 className="h-6 w-6 text-red-500 md:h-7 md:w-7" />
-					</button>
-				)}
+				{/* Delete Button - Always visible, server validates ownership */}
+				<button
+					type="button"
+					onClick={() => setIsDeleteModalOpen(true)}
+					className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-red-500 bg-transparent transition-all hover:scale-105 hover:bg-red-500/20 md:h-14 md:w-14"
+					aria-label="챌린지 삭제"
+				>
+					<Trash2 className="h-6 w-6 text-red-500 md:h-7 md:w-7" />
+				</button>
 			</div>
 
 			<DeleteConfirmModal

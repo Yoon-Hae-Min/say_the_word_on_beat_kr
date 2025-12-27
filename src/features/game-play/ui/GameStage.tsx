@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import type { DatabaseChallenge } from "@/entities/challenge";
+import type { ClientSafeChallenge } from "@/entities/challenge";
 import { ChalkButton } from "@/shared/ui";
 import CountDownGameState from "./CountDownGameState";
 import GameNavigationBar from "./GameNavigationBar";
@@ -10,7 +10,7 @@ import IdleGameStage from "./IdleGameStage";
 import PlayingGameStage from "./PlayingGameStage";
 
 interface GameStageProps {
-	challengeData: DatabaseChallenge;
+	challengeData: ClientSafeChallenge;
 }
 
 type GamePhase = "idle" | "countdown" | "playing" | "finished";

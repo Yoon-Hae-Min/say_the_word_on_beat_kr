@@ -1,10 +1,10 @@
 import Image from "next/image";
 import { useState } from "react";
-import type { DatabaseChallenge } from "@/entities/challenge";
+import type { ClientSafeChallenge } from "@/entities/challenge";
 import { useAudioBeat } from "../hooks/useAudioBeat";
 
 interface PlayingGameStage {
-	challengeData: DatabaseChallenge;
+	challengeData: ClientSafeChallenge;
 	onPlayingEnd: () => void;
 }
 

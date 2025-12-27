@@ -1,10 +1,10 @@
 "use client";
 
-import type { DatabaseChallenge } from "@/entities/challenge";
+import type { ClientSafeChallenge } from "@/entities/challenge";
 import { ChalkButton } from "@/shared/ui";
 
 interface IdleGameStageProps {
-	challengeData: DatabaseChallenge;
+	challengeData: ClientSafeChallenge;
 	onStartClick: () => void;
 }
 

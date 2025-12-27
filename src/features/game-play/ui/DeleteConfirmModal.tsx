@@ -39,6 +39,12 @@ export default function DeleteConfirmModal({
 
 			if (!response.ok) {
 				const errorData = await response.json();
+
+				// 403 에러에 대한 명확한 메시지 추가
+				if (response.status === 403) {
+					throw new Error("이 챌린지를 삭제할 권한이 없습니다.");
+				}
+
 				throw new Error(errorData.error || "삭제에 실패했습니다");
 			}
 
