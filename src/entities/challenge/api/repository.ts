@@ -5,7 +5,7 @@ import type { ChallengeInsert, ClientSafeChallenge, GameConfigStruct } from "../
  * Helper function to convert storage image paths to public URLs
  * Handles both thumbnail_url and fallback to first slot image
  */
-function convertImagePathToUrl(challenge: ClientSafeChallenge): string {
+function convertImagePathToUrl(challenge: Pick<ClientSafeChallenge, "thumbnail_url" | "game_config">): string {
 	// Get image path from thumbnail_url or first slot
 	let imagePath = challenge.thumbnail_url;
 
@@ -60,12 +60,22 @@ export async function createChallenge(input: {
 }
 
 /**
- * Get challenge by ID using REST API
+ * Get challenge by ID using Supabase RPC function
  * Returns database row with imagePath converted to public URLs
+ * Uses RPC to calculate isMine without exposing creator_id to client
+ * @param id - Challenge ID
+ * @param userId - Optional user ID to check ownership (sets isMine field)
  */
-export async function getChallengeById(id: string): Promise<ClientSafeChallenge | null> {
+export async function getChallengeById(id: string, userId?: string): Promise<ClientSafeChallenge | null> {
 	try {
-		const { data, error } = await supabase.from("challenges").select("id, title, is_public, show_names, thumbnail_url, game_config, view_count, created_at, difficulty_easy, difficulty_hard, difficulty_normal").eq("id", id).single();
+		// Use RPC function to get challenge with ownership check
+		// This prevents creator_id from being exposed to the client
+		const { data, error } = await supabase
+			.rpc("get_challenge_with_ownership", {
+				challenge_id: id,
+				user_id: userId,
+			})
+			.single();
 
 		if (error) {
 			console.error("Error fetching challenge:", error);
@@ -77,7 +87,9 @@ export async function getChallengeById(id: string): Promise<ClientSafeChallenge 
 		}
 
 		// Convert image paths to public URLs in game_config slots
-		const transformedGameConfig = data.game_config?.map((round) => ({
+		// Type cast game_config as it comes from JSONB in the database
+		const gameConfig = data.game_config as unknown as GameConfigStruct[] | null;
+		const transformedGameConfig = gameConfig?.map((round) => ({
 			...round,
 			slots:
 				round.slots?.map((slot) => {
@@ -95,8 +107,18 @@ export async function getChallengeById(id: string): Promise<ClientSafeChallenge 
 		}));
 
 		return {
-			...data,
-			game_config: transformedGameConfig ?? null,
+			id: data.id,
+			title: data.title,
+			is_public: data.is_public,
+			show_names: data.show_names,
+			thumbnail_url: data.thumbnail_url,
+			view_count: data.view_count,
+			created_at: data.created_at,
+			difficulty_easy: data.difficulty_easy,
+			difficulty_hard: data.difficulty_hard,
+			difficulty_normal: data.difficulty_normal,
+			game_config: transformedGameConfig || [],
+			isMine: data.is_mine, // Map is_mine from DB to isMine for client
 		};
 	} catch (error) {
 		console.error("Error fetching challenge:", error);

@@ -8,8 +8,10 @@ export type DatabaseChallenge = Database["public"]["Tables"]["challenges"]["Row"
 export type ChallengeInsert = Database["public"]["Tables"]["challenges"]["Insert"];
 export type ChallengeUpdate = Database["public"]["Tables"]["challenges"]["Update"];
 
-// Client-safe challenge type (excludes creator_id for privacy)
-export type ClientSafeChallenge = Omit<DatabaseChallenge, "creator_id">;
+// Client-safe challenge type (excludes creator_id for privacy, adds isMine for ownership check)
+export type ClientSafeChallenge = Omit<DatabaseChallenge, "creator_id"> & {
+	isMine: boolean;
+};
 
 // Application-level types (used in UI/business logic)
 

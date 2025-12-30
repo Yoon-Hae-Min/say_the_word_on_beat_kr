@@ -8,9 +8,11 @@ import { markChallengeAsViewed } from "@/shared/lib/user/viewTracking";
 /**
  * Fetch a challenge by ID from the database
  * Returns database row with imagePath as public URLs
+ * @param id - Challenge UUID
+ * @param userId - Optional user ID to check ownership
  */
-export async function getChallengeById(id: string): Promise<ClientSafeChallenge | null> {
-	return getChallengeFromDB(id);
+export async function getChallengeById(id: string, userId?: string): Promise<ClientSafeChallenge | null> {
+	return getChallengeFromDB(id, userId);
 }
 
 /**

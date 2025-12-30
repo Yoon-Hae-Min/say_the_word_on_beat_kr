@@ -29,15 +29,17 @@ export default function GameNavigationBar({
 					<Home className="h-6 w-6 text-chalk-white md:h-7 md:w-7" />
 				</button>
 
-				{/* Delete Button - Always visible, server validates ownership */}
-				<button
-					type="button"
-					onClick={() => setIsDeleteModalOpen(true)}
-					className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-red-500 bg-transparent transition-all hover:scale-105 hover:bg-red-500/20 md:h-14 md:w-14"
-					aria-label="챌린지 삭제"
-				>
-					<Trash2 className="h-6 w-6 text-red-500 md:h-7 md:w-7" />
-				</button>
+				{/* Delete Button - Only visible to challenge owner */}
+				{challengeData.isMine && (
+					<button
+						type="button"
+						onClick={() => setIsDeleteModalOpen(true)}
+						className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-red-500 bg-transparent transition-all hover:scale-105 hover:bg-red-500/20 md:h-14 md:w-14"
+						aria-label="챌린지 삭제"
+					>
+						<Trash2 className="h-6 w-6 text-red-500 md:h-7 md:w-7" />
+					</button>
+				)}
 			</div>
 
 			<DeleteConfirmModal
