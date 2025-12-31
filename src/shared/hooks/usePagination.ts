@@ -34,10 +34,10 @@ export interface UsePaginationOptions {
 	initialPage?: number;
 
 	/**
-	 * Maximum number of visible page buttons (excluding ellipses)
-	 * @default 5
+	 * Number of pages to show per block
+	 * @default 10
 	 */
-	maxVisiblePages?: number;
+	pagesPerBlock?: number;
 
 	/**
 	 * Callback fired when page changes
@@ -68,9 +68,9 @@ export interface UsePaginationReturn {
 	offset: number;
 
 	/**
-	 * Array of page numbers to display (includes ellipses as "...")
+	 * Array of page numbers to display (10 consecutive pages in current block)
 	 */
-	pageNumbers: (number | string)[];
+	pageNumbers: number[];
 
 	/**
 	 * Whether there is a previous page
@@ -139,7 +139,7 @@ export const usePagination = ({
 	totalCount,
 	itemsPerPage,
 	initialPage = 1,
-	maxVisiblePages = 5,
+	pagesPerBlock = 10,
 	onPageChange,
 	onOffsetChange,
 }: UsePaginationOptions): UsePaginationReturn => {
@@ -159,8 +159,8 @@ export const usePagination = ({
 
 	// Generate page numbers to display
 	const pageNumbers = useMemo(
-		() => generatePageNumbers(currentPage, totalPages, maxVisiblePages),
-		[currentPage, totalPages, maxVisiblePages]
+		() => generatePageNumbers(currentPage, totalPages, pagesPerBlock),
+		[currentPage, totalPages, pagesPerBlock]
 	);
 
 	// Check if previous/next pages exist

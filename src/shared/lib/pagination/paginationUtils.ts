@@ -38,59 +38,45 @@ export const calculateOffset = (currentPage: number, itemsPerPage: number): numb
 /**
  * Generate page numbers to display in pagination controls
  *
- * This function implements an ellipsis-based pagination pattern:
- * - Always show first and last page
- * - Show pages around current page
- * - Use "..." for gaps
+ * This function implements a block-based pagination pattern:
+ * - Desktop: Shows 10 consecutive page numbers at a time
+ * - Mobile: Shows 5 consecutive page numbers at a time
+ * - Current page determines which block is shown
+ * - No ellipses needed
  *
- * Examples:
+ * Examples (Desktop - 10 per block):
  * - Total pages = 5, current = 3: [1, 2, 3, 4, 5]
- * - Total pages = 10, current = 5: [1, "...", 4, 5, 6, "...", 10]
+ * - Total pages = 50, current = 1: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+ * - Total pages = 50, current = 15: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+ * - Total pages = 50, current = 45: [41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
+ *
+ * Examples (Mobile - 5 per block):
+ * - Total pages = 50, current = 1: [1, 2, 3, 4, 5]
+ * - Total pages = 50, current = 7: [6, 7, 8, 9, 10]
+ * - Total pages = 50, current = 48: [46, 47, 48, 49, 50]
  *
  * @param currentPage - Current page number (1-based)
  * @param totalPages - Total number of pages
- * @param maxVisiblePages - Maximum number of page buttons to show (excluding ellipses)
- * @returns Array of page numbers and ellipses ("...")
+ * @param pagesPerBlock - Number of pages to show per block (default: 10 for desktop, 5 for mobile)
+ * @returns Array of page numbers in current block
  */
 export const generatePageNumbers = (
 	currentPage: number,
 	totalPages: number,
-	maxVisiblePages: number = 5
-): (number | string)[] => {
-	const pages: (number | string)[] = [];
+	pagesPerBlock: number = 10
+): number[] => {
+	const pages: number[] = [];
 
-	if (totalPages <= maxVisiblePages) {
-		// Show all pages if total is small enough
-		for (let i = 1; i <= totalPages; i++) {
-			pages.push(i);
-		}
-		return pages;
-	}
+	// Calculate which block the current page is in (1-based)
+	const currentBlock = Math.ceil(currentPage / pagesPerBlock);
 
-	// Always show first page
-	pages.push(1);
+	// Calculate start and end of current block
+	const blockStart = (currentBlock - 1) * pagesPerBlock + 1;
+	const blockEnd = Math.min(currentBlock * pagesPerBlock, totalPages);
 
-	// Show ellipsis if current page is far from start
-	if (currentPage > 3) {
-		pages.push("...");
-	}
-
-	// Calculate range of pages to show around current page
-	const start = Math.max(2, currentPage - 1);
-	const end = Math.min(totalPages - 1, currentPage + 1);
-
-	for (let i = start; i <= end; i++) {
+	// Generate page numbers for current block
+	for (let i = blockStart; i <= blockEnd; i++) {
 		pages.push(i);
-	}
-
-	// Show ellipsis if current page is far from end
-	if (currentPage < totalPages - 2) {
-		pages.push("...");
-	}
-
-	// Always show last page
-	if (totalPages > 1) {
-		pages.push(totalPages);
 	}
 
 	return pages;

@@ -123,7 +123,6 @@ export default function ChallengesPage() {
             <PaginationControls
               currentPage={currentPage}
               totalPages={pagination.totalPages}
-              pageNumbers={pagination.pageNumbers}
               hasPrevious={pagination.hasPrevious}
               hasNext={pagination.hasNext}
               onPrevious={pagination.handlers.goToPrevious}

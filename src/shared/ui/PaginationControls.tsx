@@ -6,12 +6,16 @@
  *
  * This component provides a complete pagination interface with:
  * - Previous/Next buttons
- * - Page number buttons
- * - Ellipses for large page counts
+ * - Page number buttons (responsive: 10 on desktop, 5 on mobile)
  * - Active page highlighting
+ * - Mobile-optimized design
  */
 
+"use client";
+
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useState } from "react";
+import { generatePageNumbers } from "../lib/pagination/paginationUtils";
 import ChalkButton from "./ChalkButton";
 
 interface PaginationControlsProps {
@@ -24,11 +28,6 @@ interface PaginationControlsProps {
 	 * Total number of pages
 	 */
 	totalPages: number;
-
-	/**
-	 * Array of page numbers to display (can include "..." for ellipses)
-	 */
-	pageNumbers: (number | string)[];
 
 	/**
 	 * Whether there is a previous page
@@ -63,6 +62,7 @@ interface PaginationControlsProps {
 
 /**
  * Pagination controls component with Previous/Next and page number buttons
+ * Automatically adapts to screen size: 10 pages on desktop, 5 on mobile
  *
  * @example
  * ```tsx
@@ -71,7 +71,6 @@ interface PaginationControlsProps {
  * <PaginationControls
  *   currentPage={pagination.currentPage}
  *   totalPages={pagination.totalPages}
- *   pageNumbers={pagination.pageNumbers}
  *   hasPrevious={pagination.hasPrevious}
  *   hasNext={pagination.hasNext}
  *   onPrevious={pagination.handlers.goToPrevious}
@@ -83,7 +82,6 @@ interface PaginationControlsProps {
 export function PaginationControls({
 	currentPage,
 	totalPages,
-	pageNumbers,
 	hasPrevious,
 	hasNext,
 	onPrevious,
@@ -91,39 +89,47 @@ export function PaginationControls({
 	onPageClick,
 	className = "",
 }: PaginationControlsProps) {
+	// Detect screen size for responsive pagination
+	const [isMobile, setIsMobile] = useState(false);
+
+	useEffect(() => {
+		const checkMobile = () => {
+			setIsMobile(window.innerWidth < 768); // Tailwind's md breakpoint
+		};
+
+		// Check on mount
+		checkMobile();
+
+		// Listen for resize
+		window.addEventListener("resize", checkMobile);
+		return () => window.removeEventListener("resize", checkMobile);
+	}, []);
+
+	// Generate page numbers based on screen size
+	const pagesPerBlock = isMobile ? 5 : 10;
+	const pageNumbers = generatePageNumbers(currentPage, totalPages, pagesPerBlock);
+
 	// Don't render if there's only one page
 	if (totalPages <= 1) {
 		return null;
 	}
 
 	return (
-		<div className={`flex items-center justify-center gap-2 ${className}`}>
+		<div className={`flex items-center justify-center gap-1 sm:gap-2 ${className}`}>
 			{/* Previous button */}
 			<ChalkButton
 				variant="white"
 				onClick={onPrevious}
 				disabled={!hasPrevious}
-				className="flex items-center gap-1 px-3 py-2 disabled:cursor-not-allowed disabled:opacity-50"
+				className="flex items-center gap-1 px-2 py-2 sm:px-3 disabled:cursor-not-allowed disabled:opacity-50"
 			>
 				<ChevronLeft size={20} />
 				<span className="hidden sm:inline">이전</span>
 			</ChalkButton>
 
 			{/* Page numbers */}
-			<div className="flex gap-2">
-				{pageNumbers.map((page) => {
-					if (page === "...") {
-						return (
-							<span
-								key={`ellipsis-${Math.random()}`}
-								className="flex h-10 w-10 items-center justify-center text-chalk-white"
-							>
-								...
-							</span>
-						);
-					}
-
-					const pageNum = page as number;
+			<div className="flex gap-1 sm:gap-2">
+				{pageNumbers.map((pageNum: number) => {
 					const isActive = pageNum === currentPage;
 
 					return (
@@ -131,7 +137,7 @@ export function PaginationControls({
 							key={pageNum}
 							type="button"
 							onClick={() => onPageClick(pageNum)}
-							className={`flex h-10 w-10 items-center justify-center rounded transition-all ${
+							className={`flex h-8 w-8 items-center justify-center rounded text-sm transition-all sm:h-10 sm:w-10 sm:text-base ${
 								isActive
 									? "scale-110 bg-chalk-yellow font-bold text-chalkboard-bg"
 									: "bg-chalk-white/20 text-chalk-white hover:scale-105 hover:bg-chalk-white/30"
@@ -150,7 +156,7 @@ export function PaginationControls({
 				variant="white"
 				onClick={onNext}
 				disabled={!hasNext}
-				className="flex items-center gap-1 px-3 py-2 disabled:cursor-not-allowed disabled:opacity-50"
+				className="flex items-center gap-1 px-2 py-2 sm:px-3 disabled:cursor-not-allowed disabled:opacity-50"
 			>
 				<span className="hidden sm:inline">다음</span>
 				<ChevronRight size={20} />
