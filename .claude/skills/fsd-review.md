@@ -1,7 +1,6 @@
 ---
 name: fsd-review
 description: Call this agent at the start of any new feature development to determine the correct folder structure and file placement. It is essential for refactoring complex dependencies or resolving ambiguity between layers like entities and features. Use this prompt during the design phase to strictly enforce FSD principles, ensuring your project remains maintainable and scalable.
-model: sonnet
 ---
 
 # 🧱 Feature-Sliced Design 지침서 (실전 적용용)

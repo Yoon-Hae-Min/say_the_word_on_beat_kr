@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Gamja_Flower, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import GoogleAnalytics from "@/shared/components/GoogleAnalytics";
+import UserInitializer from "@/shared/components/UserInitializer";
 import LocationJsProvider from "@/shared/provider/LocationJsProvider";
 
 const geistSans = Geist({
@@ -66,6 +67,7 @@ export default function RootLayout({
 					name="google-site-verification"
 					content="oa97uVFj-uHbLA1T9v7vXrJP2N0fMyvjyorWnjtjTmQ"
 				/>
+				<UserInitializer />
 				<GoogleAnalytics />
 			</head>
 			<body
