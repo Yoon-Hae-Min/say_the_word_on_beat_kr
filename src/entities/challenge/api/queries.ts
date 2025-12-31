@@ -1,11 +1,11 @@
 "use client";
 
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
+import type { ChallengeSortBy } from "../model/types";
 import {
 	getAllChallenges,
 	getPopularChallenges,
 	getPublicChallengesCount,
-	type ChallengeSortBy,
 } from "./repository";
 
 /**
