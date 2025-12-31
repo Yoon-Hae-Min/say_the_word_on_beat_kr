@@ -1,10 +1,10 @@
 /**
  * useChallengeList Hook
  *
- * Custom hook for managing challenge list with pagination and sorting.
- * Extracted from ChallengesPage component.
+ * Custom hook for fetching challenge list data.
+ * Refactored to focus solely on data fetching - pagination logic moved to page level.
  *
- * Coordinates data fetching, pagination, and sorting state.
+ * Follows Single Responsibility Principle: Only manages data fetching and sorting.
  */
 
 import { useEffect, useState } from "react";
@@ -13,7 +13,6 @@ import {
 	getAllChallenges,
 	getPublicChallengesCount,
 } from "@/entities/challenge";
-import { usePagination } from "@/shared/hooks";
 
 interface Challenge {
 	id: string;
@@ -23,20 +22,21 @@ interface Challenge {
 	createdAt: string;
 }
 
-const CHALLENGES_PER_PAGE = 12;
-
 export interface UseChallengeListOptions {
 	/**
-	 * Number of challenges to display per page
-	 * @default 12
+	 * Number of items per page
 	 */
-	itemsPerPage?: number;
+	itemsPerPage: number;
 
 	/**
-	 * Initial sort order
-	 * @default "views"
+	 * Current page offset
 	 */
-	initialSort?: ChallengeSortBy;
+	offset: number;
+
+	/**
+	 * Sort order
+	 */
+	sortBy: ChallengeSortBy;
 }
 
 export interface UseChallengeListReturn {
@@ -56,59 +56,41 @@ export interface UseChallengeListReturn {
 	totalCount: number;
 
 	/**
-	 * Current sort order
+	 * Reload challenges data
 	 */
-	sortBy: ChallengeSortBy;
-
-	/**
-	 * Change sort order
-	 */
-	setSortBy: (sort: ChallengeSortBy) => void;
-
-	/**
-	 * Pagination state and handlers
-	 */
-	pagination: ReturnType<typeof usePagination>;
+	reload: () => Promise<void>;
 }
 
 /**
- * Custom hook for challenge list management
+ * Custom hook for challenge data fetching
+ *
+ * This hook focuses solely on data fetching. Pagination state is managed by the parent component.
  *
  * @example
  * ```tsx
- * const challengeList = useChallengeList({ itemsPerPage: 12 });
- *
- * if (challengeList.isLoading) {
- *   return <LoadingState />;
- * }
+ * const pagination = usePagination({ totalCount, itemsPerPage: 12 });
+ * const challengeList = useChallengeList({
+ *   itemsPerPage: 12,
+ *   offset: pagination.offset,
+ *   sortBy: 'views',
+ * });
  *
  * return (
  *   <>
  *     <ChallengeGrid challenges={challengeList.challenges} />
- *     <PaginationControls {...challengeList.pagination} />
+ *     <PaginationControls {...pagination} />
  *   </>
  * );
  * ```
  */
 export const useChallengeList = ({
-	itemsPerPage = CHALLENGES_PER_PAGE,
-	initialSort = "views",
-}: UseChallengeListOptions = {}): UseChallengeListReturn => {
+	itemsPerPage,
+	offset,
+	sortBy,
+}: UseChallengeListOptions): UseChallengeListReturn => {
 	const [challenges, setChallenges] = useState<Challenge[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [totalCount, setTotalCount] = useState(0);
-	const [sortBy, setSortBy] = useState<ChallengeSortBy>(initialSort);
-
-	// Initialize pagination
-	const pagination = usePagination({
-		totalCount,
-		itemsPerPage,
-		initialPage: 1,
-		onPageChange: () => {
-			// Scroll to top when page changes
-			window.scrollTo({ top: 0, behavior: "smooth" });
-		},
-	});
 
 	// Load total count on mount
 	useEffect(() => {
@@ -124,12 +106,12 @@ export const useChallengeList = ({
 		loadInitialData();
 	}, []);
 
-	// Load challenges when page or sort changes
+	// Load challenges when dependencies change
 	useEffect(() => {
 		const loadChallenges = async () => {
 			setIsLoading(true);
 			try {
-				const data = await getAllChallenges(itemsPerPage, pagination.offset, sortBy);
+				const data = await getAllChallenges(itemsPerPage, offset, sortBy);
 				setChallenges(data);
 			} catch (error) {
 				console.error("Failed to load challenges:", error);
@@ -140,21 +122,25 @@ export const useChallengeList = ({
 		};
 
 		loadChallenges();
-	}, [pagination.currentPage, sortBy, itemsPerPage, pagination.offset]);
+	}, [itemsPerPage, offset, sortBy]);
 
-	// Handle sort change - reset to first page
-	const handleSortChange = (newSort: ChallengeSortBy) => {
-		setSortBy(newSort);
-		pagination.handlers.goToFirst();
-		window.scrollTo({ top: 0, behavior: "smooth" });
+	// Reload function for manual refresh
+	const reload = async () => {
+		setIsLoading(true);
+		try {
+			const data = await getAllChallenges(itemsPerPage, offset, sortBy);
+			setChallenges(data);
+		} catch (error) {
+			console.error("Failed to reload challenges:", error);
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	return {
 		challenges,
 		isLoading,
 		totalCount,
-		sortBy,
-		setSortBy: handleSortChange,
-		pagination,
+		reload,
 	};
 };

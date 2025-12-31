@@ -8,3 +8,5 @@ export type { UseClipboardPasteOptions } from "./useClipboardPaste";
 export { useClipboardPaste } from "./useClipboardPaste";
 export type { UsePaginationOptions, UsePaginationReturn } from "./usePagination";
 export { usePagination } from "./usePagination";
+export type { UseSortOptions, UseSortReturn } from "./useSort";
+export { useSort } from "./useSort";
