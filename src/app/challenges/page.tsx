@@ -121,7 +121,7 @@ export default function ChallengesPage() {
 
           {challengeList.challenges.length > 0 && (
             <PaginationControls
-              currentPage={pagination.currentPage}
+              currentPage={currentPage}
               totalPages={pagination.totalPages}
               pageNumbers={pagination.pageNumbers}
               hasPrevious={pagination.hasPrevious}
