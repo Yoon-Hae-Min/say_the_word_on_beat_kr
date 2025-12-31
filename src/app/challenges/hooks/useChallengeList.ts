@@ -1,26 +1,17 @@
 /**
  * useChallengeList Hook
  *
- * Custom hook for fetching challenge list data.
- * Refactored to focus solely on data fetching - pagination logic moved to page level.
+ * Custom hook for fetching challenge list data using Tanstack Query.
+ * Refactored to use query hooks for automatic caching and deduplication.
  *
  * Follows Single Responsibility Principle: Only manages data fetching and sorting.
  */
 
-import { useEffect, useState } from "react";
 import {
-	type ChallengeSortBy,
-	getAllChallenges,
-	getPublicChallengesCount,
-} from "@/entities/challenge";
-
-interface Challenge {
-	id: string;
-	title: string;
-	viewCount: number;
-	thumbnail: string;
-	createdAt: string;
-}
+	useAllChallenges,
+	usePublicChallengesCount,
+} from "@/entities/challenge/api/queries";
+import type { ChallengeSortBy } from "@/entities/challenge";
 
 export interface UseChallengeListOptions {
 	/**
@@ -43,7 +34,13 @@ export interface UseChallengeListReturn {
 	/**
 	 * List of challenges for current page
 	 */
-	challenges: Challenge[];
+	challenges: Array<{
+		id: string;
+		title: string;
+		viewCount: number;
+		thumbnail: string;
+		createdAt: string;
+	}>;
 
 	/**
 	 * Whether challenges are being loaded
@@ -54,15 +51,10 @@ export interface UseChallengeListReturn {
 	 * Total number of challenges
 	 */
 	totalCount: number;
-
-	/**
-	 * Reload challenges data
-	 */
-	reload: () => Promise<void>;
 }
 
 /**
- * Custom hook for challenge data fetching
+ * Custom hook for challenge data fetching with Tanstack Query
  *
  * This hook focuses solely on data fetching. Pagination state is managed by the parent component.
  *
@@ -88,59 +80,17 @@ export const useChallengeList = ({
 	offset,
 	sortBy,
 }: UseChallengeListOptions): UseChallengeListReturn => {
-	const [challenges, setChallenges] = useState<Challenge[]>([]);
-	const [isLoading, setIsLoading] = useState(true);
-	const [totalCount, setTotalCount] = useState(0);
+	const { data: challenges = [], isLoading: isChallengesLoading } = useAllChallenges(
+		itemsPerPage,
+		offset,
+		sortBy
+	);
 
-	// Load total count on mount
-	useEffect(() => {
-		const loadInitialData = async () => {
-			try {
-				const count = await getPublicChallengesCount();
-				setTotalCount(count);
-			} catch (error) {
-				console.error("Failed to load challenge count:", error);
-			}
-		};
-
-		loadInitialData();
-	}, []);
-
-	// Load challenges when dependencies change
-	useEffect(() => {
-		const loadChallenges = async () => {
-			setIsLoading(true);
-			try {
-				const data = await getAllChallenges(itemsPerPage, offset, sortBy);
-				setChallenges(data);
-			} catch (error) {
-				console.error("Failed to load challenges:", error);
-				setChallenges([]);
-			} finally {
-				setIsLoading(false);
-			}
-		};
-
-		loadChallenges();
-	}, [itemsPerPage, offset, sortBy]);
-
-	// Reload function for manual refresh
-	const reload = async () => {
-		setIsLoading(true);
-		try {
-			const data = await getAllChallenges(itemsPerPage, offset, sortBy);
-			setChallenges(data);
-		} catch (error) {
-			console.error("Failed to reload challenges:", error);
-		} finally {
-			setIsLoading(false);
-		}
-	};
+	const { data: totalCount = 0, isLoading: isCountLoading } = usePublicChallengesCount();
 
 	return {
 		challenges,
-		isLoading,
+		isLoading: isChallengesLoading || isCountLoading,
 		totalCount,
-		reload,
 	};
 };

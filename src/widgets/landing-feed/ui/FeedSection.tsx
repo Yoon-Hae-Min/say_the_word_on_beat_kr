@@ -1,37 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { getPopularChallenges } from "@/entities/challenge";
+import { usePopularChallenges } from "@/entities/challenge/api/queries";
 import { ChalkCard } from "@/shared/ui";
-
-interface PopularChallenge {
-	id: string;
-	title: string;
-	viewCount: number;
-	thumbnail: string;
-	createdAt: string;
-}
 
 export default function FeedSection() {
 	const router = useRouter();
-	const [challenges, setChallenges] = useState<PopularChallenge[]>([]);
-	const [isLoading, setIsLoading] = useState(true);
-
-	useEffect(() => {
-		const loadChallenges = async () => {
-			try {
-				const data = await getPopularChallenges(9);
-				setChallenges(data);
-			} catch (error) {
-				console.error("Failed to load popular challenges:", error);
-			} finally {
-				setIsLoading(false);
-			}
-		};
-
-		loadChallenges();
-	}, []);
+	const { data: challenges = [], isLoading } = usePopularChallenges(9);
 
 	return (
 		<section className="px-4 py-16">

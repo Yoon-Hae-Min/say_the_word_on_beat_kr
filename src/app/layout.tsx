@@ -5,6 +5,7 @@ import "./globals.css";
 import GoogleAnalytics from "@/shared/components/GoogleAnalytics";
 import UserInitializer from "@/shared/components/UserInitializer";
 import LocationJsProvider from "@/shared/provider/LocationJsProvider";
+import QueryProvider from "@/shared/provider/QueryProvider";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -73,8 +74,10 @@ export default function RootLayout({
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} ${gamjaFlower.variable} antialiased`}
 			>
-				<LocationJsProvider>{children}</LocationJsProvider>
-				<SpeedInsights />
+				<QueryProvider>
+					<LocationJsProvider>{children}</LocationJsProvider>
+					<SpeedInsights />
+				</QueryProvider>
 			</body>
 		</html>
 	);
