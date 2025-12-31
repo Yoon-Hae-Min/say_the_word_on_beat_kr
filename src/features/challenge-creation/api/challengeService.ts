@@ -3,28 +3,33 @@ import { createChallenge as createChallengeInDB } from "@/entities/challenge";
 import { sendGAEvent } from "@/shared/lib/analytics/gtag";
 import { compressImage } from "@/shared/lib/image";
 import { getUserId } from "@/shared/lib/user/fingerprint";
+import { supabase } from "@/shared/api/supabase/client";
 
 interface PresignedUrlResponse {
 	uploadUrl: string;
-	publicUrl: string;
-	path: string;
 }
 
 /**
- * Request a presigned URL from the server
+ * Request a presigned URL from Supabase Edge Function
  */
-async function getPresignedUrl(fileName: string, fileType: string): Promise<PresignedUrlResponse> {
-	const response = await fetch("/api/upload/presigned-url", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify({ fileName, fileType }),
-	});
+async function getPresignedUrl(fileName: string, contentType: string): Promise<PresignedUrlResponse> {
+	const { data: sessionData } = await supabase.auth.getSession();
+
+	const response = await fetch(
+		"https://dnldvqkwlbvhspvpduqc.supabase.co/functions/v1/r2-presigned-url",
+		{
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				"Authorization": `Bearer ${sessionData?.session?.access_token || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+			},
+			body: JSON.stringify({ fileName, contentType }),
+		}
+	);
 
 	if (!response.ok) {
-		const error = await response.json();
-		throw new Error(error.error || "Failed to get presigned URL");
+		const errorText = await response.text();
+		throw new Error(errorText || "Failed to get presigned URL");
 	}
 
 	return response.json();
@@ -48,7 +53,7 @@ async function uploadToPresignedUrl(presignedUrl: string, file: File): Promise<v
 }
 
 /**
- * Compress and upload an image to Supabase storage
+ * Compress and upload an image to R2 storage
  * @param file - Original image file
  * @returns Path to the uploaded image in storage
  */
@@ -57,14 +62,14 @@ export async function compressAndUploadImage(file: File): Promise<string> {
 		// Step 1: Compress the image
 		const compressedFile = await compressImage(file);
 
-		// Step 2: Get presigned URL
-		const { uploadUrl, path } = await getPresignedUrl(compressedFile.name, compressedFile.type);
+		// Step 2: Get presigned URL from edge function
+		const { uploadUrl } = await getPresignedUrl(compressedFile.name, compressedFile.type);
 
-		// Step 3: Upload to storage using presigned URL
+		// Step 3: Upload to R2 using presigned URL
 		await uploadToPresignedUrl(uploadUrl, compressedFile);
 
-		// Step 4: Return the storage path
-		return path;
+		// Step 4: Return the storage path (filename only, not full URL)
+		return compressedFile.name;
 	} catch (error) {
 		console.error("Error uploading image:", error);
 		throw new Error(
