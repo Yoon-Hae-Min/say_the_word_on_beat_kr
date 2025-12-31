@@ -11,7 +11,10 @@ import { markChallengeAsViewed } from "@/shared/lib/user/viewTracking";
  * @param id - Challenge UUID
  * @param userId - Optional user ID to check ownership
  */
-export async function getChallengeById(id: string, userId?: string): Promise<ClientSafeChallenge | null> {
+export async function getChallengeById(
+	id: string,
+	userId?: string
+): Promise<ClientSafeChallenge | null> {
 	return getChallengeFromDB(id, userId);
 }
 

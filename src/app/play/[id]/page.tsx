@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import type { ClientSafeChallenge } from "@/entities/challenge";
 import { getChallengeById, incrementViewCount } from "@/features/game-play/api/challengeService";
 import GameStage from "@/features/game-play/ui/GameStage";
-import { WoodFrame } from "@/shared/ui";
 import { getUserId } from "@/shared/lib/user/fingerprint";
+import { WoodFrame } from "@/shared/ui";
 
 export default function PlayPage() {
 	const params = useParams();

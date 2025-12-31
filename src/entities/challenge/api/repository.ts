@@ -5,7 +5,9 @@ import type { ChallengeInsert, ClientSafeChallenge, GameConfigStruct } from "../
  * Helper function to convert storage image paths to public URLs
  * Handles both thumbnail_url and fallback to first slot image
  */
-function convertImagePathToUrl(challenge: Pick<ClientSafeChallenge, "thumbnail_url" | "game_config">): string {
+function convertImagePathToUrl(
+	challenge: Pick<ClientSafeChallenge, "thumbnail_url" | "game_config">
+): string {
 	// Get image path from thumbnail_url or first slot
 	let imagePath = challenge.thumbnail_url;
 
@@ -66,7 +68,10 @@ export async function createChallenge(input: {
  * @param id - Challenge ID
  * @param userId - Optional user ID to check ownership (sets isMine field)
  */
-export async function getChallengeById(id: string, userId?: string): Promise<ClientSafeChallenge | null> {
+export async function getChallengeById(
+	id: string,
+	userId?: string
+): Promise<ClientSafeChallenge | null> {
 	try {
 		// Use RPC function to get challenge with ownership check
 		// This prevents creator_id from being exposed to the client
@@ -155,7 +160,9 @@ export async function getPopularChallenges(limit: number = 9): Promise<
 	try {
 		const { data, error } = await supabase
 			.from("challenges")
-			.select("id, title, is_public, show_names, thumbnail_url, game_config, view_count, created_at, difficulty_easy, difficulty_hard, difficulty_normal")
+			.select(
+				"id, title, is_public, show_names, thumbnail_url, game_config, view_count, created_at, difficulty_easy, difficulty_hard, difficulty_normal"
+			)
 			.eq("is_public", true)
 			.order("view_count", { ascending: false })
 			.limit(limit);
@@ -230,7 +237,9 @@ export async function getAllChallenges(
 
 		const { data, error } = await supabase
 			.from("challenges")
-			.select("id, title, is_public, show_names, thumbnail_url, game_config, view_count, created_at, difficulty_easy, difficulty_hard, difficulty_normal")
+			.select(
+				"id, title, is_public, show_names, thumbnail_url, game_config, view_count, created_at, difficulty_easy, difficulty_hard, difficulty_normal"
+			)
 			.eq("is_public", true)
 			.order(orderColumn, { ascending: false })
 			.range(offset, offset + limit - 1);

@@ -10,9 +10,7 @@ interface GameNavigationBarProps {
 	challengeData: ClientSafeChallenge;
 }
 
-export default function GameNavigationBar({
-	challengeData,
-}: GameNavigationBarProps) {
+export default function GameNavigationBar({ challengeData }: GameNavigationBarProps) {
 	const router = useRouter();
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 

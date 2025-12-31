@@ -1,188 +1,52 @@
+/**
+ * ChallengeCreationForm Component (Refactored)
+ *
+ * Main form for creating challenges.
+ * Refactored to use custom hooks and composition of smaller components.
+ *
+ * This is the refactored version that will replace the original ChallengeCreationForm.tsx
+ */
+
 "use client";
 
-import { useState } from "react";
-import type { ChallengeData, Slot } from "@/entities/challenge";
-import type { Resource } from "@/entities/resource";
-import { ChalkDust } from "@/shared/ui";
-import { createChallenge } from "../api/challengeService";
+import { ChalkDust, ErrorDisplay } from "@/shared/ui";
+import { useChallengeForm } from "../hooks/useChallengeForm";
+import { useChallengeSubmission } from "../hooks/useChallengeSubmission";
 import FooterSection from "./FooterSection";
 import HeaderSection from "./HeaderSection";
+import NameToggleControl from "./NameToggleControl";
 import ResourcePanel from "./ResourcePanel";
 import RoundControl from "./RoundControl";
 import StageGrid from "./StageGrid";
 import SuccessScreen from "./SuccessScreen";
 
 const TOTAL_ROUNDS = 5;
-const SLOTS_PER_ROUND = 8;
 
 interface ChallengeCreationFormProps {
 	isPublic: boolean;
 }
 
 export default function ChallengeCreationForm({ isPublic }: ChallengeCreationFormProps) {
-	const [challengeData, setChallengeData] = useState<ChallengeData>({
-		title: "",
-		rounds: Array(TOTAL_ROUNDS)
-			.fill(null)
-			.map((_, i) => ({
-				id: i + 1,
-				slots: Array(SLOTS_PER_ROUND)
-					.fill(null)
-					.map(
-						(): Slot => ({
-							resourceId: null,
-						})
-					),
-			})),
-		resources: [],
-		isPublic,
-		showNames: true,
-	});
+	// Use custom hooks for state management
+	const form = useChallengeForm(isPublic);
+	const submission = useChallengeSubmission();
 
-	const [currentRound, setCurrentRound] = useState(1);
-	const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
-	const [viewState, setViewState] = useState<"form" | "success">("form");
-	const [generatedChallengeId, setGeneratedChallengeId] = useState("");
-	const [isUploading, setIsUploading] = useState(false);
-	const [uploadError, setUploadError] = useState<string | null>(null);
-
-	// Handlers
-	const handleTitleChange = (title: string) => {
-		setChallengeData((prev) => ({ ...prev, title }));
-	};
-
-	const handleResourceUpload = (resource: Resource) => {
-		setChallengeData((prev) => ({
-			...prev,
-			resources: [...prev.resources, resource],
-		}));
-	};
-
-	const handleResourceSelect = (resource: Resource) => {
-		setSelectedResource(resource);
-	};
-
-	const handleResourceNameChange = (id: string, name: string) => {
-		setChallengeData((prev) => ({
-			...prev,
-			resources: prev.resources.map((r) => (r.id === id ? { ...r, name } : r)),
-		}));
-	};
-
-	const handleResourceDelete = (id: string) => {
-		setChallengeData((prev) => {
-			// Remove resource from resources array
-			const newResources = prev.resources.filter((r) => r.id !== id);
-
-			// Clear slots that used this resource
-			const newRounds = prev.rounds.map((round) => ({
-				...round,
-				slots: round.slots.map((slot) => (slot.resourceId === id ? { resourceId: null } : slot)),
-			}));
-
-			return {
-				...prev,
-				resources: newResources,
-				rounds: newRounds,
-			};
-		});
-
-		// Deselect if this resource was selected
-		if (selectedResource?.id === id) {
-			setSelectedResource(null);
-		}
-	};
-
-	const handleShowNamesToggle = (showNames: boolean) => {
-		setChallengeData((prev) => ({ ...prev, showNames }));
-	};
-
-	const handleSlotClick = (slotIndex: number) => {
-		if (!selectedResource) {
-			alert("먼저 좌측에서 이미지를 선택하세요");
-			return;
-		}
-
-		setChallengeData((prev) => {
-			const newRounds = [...prev.rounds];
-			newRounds[currentRound - 1].slots[slotIndex] = {
-				resourceId: selectedResource.id,
-			};
-			return { ...prev, rounds: newRounds };
-		});
-
-		// Keep the resource selected for continuous placement
-		// User must click another resource to deselect
-	};
-
-	const handleSlotClear = (slotIndex: number) => {
-		setChallengeData((prev) => {
-			const newRounds = [...prev.rounds];
-			newRounds[currentRound - 1].slots[slotIndex] = {
-				resourceId: null,
-			};
-			return { ...prev, rounds: newRounds };
-		});
-	};
-
-	const handlePreviousRound = () => {
-		if (currentRound > 1) setCurrentRound(currentRound - 1);
-	};
-
-	const handleNextRound = () => {
-		if (currentRound < TOTAL_ROUNDS) setCurrentRound(currentRound + 1);
-	};
-
-	const isValid = () => {
-		if (!challengeData.title.trim()) return false;
-
-		const allSlotsFilled = challengeData.rounds.every((round) =>
-			round.slots.every((slot) => slot.resourceId !== null)
-		);
-		if (!allSlotsFilled) return false;
-
-		// Only require names if showNames is enabled
-		if (challengeData.showNames) {
-			const allResourcesNamed = challengeData.resources.every(
-				(resource) => resource.name.trim() !== ""
-			);
-			if (!allResourcesNamed) return false;
-		}
-
-		return true;
-	};
-
+	// Handle challenge generation
 	const handleGenerate = async () => {
-		if (!isValid()) {
-			alert("모든 슬롯을 채우고 이미지 이름을 입력해주세요");
-			return;
-		}
+		const success = await submission.handleGenerate(form.challengeData);
 
-		setIsUploading(true);
-		setUploadError(null);
-
-		try {
-			// Upload images and create challenge in Supabase
-			const challengeId = await createChallenge(challengeData);
-
-			setGeneratedChallengeId(challengeId);
-			setViewState("success");
-		} catch (error) {
-			console.error("Failed to create challenge:", error);
-			const errorMessage = error instanceof Error ? error.message : "챌린지 생성에 실패했습니다";
-			setUploadError(errorMessage);
-			alert(`오류: ${errorMessage}`);
-		} finally {
-			setIsUploading(false);
+		if (!success && submission.uploadError) {
+			// Show error alert
+			alert(`오류: ${submission.uploadError}`);
 		}
 	};
 
 	// Show success screen after challenge creation
-	if (viewState === "success") {
+	if (submission.isSuccess) {
 		return (
 			<SuccessScreen
-				challengeId={generatedChallengeId}
-				thumbnail={challengeData.resources[0]?.imageUrl || "/placeholder.svg"}
+				challengeId={submission.generatedChallengeId}
+				thumbnail={form.challengeData.resources[0]?.imageUrl || "/placeholder.svg"}
 			/>
 		);
 	}
@@ -196,7 +60,10 @@ export default function ChallengeCreationForm({ isPublic }: ChallengeCreationFor
 			<div className="mx-auto max-w-[1600px] space-y-6 lg:space-y-0">
 				{/* Title Input - Always on top */}
 				<div className="border-2 border-dashed border-chalk-blue/50 bg-chalkboard-bg/50 rounded-md p-6 mb-6">
-					<HeaderSection title={challengeData.title} onTitleChange={handleTitleChange} />
+					<HeaderSection
+						title={form.challengeData.title}
+						onTitleChange={form.handlers.onTitleChange}
+					/>
 				</div>
 
 				{/* Mobile: Resource Panel below title, Desktop: Side by side layout */}
@@ -210,44 +77,20 @@ export default function ChallengeCreationForm({ isPublic }: ChallengeCreationFor
 							</p>
 
 							{/* Name Display Toggle */}
-							<div className="mb-4 p-4 border-2 border-chalk-white/30 rounded-md bg-chalkboard-bg/30">
-								<label className="flex items-center justify-between cursor-pointer">
-									<div>
-										<p className="chalk-text text-chalk-white font-bold text-sm">이름 표시</p>
-										<p className="text-chalk-white/60 text-xs mt-1">
-											게임 플레이 시 이미지 이름 표시 여부
-										</p>
-									</div>
-									<div className="relative">
-										<input
-											type="checkbox"
-											checked={challengeData.showNames}
-											onChange={(e) => handleShowNamesToggle(e.target.checked)}
-											className="sr-only"
-										/>
-										<div
-											className={`w-11 h-6 rounded-full transition-colors flex items-center p-0.5 ${
-												challengeData.showNames ? "bg-chalk-yellow" : "bg-chalk-white/30"
-											}`}
-										>
-											<div
-												className={`w-5 h-5 bg-chalkboard-bg rounded-full transition-transform transform ${
-													challengeData.showNames ? "translate-x-5" : "translate-x-0"
-												}`}
-											/>
-										</div>
-									</div>
-								</label>
-							</div>
+							<NameToggleControl
+								showNames={form.challengeData.showNames}
+								onToggle={form.handlers.onShowNamesToggle}
+								className="mb-4"
+							/>
 
 							<ResourcePanel
-								resources={challengeData.resources}
-								selectedResource={selectedResource}
-								onUpload={handleResourceUpload}
-								onSelect={handleResourceSelect}
-								onNameChange={handleResourceNameChange}
-								onDelete={handleResourceDelete}
-								showNames={challengeData.showNames}
+								resources={form.challengeData.resources}
+								selectedResource={form.selectedResource}
+								onUpload={form.handlers.onResourceUpload}
+								onSelect={form.handlers.onResourceSelect}
+								onNameChange={form.handlers.onResourceNameChange}
+								onDelete={form.handlers.onResourceDelete}
+								showNames={form.challengeData.showNames}
 							/>
 						</div>
 					</aside>
@@ -258,40 +101,46 @@ export default function ChallengeCreationForm({ isPublic }: ChallengeCreationFor
 						<div className="border-2 border-dashed border-chalk-blue/50 bg-chalkboard-bg/50 rounded-md p-6 lg:p-8">
 							<div className="mb-6">
 								<h2 className="chalk-text text-chalk-white text-xl lg:text-2xl font-bold mb-2 text-center">
-									라운드 {currentRound} / {TOTAL_ROUNDS}
+									라운드 {form.currentRound} / {TOTAL_ROUNDS}
 								</h2>
 								<p className="text-chalk-white/60 text-sm text-center">
-									이미지를 선택한 후 슬롯을 클릭하여 배치하세요
+									{form.selectedResource
+										? "슬롯을 클릭하여 이미지를 배치하세요"
+										: "먼저 좌측에서 이미지를 선택하세요"}
 								</p>
 							</div>
 
 							<StageGrid
-								slots={challengeData.rounds[currentRound - 1].slots}
-								resources={challengeData.resources}
-								onSlotClick={handleSlotClick}
-								onSlotClear={handleSlotClear}
-								showNames={challengeData.showNames}
+								slots={form.challengeData.rounds[form.currentRound - 1].slots}
+								resources={form.challengeData.resources}
+								onSlotClick={(slotIndex) => {
+									if (!form.selectedResource) {
+										alert("먼저 좌측에서 이미지를 선택하세요");
+										return;
+									}
+									form.handlers.onSlotClick(slotIndex);
+								}}
+								onSlotClear={form.handlers.onSlotClear}
+								showNames={form.challengeData.showNames}
 							/>
 
 							<div className="mt-6">
 								<RoundControl
-									currentRound={currentRound}
+									currentRound={form.currentRound}
 									totalRounds={TOTAL_ROUNDS}
-									onPrevious={handlePreviousRound}
-									onNext={handleNextRound}
+									onPrevious={form.roundHandlers.goToPreviousRound}
+									onNext={form.roundHandlers.goToNextRound}
 								/>
 							</div>
 						</div>
 
 						{/* Generate Button */}
 						<div className="border-2 border-dashed border-chalk-blue/50 bg-chalkboard-bg/50 rounded-md p-6">
-							{uploadError && (
-								<div className="mb-4 p-3 bg-red-500/20 border border-red-500 rounded-md">
-									<p className="text-chalk-white text-sm">{uploadError}</p>
-								</div>
+							{submission.uploadError && (
+								<ErrorDisplay message={submission.uploadError} className="mb-4" />
 							)}
-							<FooterSection onGenerate={handleGenerate} disabled={!isValid() || isUploading} />
-							{isUploading && (
+							<FooterSection onGenerate={handleGenerate} disabled={submission.isUploading} />
+							{submission.isUploading && (
 								<div className="mt-4 text-center">
 									<p className="chalk-text text-chalk-yellow text-sm animate-pulse">
 										이미지 업로드 중... 잠시만 기다려주세요

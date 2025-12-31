@@ -50,9 +50,7 @@ export default function DeleteConfirmModal({
 
 			router.push("/challenges");
 		} catch (err) {
-			setError(
-				err instanceof Error ? err.message : "삭제 중 오류가 발생했습니다",
-			);
+			setError(err instanceof Error ? err.message : "삭제 중 오류가 발생했습니다");
 			setIsDeleting(false);
 		}
 	};
@@ -78,16 +76,12 @@ export default function DeleteConfirmModal({
 					<X size={24} />
 				</button>
 
-				<h2 className="chalk-text mb-4 text-2xl font-bold text-chalk-yellow">
-					챌린지 삭제
-				</h2>
+				<h2 className="chalk-text mb-4 text-2xl font-bold text-chalk-yellow">챌린지 삭제</h2>
 
 				<div className="mb-6 space-y-3">
 					<p className="text-lg text-chalk-white">정말 삭제하시겠습니까?</p>
 					<p className="text-sm text-chalk-white/70">"{challengeTitle}"</p>
-					<p className="text-sm text-chalk-white/70">
-						삭제된 챌린지는 복구할 수 없습니다.
-					</p>
+					<p className="text-sm text-chalk-white/70">삭제된 챌린지는 복구할 수 없습니다.</p>
 				</div>
 
 				{error && (
@@ -97,12 +91,7 @@ export default function DeleteConfirmModal({
 				)}
 
 				<div className="flex gap-3">
-					<ChalkButton
-						variant="white"
-						onClick={onClose}
-						disabled={isDeleting}
-						className="flex-1"
-					>
+					<ChalkButton variant="white" onClick={onClose} disabled={isDeleting} className="flex-1">
 						취소
 					</ChalkButton>
 					<ChalkButton
