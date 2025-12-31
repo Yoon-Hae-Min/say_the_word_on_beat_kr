@@ -17,10 +17,14 @@ function convertImagePathToUrl(
 		imagePath = gameConfig?.[0]?.slots?.[0]?.imagePath ?? null;
 	}
 
-	// Convert image path to full public URL
+	// Convert image path to full public URL using R2
 	if (imagePath) {
-		const { data: publicData } = supabase.storage.from("challenge-images").getPublicUrl(imagePath);
-		return publicData.publicUrl;
+		const r2PublicUrl = process.env.NEXT_PUBLIC_R2_PUBLIC_URL;
+		if (!r2PublicUrl) {
+			console.error("NEXT_PUBLIC_R2_PUBLIC_URL is not defined");
+			return "/placeholder.svg";
+		}
+		return `${r2PublicUrl}/${imagePath}`;
 	}
 
 	return "/placeholder.svg";
@@ -91,20 +95,18 @@ export async function getChallengeById(
 			return null;
 		}
 
-		// Convert image paths to public URLs in game_config slots
+		// Convert image paths to public URLs in game_config slots using R2
 		// Type cast game_config as it comes from JSONB in the database
+		const r2PublicUrl = process.env.NEXT_PUBLIC_R2_PUBLIC_URL;
 		const gameConfig = data.game_config as unknown as GameConfigStruct[] | null;
 		const transformedGameConfig = gameConfig?.map((round) => ({
 			...round,
 			slots:
 				round.slots?.map((slot) => {
-					if (slot.imagePath) {
-						const { data: publicData } = supabase.storage
-							.from("challenge-images")
-							.getPublicUrl(slot.imagePath);
+					if (slot.imagePath && r2PublicUrl) {
 						return {
 							...slot,
-							imagePath: publicData.publicUrl,
+							imagePath: `${r2PublicUrl}/${slot.imagePath}`,
 						};
 					}
 					return slot;
