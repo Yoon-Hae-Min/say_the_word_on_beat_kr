@@ -11,7 +11,7 @@ import type { ChallengeFilter, ChallengeSortBy } from "@/entities/challenge";
 import {
 	useAllChallenges,
 	useMyChallenges,
-	useMyPublicChallengesCount,
+	useMyChallengesCount,
 	usePublicChallengesCount,
 } from "@/entities/challenge/api/queries";
 
@@ -113,7 +113,7 @@ export const useChallengeList = ({
 	const { data: totalCount = 0, isLoading: isCountLoading } = usePublicChallengesCount();
 
 	const { data: myTotalCount = 0, isLoading: isMyCountLoading } =
-		useMyPublicChallengesCount(userId);
+		useMyChallengesCount(userId);
 
 	return {
 		challenges: filter === "mine" ? myChallenges : allChallenges,

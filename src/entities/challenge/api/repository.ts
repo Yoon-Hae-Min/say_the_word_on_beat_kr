@@ -273,6 +273,7 @@ export async function getAllChallenges(
 
 /**
  * Get challenges created by specific user (filtered by creator_id)
+ * Includes both public and private challenges
  */
 export async function getMyChallenges(
 	userId: string,
@@ -298,7 +299,6 @@ export async function getMyChallenges(
 			.select(
 				"id, title, is_public, show_names, thumbnail_url, game_config, view_count, created_at, difficulty_easy, difficulty_hard, difficulty_normal"
 			)
-			.eq("is_public", true)
 			.eq("creator_id", userId)
 			.order(orderColumn, { ascending: false })
 			.range(offset, offset + limit - 1);
@@ -329,14 +329,13 @@ export async function getMyChallenges(
 }
 
 /**
- * Get total count of user's public challenges
+ * Get total count of user's challenges (both public and private)
  */
-export async function getMyPublicChallengesCount(userId: string): Promise<number> {
+export async function getMyChallengesCount(userId: string): Promise<number> {
 	try {
 		const { count, error } = await supabase
 			.from("challenges")
 			.select("*", { count: "exact", head: true })
-			.eq("is_public", true)
 			.eq("creator_id", userId);
 
 		if (error) {
@@ -349,4 +348,12 @@ export async function getMyPublicChallengesCount(userId: string): Promise<number
 		console.error("Failed to fetch my challenges count:", error);
 		return 0;
 	}
+}
+
+/**
+ * @deprecated Use getMyChallengesCount instead
+ * Get total count of user's public challenges
+ */
+export async function getMyPublicChallengesCount(userId: string): Promise<number> {
+	return getMyChallengesCount(userId);
 }

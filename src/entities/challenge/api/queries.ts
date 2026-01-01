@@ -5,7 +5,7 @@ import type { ChallengeSortBy } from "../model/types";
 import {
 	getAllChallenges,
 	getMyChallenges,
-	getMyPublicChallengesCount,
+	getMyChallengesCount,
 	getPopularChallenges,
 	getPublicChallengesCount,
 } from "./repository";
@@ -108,12 +108,19 @@ export function useMyChallenges(
 }
 
 /**
- * 내가 만든 챌린지 수 조회 Query Hook
+ * 내가 만든 챌린지 수 조회 Query Hook (공개/비공개 포함)
  */
-export function useMyPublicChallengesCount(userId: string): UseQueryResult<number> {
+export function useMyChallengesCount(userId: string): UseQueryResult<number> {
 	return useQuery({
 		queryKey: challengeKeys.myCount(userId),
-		queryFn: () => getMyPublicChallengesCount(userId),
+		queryFn: () => getMyChallengesCount(userId),
 		staleTime: 10 * 60 * 1000, // 총 개수는 자주 안 바뀌므로 10분 캐시
 	});
+}
+
+/**
+ * @deprecated Use useMyChallengesCount instead
+ */
+export function useMyPublicChallengesCount(userId: string): UseQueryResult<number> {
+	return useMyChallengesCount(userId);
 }
