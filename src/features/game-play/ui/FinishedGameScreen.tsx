@@ -7,75 +7,126 @@
 
 "use client";
 
+import type { ClientSafeChallenge } from "@/entities/challenge";
+import { convertImagePathToUrl } from "@/entities/challenge/api/repository";
+import { DifficultyVoting } from "@/features/difficulty-voting";
 import { shareChallenge } from "@/shared/lib/share/shareUtils";
 import { ChalkButton } from "@/shared/ui";
+import Link from "next/link";
 
 interface FinishedGameScreenProps {
-	/**
-	 * Challenge title
-	 */
-	title: string;
+  /**
+   * Challenge title
+   */
+  title: string;
 
-	/**
-	 * Callback to restart the game
-	 */
-	onRestart: () => void;
+  /**
+   * Challenge ID for voting
+   */
+  challengeId: string;
 
-	/**
-	 * Additional CSS classes
-	 */
-	className?: string;
+  /**
+   * Challenge data for thumbnail
+   */
+  challengeData: Pick<ClientSafeChallenge, "thumbnail_url" | "game_config">;
+
+  /**
+   * Callback to restart the game
+   */
+  onRestart: () => void;
+
+  /**
+   * Additional CSS classes
+   */
+  className?: string;
 }
 
 /**
- * Finished game screen with restart and share options
+ * Finished game screen with restart, share, and voting options
  *
  * @example
  * ```tsx
  * <FinishedGameScreen
  *   title="Challenge Title"
+ *   challengeId="abc-123"
  *   onRestart={() => setGamePhase('idle')}
  * />
  * ```
  */
 export default function FinishedGameScreen({
-	title,
-	onRestart,
-	className = "",
+  title,
+  challengeId,
+  challengeData,
+  onRestart,
+  className = "",
 }: FinishedGameScreenProps) {
-	const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+  const thumbnailUrl = convertImagePathToUrl(challengeData);
 
-	const handleShare = async () => {
-		try {
-			await shareChallenge(title, `"${title}" 챌린지를 완료했어요!`, shareUrl);
-		} catch (error) {
-			if (error instanceof Error) {
-				alert(error.message);
-			}
-		}
-	};
+  const handleShare = async () => {
+    try {
+      await shareChallenge(title, `"${title}" 챌린지를 완료했어요!`, shareUrl);
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message);
+      }
+    }
+  };
 
-	return (
-		<div className={`flex h-full items-center justify-center p-4 md:p-6 ${className}`}>
-			<div className="space-y-6 text-center">
-				<p className="chalk-text text-xl text-chalk-yellow md:text-2xl">모든 라운드 완료! 🎉</p>
+  return (
+    <div className={`h-full p-4 md:p-6 ${className}`}>
+      <div className="flex h-full flex-col gap-6 lg:flex-row lg:gap-8 max-w-5xl mx-auto">
+        {/* Left Section: Thumbnail + Voting */}
+        <div className="flex flex-1 flex-col gap-6">
+          <p className="chalk-text text-center text-xl text-chalk-yellow md:text-2xl">
+            모든 라운드 완료! 🎉
+          </p>
 
-				<div className="flex flex-col gap-3">
-					<ChalkButton variant="yellow" onClick={onRestart} className="px-6 py-3 text-lg">
-						처음부터 다시하기
-					</ChalkButton>
+          {/* Thumbnail */}
+          {thumbnailUrl && thumbnailUrl !== "/placeholder.svg" && (
+            <div className="mx-auto w-full max-w-sm overflow-hidden rounded-lg border-4 border-chalk-white/20">
+              <img
+                src={thumbnailUrl}
+                alt={title}
+                className="h-auto w-full object-cover"
+              />
+            </div>
+          )}
 
-					<ChalkButton variant="blue" onClick={handleShare} className="px-6 py-3 text-lg">
-						공유하기
-					</ChalkButton>
+          {/* Difficulty Voting */}
+          <div className="w-full">
+            <DifficultyVoting challengeId={challengeId} />
+          </div>
+        </div>
 
-					<a href="/">
-						<ChalkButton variant="white" className="w-full px-6 py-3 text-lg">
-							다른 챌린지 구경하기
-						</ChalkButton>
-					</a>
-				</div>
-			</div>
-		</div>
-	);
+        {/* Right Section: Action Buttons */}
+        <div className="flex w-full flex-col items-center justify-center gap-4 lg:w-80">
+          <ChalkButton
+            variant="white-outline"
+            onClick={onRestart}
+            className="w-full px-6 py-3 text-lg"
+          >
+            처음부터 다시하기
+          </ChalkButton>
+
+          <ChalkButton
+            variant="white-outline"
+            onClick={handleShare}
+            className="w-full px-6 py-3 text-lg"
+          >
+            공유하기
+          </ChalkButton>
+
+          <Link href="/challenges" className="w-full">
+            <ChalkButton
+              variant="white-outline"
+              className="w-full px-6 py-3 text-lg"
+            >
+              다른 챌린지 구경하기
+            </ChalkButton>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
 }

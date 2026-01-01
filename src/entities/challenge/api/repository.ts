@@ -5,7 +5,7 @@ import type { ClientSafeChallenge, GameConfigStruct } from "../model/types";
  * Helper function to convert storage image paths to public URLs
  * Handles both thumbnail_url and fallback to first slot image
  */
-function convertImagePathToUrl(
+export function convertImagePathToUrl(
 	challenge: Pick<ClientSafeChallenge, "thumbnail_url" | "game_config">
 ): string {
 	// Get image path from thumbnail_url or first slot

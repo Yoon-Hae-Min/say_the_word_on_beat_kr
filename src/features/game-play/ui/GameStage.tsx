@@ -27,8 +27,8 @@ export default function GameStage({ challengeData }: GameStageProps) {
 
 	return (
 		<>
-			{/* Navigation Bar - Fixed across all phases */}
-			<GameNavigationBar challengeData={challengeData} />
+			{/* Navigation Bar - Hidden on finished screen */}
+			{!gamePhase.is.finished && <GameNavigationBar challengeData={challengeData} />}
 
 			{/* Idle 화면 */}
 			{gamePhase.is.idle && (
@@ -57,7 +57,12 @@ export default function GameStage({ challengeData }: GameStageProps) {
 
 			{/* Finished 화면 */}
 			{gamePhase.is.finished && (
-				<FinishedGameScreen title={challengeData.title} onRestart={gamePhase.actions.resetGame} />
+				<FinishedGameScreen
+					title={challengeData.title}
+					challengeId={challengeData.id}
+					challengeData={challengeData}
+					onRestart={gamePhase.actions.resetGame}
+				/>
 			)}
 		</>
 	);

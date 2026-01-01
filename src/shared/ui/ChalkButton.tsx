@@ -2,7 +2,7 @@
 
 interface ChalkButtonProps {
 	children: React.ReactNode;
-	variant?: "yellow" | "blue" | "white";
+	variant?: "yellow" | "blue" | "white" | "white-outline";
 	onClick?: () => void;
 	disabled?: boolean;
 	className?: string;
@@ -18,7 +18,8 @@ export default function ChalkButton({
 	const variantStyles = {
 		yellow: "bg-chalk-yellow text-chalkboard-bg border-chalk-yellow hover:brightness-110",
 		blue: "bg-chalk-blue text-chalkboard-bg border-chalk-blue hover:brightness-110",
-		white: "bg-transparent text-chalk-white border-chalk-white hover:bg-chalk-white/10",
+		white: "bg-chalk-white text-chalkboard-bg border-chalk-white hover:brightness-110",
+		"white-outline": "bg-transparent text-chalk-white border-chalk-white hover:bg-chalk-white/10",
 	};
 
 	return (
