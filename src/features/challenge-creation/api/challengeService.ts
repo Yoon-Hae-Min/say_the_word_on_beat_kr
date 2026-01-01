@@ -36,6 +36,15 @@ async function getPresignedUrl(fileName: string, contentType: string): Promise<P
 }
 
 /**
+ * Generate unique filename with UUID
+ */
+function generateUniqueFileName(originalFileName: string): string {
+	const fileExtension = originalFileName.split(".").pop() || "jpg";
+	const uniqueId = crypto.randomUUID();
+	return `${uniqueId}.${fileExtension}`;
+}
+
+/**
  * Upload a file using a presigned URL
  */
 async function uploadToPresignedUrl(presignedUrl: string, file: File): Promise<void> {
@@ -62,14 +71,17 @@ export async function compressAndUploadImage(file: File): Promise<string> {
 		// Step 1: Compress the image
 		const compressedFile = await compressImage(file);
 
-		// Step 2: Get presigned URL from edge function
-		const { uploadUrl } = await getPresignedUrl(compressedFile.name, compressedFile.type);
+		// Step 2: Generate unique filename (UUID-based)
+		const uniqueFileName = generateUniqueFileName(compressedFile.name);
 
-		// Step 3: Upload to R2 using presigned URL
+		// Step 3: Get presigned URL from edge function
+		const { uploadUrl } = await getPresignedUrl(uniqueFileName, compressedFile.type);
+
+		// Step 4: Upload to R2 using presigned URL
 		await uploadToPresignedUrl(uploadUrl, compressedFile);
 
-		// Step 4: Return the storage path (filename only, not full URL)
-		return compressedFile.name;
+		// Step 5: Return the unique filename
+		return uniqueFileName;
 	} catch (error) {
 		console.error("Error uploading image:", error);
 		throw new Error(
