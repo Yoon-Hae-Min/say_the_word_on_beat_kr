@@ -1,9 +1,9 @@
 import type { BeatSlot, ChallengeData, GameConfigStruct } from "@/entities/challenge";
 import { createChallenge as createChallengeInDB } from "@/entities/challenge";
+import { supabase } from "@/shared/api/supabase/client";
 import { sendGAEvent } from "@/shared/lib/analytics/gtag";
 import { compressImage } from "@/shared/lib/image";
 import { getUserId } from "@/shared/lib/user/fingerprint";
-import { supabase } from "@/shared/api/supabase/client";
 
 interface PresignedUrlResponse {
 	uploadUrl: string;
@@ -12,7 +12,10 @@ interface PresignedUrlResponse {
 /**
  * Request a presigned URL from Supabase Edge Function
  */
-async function getPresignedUrl(fileName: string, contentType: string): Promise<PresignedUrlResponse> {
+async function getPresignedUrl(
+	fileName: string,
+	contentType: string
+): Promise<PresignedUrlResponse> {
 	const { data: sessionData } = await supabase.auth.getSession();
 
 	const response = await fetch(
@@ -21,7 +24,7 @@ async function getPresignedUrl(fileName: string, contentType: string): Promise<P
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				"Authorization": `Bearer ${sessionData?.session?.access_token || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+				Authorization: `Bearer ${sessionData?.session?.access_token || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
 			},
 			body: JSON.stringify({ fileName, contentType }),
 		}

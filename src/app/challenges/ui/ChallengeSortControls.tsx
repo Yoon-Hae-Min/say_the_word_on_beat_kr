@@ -1,12 +1,12 @@
 /**
  * ChallengeSortControls Component
  *
- * Sort button group for challenges page.
- * Extracted from ChallengesPage to follow Single Responsibility Principle.
+ * Dropdown-based filter and sort controls for challenges page.
+ * Provides a compact, mobile-friendly interface using select dropdowns.
  */
 
-import type { ChallengeSortBy } from "@/entities/challenge";
-import { ChalkButton } from "@/shared/ui";
+import type { ChallengeFilter, ChallengeSortBy } from "@/entities/challenge";
+import { ChalkSelect } from "@/shared/ui";
 
 interface ChallengeSortControlsProps {
 	/**
@@ -20,43 +20,74 @@ interface ChallengeSortControlsProps {
 	onSortChange: (sort: ChallengeSortBy) => void;
 
 	/**
+	 * Current filter option
+	 */
+	filter: ChallengeFilter;
+
+	/**
+	 * Callback when filter changes
+	 */
+	onFilterChange: (filter: ChallengeFilter) => void;
+
+	/**
 	 * Additional CSS classes
 	 */
 	className?: string;
 }
 
+// Filter options
+const FILTER_OPTIONS = [
+	{ value: "all", label: "전체 챌린지" },
+	{ value: "mine", label: "내가 만든 챌린지" },
+] as const;
+
+// Sort options
+const SORT_OPTIONS = [
+	{ value: "views", label: "조회순" },
+	{ value: "latest", label: "최신순" },
+] as const;
+
 /**
- * Sort controls for challenge list
+ * Dropdown-based filter and sort controls
  *
  * @example
  * ```tsx
  * <ChallengeSortControls
  *   sortBy={sortBy}
  *   onSortChange={handleSortChange}
+ *   filter={filter}
+ *   onFilterChange={handleFilterChange}
  * />
  * ```
  */
 export default function ChallengeSortControls({
 	sortBy,
 	onSortChange,
+	filter,
+	onFilterChange,
 	className = "",
 }: ChallengeSortControlsProps) {
 	return (
-		<div className={`flex justify-center gap-3 ${className}`}>
-			<ChalkButton
-				variant={sortBy === "latest" ? "yellow" : "white"}
-				onClick={() => onSortChange("latest")}
-				className="px-6 py-2 text-base md:text-lg"
-			>
-				최신순
-			</ChalkButton>
-			<ChalkButton
-				variant={sortBy === "views" ? "yellow" : "white"}
-				onClick={() => onSortChange("views")}
-				className="px-6 py-2 text-base md:text-lg"
-			>
-				조회순
-			</ChalkButton>
+		<div
+			className={`flex flex-col gap-4 md:flex-row md:items-end md:justify-center md:gap-6 ${className}`}
+		>
+			{/* Filter dropdown */}
+			<ChalkSelect
+				value={filter}
+				options={FILTER_OPTIONS}
+				onChange={(value) => onFilterChange(value as ChallengeFilter)}
+				label="필터"
+				className="w-full md:w-auto md:min-w-[200px]"
+			/>
+
+			{/* Sort dropdown */}
+			<ChalkSelect
+				value={sortBy}
+				options={SORT_OPTIONS}
+				onChange={(value) => onSortChange(value as ChallengeSortBy)}
+				label="정렬"
+				className="w-full md:w-auto md:min-w-[180px]"
+			/>
 		</div>
 	);
 }

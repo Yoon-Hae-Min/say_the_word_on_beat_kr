@@ -20,7 +20,7 @@ export default function HeaderSection({ title, onTitleChange }: HeaderSectionPro
 			const finalWidth = Math.min(Math.max(width, 200), maxWidth);
 			inputRef.current.style.width = `${finalWidth}px`;
 		}
-	}, [title]);
+	}, []);
 
 	return (
 		<div className="flex justify-center w-full">

@@ -1,5 +1,5 @@
 import { supabase } from "@/shared/api/supabase/client";
-import type { ChallengeInsert, ClientSafeChallenge, GameConfigStruct } from "../model/types";
+import type { ClientSafeChallenge, GameConfigStruct } from "../model/types";
 
 /**
  * Helper function to convert storage image paths to public URLs
@@ -268,5 +268,85 @@ export async function getAllChallenges(
 	} catch (error) {
 		console.error("Failed to fetch all challenges:", error);
 		return [];
+	}
+}
+
+/**
+ * Get challenges created by specific user (filtered by creator_id)
+ */
+export async function getMyChallenges(
+	userId: string,
+	limit: number = 50,
+	offset: number = 0,
+	sortBy: import("../model/types").ChallengeSortBy = "latest"
+): Promise<
+	Array<{
+		id: string;
+		title: string;
+		viewCount: number;
+		thumbnail: string;
+		showNames: boolean;
+		createdAt: string;
+	}>
+> {
+	try {
+		// Determine sort configuration based on sortBy parameter
+		const orderColumn = sortBy === "views" ? "view_count" : "created_at";
+
+		const { data, error } = await supabase
+			.from("challenges")
+			.select(
+				"id, title, is_public, show_names, thumbnail_url, game_config, view_count, created_at, difficulty_easy, difficulty_hard, difficulty_normal"
+			)
+			.eq("is_public", true)
+			.eq("creator_id", userId)
+			.order(orderColumn, { ascending: false })
+			.range(offset, offset + limit - 1);
+
+		if (error) {
+			console.error("Failed to fetch my challenges:", error);
+			return [];
+		}
+
+		const challenges = (data || []).map((node) => {
+			const thumbnailUrl = convertImagePathToUrl(node);
+
+			return {
+				id: node.id,
+				title: node.title,
+				viewCount: node.view_count,
+				thumbnail: thumbnailUrl,
+				showNames: node.show_names,
+				createdAt: node.created_at,
+			};
+		});
+
+		return challenges;
+	} catch (error) {
+		console.error("Failed to fetch my challenges:", error);
+		return [];
+	}
+}
+
+/**
+ * Get total count of user's public challenges
+ */
+export async function getMyPublicChallengesCount(userId: string): Promise<number> {
+	try {
+		const { count, error } = await supabase
+			.from("challenges")
+			.select("*", { count: "exact", head: true })
+			.eq("is_public", true)
+			.eq("creator_id", userId);
+
+		if (error) {
+			console.error("Failed to fetch my challenges count:", error);
+			return 0;
+		}
+
+		return count || 0;
+	} catch (error) {
+		console.error("Failed to fetch my challenges count:", error);
+		return 0;
 	}
 }

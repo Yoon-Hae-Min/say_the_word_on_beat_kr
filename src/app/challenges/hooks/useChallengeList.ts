@@ -7,11 +7,13 @@
  * Follows Single Responsibility Principle: Only manages data fetching and sorting.
  */
 
+import type { ChallengeFilter, ChallengeSortBy } from "@/entities/challenge";
 import {
 	useAllChallenges,
+	useMyChallenges,
+	useMyPublicChallengesCount,
 	usePublicChallengesCount,
 } from "@/entities/challenge/api/queries";
-import type { ChallengeSortBy } from "@/entities/challenge";
 
 export interface UseChallengeListOptions {
 	/**
@@ -28,6 +30,16 @@ export interface UseChallengeListOptions {
 	 * Sort order
 	 */
 	sortBy: ChallengeSortBy;
+
+	/**
+	 * Filter option (all or mine)
+	 */
+	filter: ChallengeFilter;
+
+	/**
+	 * User ID for filtering "mine" challenges
+	 */
+	userId: string;
 }
 
 export interface UseChallengeListReturn {
@@ -65,6 +77,8 @@ export interface UseChallengeListReturn {
  *   itemsPerPage: 12,
  *   offset: pagination.offset,
  *   sortBy: 'views',
+ *   filter: 'all',
+ *   userId: 'fp_xxx',
  * });
  *
  * return (
@@ -79,8 +93,18 @@ export const useChallengeList = ({
 	itemsPerPage,
 	offset,
 	sortBy,
+	filter,
+	userId,
 }: UseChallengeListOptions): UseChallengeListReturn => {
-	const { data: challenges = [], isLoading: isChallengesLoading } = useAllChallenges(
+	// Conditionally fetch based on filter
+	const { data: allChallenges = [], isLoading: isAllLoading } = useAllChallenges(
+		itemsPerPage,
+		offset,
+		sortBy
+	);
+
+	const { data: myChallenges = [], isLoading: isMyLoading } = useMyChallenges(
+		userId,
 		itemsPerPage,
 		offset,
 		sortBy
@@ -88,9 +112,12 @@ export const useChallengeList = ({
 
 	const { data: totalCount = 0, isLoading: isCountLoading } = usePublicChallengesCount();
 
+	const { data: myTotalCount = 0, isLoading: isMyCountLoading } =
+		useMyPublicChallengesCount(userId);
+
 	return {
-		challenges,
-		isLoading: isChallengesLoading || isCountLoading,
-		totalCount,
+		challenges: filter === "mine" ? myChallenges : allChallenges,
+		isLoading: filter === "mine" ? isMyLoading || isMyCountLoading : isAllLoading || isCountLoading,
+		totalCount: filter === "mine" ? myTotalCount : totalCount,
 	};
 };

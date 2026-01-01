@@ -62,7 +62,7 @@ export function useAudioBeat({ src, bpm, onBeat, onBeatEnd, offsetSec = 0 }: Use
 			audio.removeEventListener("ended", handleEnded);
 			audio.pause();
 		};
-	}, [src, bpm, offsetSec]);
+	}, [src, onBeatEnd, tick]);
 
 	return null;
 }

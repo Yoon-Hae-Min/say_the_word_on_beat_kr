@@ -46,10 +46,7 @@ export interface UseSortReturn<T> {
  * <button onClick={() => sort.setSort('latest')}>Latest</button>
  * ```
  */
-export const useSort = <T>({
-	initialSort,
-	onSortChange,
-}: UseSortOptions<T>): UseSortReturn<T> => {
+export const useSort = <T>({ initialSort, onSortChange }: UseSortOptions<T>): UseSortReturn<T> => {
 	const [sortBy, setSortBy] = useState<T>(initialSort);
 
 	const setSort = useCallback(

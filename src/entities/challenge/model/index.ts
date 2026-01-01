@@ -2,6 +2,7 @@ export type {
 	BeatSlot,
 	Challenge,
 	ChallengeData,
+	ChallengeFilter,
 	ChallengeInsert,
 	ChallengeSortBy,
 	ChallengeUpdate,

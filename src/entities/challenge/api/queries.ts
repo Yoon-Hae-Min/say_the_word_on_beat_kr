@@ -1,9 +1,11 @@
 "use client";
 
-import { useQuery, type UseQueryResult } from "@tanstack/react-query";
+import { type UseQueryResult, useQuery } from "@tanstack/react-query";
 import type { ChallengeSortBy } from "../model/types";
 import {
 	getAllChallenges,
+	getMyChallenges,
+	getMyPublicChallengesCount,
 	getPopularChallenges,
 	getPublicChallengesCount,
 } from "./repository";
@@ -16,7 +18,10 @@ export const challengeKeys = {
 	popular: (limit: number) => [...challengeKeys.all, "popular", limit] as const,
 	list: (filters: { limit: number; offset: number; sortBy: ChallengeSortBy }) =>
 		[...challengeKeys.all, "list", filters] as const,
+	mine: (userId: string, filters: { limit: number; offset: number; sortBy: ChallengeSortBy }) =>
+		[...challengeKeys.all, "mine", userId, filters] as const,
 	count: () => [...challengeKeys.all, "count"] as const,
+	myCount: (userId: string) => [...challengeKeys.all, "myCount", userId] as const,
 };
 
 /**
@@ -73,6 +78,42 @@ export function usePublicChallengesCount(): UseQueryResult<number> {
 	return useQuery({
 		queryKey: challengeKeys.count(),
 		queryFn: getPublicChallengesCount,
+		staleTime: 10 * 60 * 1000, // 총 개수는 자주 안 바뀌므로 10분 캐시
+	});
+}
+
+/**
+ * 내가 만든 챌린지 목록 조회 Query Hook (페이지네이션)
+ */
+export function useMyChallenges(
+	userId: string,
+	limit: number,
+	offset: number,
+	sortBy: ChallengeSortBy
+): UseQueryResult<
+	Array<{
+		id: string;
+		title: string;
+		viewCount: number;
+		thumbnail: string;
+		showNames: boolean;
+		createdAt: string;
+	}>
+> {
+	return useQuery({
+		queryKey: challengeKeys.mine(userId, { limit, offset, sortBy }),
+		queryFn: () => getMyChallenges(userId, limit, offset, sortBy),
+		staleTime: 5 * 60 * 1000,
+	});
+}
+
+/**
+ * 내가 만든 챌린지 수 조회 Query Hook
+ */
+export function useMyPublicChallengesCount(userId: string): UseQueryResult<number> {
+	return useQuery({
+		queryKey: challengeKeys.myCount(userId),
+		queryFn: () => getMyPublicChallengesCount(userId),
 		staleTime: 10 * 60 * 1000, // 총 개수는 자주 안 바뀌므로 10분 캐시
 	});
 }

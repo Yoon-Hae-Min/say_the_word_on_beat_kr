@@ -1,6 +1,6 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { type NextRequest, NextResponse } from "next/server";
 
 interface PresignedUrlRequest {
 	fileName: string;

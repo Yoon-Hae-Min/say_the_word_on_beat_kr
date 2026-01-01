@@ -15,8 +15,9 @@
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Suspense } from "react";
-import type { ChallengeSortBy } from "@/entities/challenge";
+import type { ChallengeFilter, ChallengeSortBy } from "@/entities/challenge";
 import { usePagination, useURLSearchParams } from "@/shared/hooks";
+import { getUserId } from "@/shared/lib/user/fingerprint";
 import {
   EmptyState,
   LoadingState,
@@ -34,13 +35,17 @@ function ChallengesContent() {
 
   // Manage state via URL query parameters
   const urlParams = useURLSearchParams({
-    defaults: { page: "1", sort: "views" },
+    defaults: { page: "1", sort: "views", filter: "all" },
     basePath: "/challenges",
   });
 
   // Get current state from URL
   const currentPage = Number(urlParams.get("page"));
   const sortBy = urlParams.get("sort") as ChallengeSortBy;
+  const filter = urlParams.get("filter") as ChallengeFilter;
+
+  // Get userId for filtering
+  const userId = getUserId();
 
   // Calculate offset
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -50,6 +55,8 @@ function ChallengesContent() {
     itemsPerPage: ITEMS_PER_PAGE,
     offset,
     sortBy,
+    filter,
+    userId,
   });
 
   // Use pagination for UI calculations only (not for state management)
@@ -61,6 +68,12 @@ function ChallengesContent() {
       urlParams.set({ page: page.toString() });
     },
   });
+
+  // Handle filter change - reset to page 1
+  const handleFilterChange = (newFilter: ChallengeFilter) => {
+    urlParams.set({ filter: newFilter, page: "1" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   // Handle sort change - reset to page 1
   const handleSortChange = (newSort: ChallengeSortBy) => {
@@ -89,21 +102,17 @@ function ChallengesContent() {
             공개된 챌린지
           </h1>
 
-          {/* Total count */}
-          {challengeList.totalCount > 0 && (
-            <p className="mb-12 text-center text-chalk-white/60">
-              총 {challengeList.totalCount}개의 챌린지
-            </p>
-          )}
+          <p className="mb-12 text-center text-chalk-white/60">
+            총 {challengeList.totalCount}개의 챌린지
+          </p>
 
-          {/* Sorting buttons */}
-          {challengeList.totalCount > 0 && (
-            <ChallengeSortControls
-              sortBy={sortBy}
-              onSortChange={handleSortChange}
-              className="mb-8"
-            />
-          )}
+          <ChallengeSortControls
+            sortBy={sortBy}
+            onSortChange={handleSortChange}
+            filter={filter}
+            onFilterChange={handleFilterChange}
+            className="mb-8"
+          />
 
           {/* Loading state */}
           {challengeList.isLoading && <LoadingState />}
@@ -112,7 +121,11 @@ function ChallengesContent() {
           {!challengeList.isLoading &&
             challengeList.challenges.length === 0 && (
               <EmptyState
-                message="아직 공개된 챌린지가 없습니다."
+                message={
+                  filter === "mine"
+                    ? "아직 만든 챌린지가 없습니다."
+                    : "아직 공개된 챌린지가 없습니다."
+                }
                 description="첫 번째 챌린지를 만들어보세요!"
               />
             )}
