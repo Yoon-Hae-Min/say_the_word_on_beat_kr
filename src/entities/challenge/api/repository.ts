@@ -363,3 +363,31 @@ export async function getMyChallengesCount(userId: string): Promise<number> {
 export async function getMyPublicChallengesCount(userId: string): Promise<number> {
 	return getMyChallengesCount(userId);
 }
+
+/**
+ * Toggle challenge public/private status
+ * @param challengeId - Challenge ID
+ * @param userId - User ID for verification
+ * @param isPublic - New public status
+ */
+export async function updateChallengePublicStatus(
+	challengeId: string,
+	userId: string,
+	isPublic: boolean
+): Promise<void> {
+	const response = await fetch(`/api/admin/challenges/${challengeId}`, {
+		method: "PATCH",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			userId,
+			isPublic,
+		}),
+	});
+
+	if (!response.ok) {
+		const errorData = await response.json();
+		throw new Error(errorData.error || "Failed to update challenge public status");
+	}
+}
