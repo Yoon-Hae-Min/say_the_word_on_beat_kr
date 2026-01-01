@@ -2,11 +2,13 @@
 
 import { Eye } from "lucide-react";
 import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
 
 interface ChalkCardProps {
 	title: string;
 	thumbnail: string;
 	viewCount: number;
+	isPublic: boolean;
 	onClick?: () => void;
 	className?: string;
 }
@@ -15,6 +17,7 @@ export default function ChalkCard({
 	title,
 	thumbnail,
 	viewCount,
+	isPublic,
 	onClick,
 	className = "",
 }: ChalkCardProps) {
@@ -51,6 +54,14 @@ export default function ChalkCard({
 					className="object-cover"
 					sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
 				/>
+				{/* Private Badge */}
+				{!isPublic && (
+					<div className="absolute right-2 top-2">
+						<Badge variant="secondary" className="bg-chalk-white/90 text-chalkboard-bg">
+							Private
+						</Badge>
+					</div>
+				)}
 			</div>
 
 			{/* Title */}

@@ -49,6 +49,7 @@ export default function FeedSection() {
 											title={challenge.title}
 											thumbnail={challenge.thumbnail}
 											viewCount={challenge.viewCount}
+											isPublic={challenge.isPublic}
 											onClick={() => {
 												router.push(`/play/${challenge.id}`);
 											}}

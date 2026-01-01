@@ -37,6 +37,7 @@ export function usePopularChallenges(limit: number = 9): UseQueryResult<
 		viewCount: number;
 		thumbnail: string;
 		showNames: boolean;
+		isPublic: boolean;
 		createdAt: string;
 	}>
 > {
@@ -61,6 +62,7 @@ export function useAllChallenges(
 		viewCount: number;
 		thumbnail: string;
 		showNames: boolean;
+		isPublic: boolean;
 		createdAt: string;
 	}>
 > {
@@ -97,6 +99,7 @@ export function useMyChallenges(
 		viewCount: number;
 		thumbnail: string;
 		showNames: boolean;
+		isPublic: boolean;
 		createdAt: string;
 	}>
 > {

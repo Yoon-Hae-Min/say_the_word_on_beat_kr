@@ -15,6 +15,7 @@ interface Challenge {
 	title: string;
 	viewCount: number;
 	thumbnail: string;
+	isPublic: boolean;
 	createdAt: string;
 }
 
@@ -56,6 +57,7 @@ export default function ChallengeGrid({ challenges, className = "" }: ChallengeG
 						title={challenge.title}
 						thumbnail={challenge.thumbnail}
 						viewCount={challenge.viewCount}
+						isPublic={challenge.isPublic}
 						onClick={() => {
 							router.push(`/play/${challenge.id}`);
 						}}

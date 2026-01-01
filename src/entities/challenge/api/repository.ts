@@ -156,6 +156,7 @@ export async function getPopularChallenges(limit: number = 9): Promise<
 		viewCount: number;
 		thumbnail: string;
 		showNames: boolean;
+		isPublic: boolean;
 		createdAt: string;
 	}>
 > {
@@ -183,6 +184,7 @@ export async function getPopularChallenges(limit: number = 9): Promise<
 				viewCount: node.view_count,
 				thumbnail: thumbnailUrl,
 				showNames: node.show_names,
+				isPublic: node.is_public,
 				createdAt: node.created_at,
 			};
 		});
@@ -230,6 +232,7 @@ export async function getAllChallenges(
 		viewCount: number;
 		thumbnail: string;
 		showNames: boolean;
+		isPublic: boolean;
 		createdAt: string;
 	}>
 > {
@@ -260,6 +263,7 @@ export async function getAllChallenges(
 				viewCount: node.view_count,
 				thumbnail: thumbnailUrl,
 				showNames: node.show_names,
+				isPublic: node.is_public,
 				createdAt: node.created_at,
 			};
 		});
@@ -287,6 +291,7 @@ export async function getMyChallenges(
 		viewCount: number;
 		thumbnail: string;
 		showNames: boolean;
+		isPublic: boolean;
 		createdAt: string;
 	}>
 > {
@@ -317,6 +322,7 @@ export async function getMyChallenges(
 				viewCount: node.view_count,
 				thumbnail: thumbnailUrl,
 				showNames: node.show_names,
+				isPublic: node.is_public,
 				createdAt: node.created_at,
 			};
 		});

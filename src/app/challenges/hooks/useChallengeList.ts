@@ -51,6 +51,7 @@ export interface UseChallengeListReturn {
 		title: string;
 		viewCount: number;
 		thumbnail: string;
+		isPublic: boolean;
 		createdAt: string;
 	}>;
 
@@ -112,8 +113,7 @@ export const useChallengeList = ({
 
 	const { data: totalCount = 0, isLoading: isCountLoading } = usePublicChallengesCount();
 
-	const { data: myTotalCount = 0, isLoading: isMyCountLoading } =
-		useMyChallengesCount(userId);
+	const { data: myTotalCount = 0, isLoading: isMyCountLoading } = useMyChallengesCount(userId);
 
 	return {
 		challenges: filter === "mine" ? myChallenges : allChallenges,
