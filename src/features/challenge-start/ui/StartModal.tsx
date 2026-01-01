@@ -85,7 +85,6 @@ export default function StartModal({ isOpen, onClose }: StartModalProps) {
 							<div className="flex-1">
 								<p className="text-chalk-white">비공개</p>
 								<p className="text-sm text-chalk-white/70">링크를 아는 사람만 볼 수 있습니다</p>
-								<p className="text-xs text-chalk-yellow/80 mt-1">⚠️ 약 48시간 후 자동 삭제됩니다</p>
 							</div>
 						</label>
 					</div>
