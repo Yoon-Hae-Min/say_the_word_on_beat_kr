@@ -2,10 +2,10 @@
  * ChallengesPage Component (Refactored)
  *
  * Page for browsing all public challenges.
- * Clean architecture: page manages UI state, hook manages data.
+ * Clean architecture: page manages UI state via URL, hook manages data.
  *
  * Architecture:
- * - Page level: currentPage, sortBy state (UI state)
+ * - Page level: currentPage, sortBy from URL query parameters
  * - useChallengeList: Data fetching only
  * - usePagination: Pagination calculation utilities
  */
@@ -14,9 +14,9 @@
 
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { Suspense } from "react";
 import type { ChallengeSortBy } from "@/entities/challenge";
-import { usePagination, useSort } from "@/shared/hooks";
+import { usePagination, useURLSearchParams } from "@/shared/hooks";
 import {
   EmptyState,
   LoadingState,
@@ -29,14 +29,18 @@ import ChallengeSortControls from "./ui/ChallengeSortControls";
 
 const ITEMS_PER_PAGE = 12;
 
-export default function ChallengesPage() {
+function ChallengesContent() {
   const router = useRouter();
 
-  // Page-level UI state
-  const sort = useSort<ChallengeSortBy>({
-    initialSort: "views",
+  // Manage state via URL query parameters
+  const urlParams = useURLSearchParams({
+    defaults: { page: "1", sort: "views" },
+    basePath: "/challenges",
   });
-  const [currentPage, setCurrentPage] = useState(1);
+
+  // Get current state from URL
+  const currentPage = Number(urlParams.get("page"));
+  const sortBy = urlParams.get("sort") as ChallengeSortBy;
 
   // Calculate offset
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -45,7 +49,7 @@ export default function ChallengesPage() {
   const challengeList = useChallengeList({
     itemsPerPage: ITEMS_PER_PAGE,
     offset,
-    sortBy: sort.sortBy,
+    sortBy,
   });
 
   // Use pagination for UI calculations only (not for state management)
@@ -54,14 +58,13 @@ export default function ChallengesPage() {
     itemsPerPage: ITEMS_PER_PAGE,
     initialPage: currentPage,
     onPageChange: (page) => {
-      setCurrentPage(page);
+      urlParams.set({ page: page.toString() });
     },
   });
 
   // Handle sort change - reset to page 1
   const handleSortChange = (newSort: ChallengeSortBy) => {
-    sort.setSort(newSort);
-    setCurrentPage(1);
+    urlParams.set({ sort: newSort, page: "1" });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -96,7 +99,7 @@ export default function ChallengesPage() {
           {/* Sorting buttons */}
           {challengeList.totalCount > 0 && (
             <ChallengeSortControls
-              sortBy={sort.sortBy}
+              sortBy={sortBy}
               onSortChange={handleSortChange}
               className="mb-8"
             />
@@ -134,5 +137,13 @@ export default function ChallengesPage() {
         </div>
       </div>
     </WoodFrame>
+  );
+}
+
+export default function ChallengesPage() {
+  return (
+    <Suspense fallback={<LoadingState />}>
+      <ChallengesContent />
+    </Suspense>
   );
 }
