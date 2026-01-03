@@ -1,0 +1,9 @@
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Disallow private/temporary pages
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://say-the-word-on-beat.vercel.app/sitemap.xml

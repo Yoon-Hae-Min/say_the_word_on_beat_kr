@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Gamja_Flower, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import GoogleAnalytics from "@/shared/components/GoogleAnalytics";
+import { WebSiteJsonLd } from "@/shared/components/JsonLd";
 import UserInitializer from "@/shared/components/UserInitializer";
 import LocationJsProvider from "@/shared/provider/LocationJsProvider";
 import QueryProvider from "@/shared/provider/QueryProvider";
@@ -70,10 +71,17 @@ export default function RootLayout({
 				/>
 				<UserInitializer />
 				<GoogleAnalytics />
+				<WebSiteJsonLd />
 			</head>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} ${gamjaFlower.variable} antialiased`}
 			>
+				<a
+					href="#main-content"
+					className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-chalk-yellow focus:text-chalkboard-bg focus:px-4 focus:py-2 focus:rounded"
+				>
+					메인 콘텐츠로 건너뛰기
+				</a>
 				<QueryProvider>
 					<LocationJsProvider>{children}</LocationJsProvider>
 					<SpeedInsights />

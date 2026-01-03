@@ -78,7 +78,7 @@ function ChallengesContent() {
 
 	return (
 		<WoodFrame>
-			<div className="min-h-screen bg-chalkboard-bg px-4 py-8 md:py-16">
+			<main id="main-content" className="min-h-screen bg-chalkboard-bg px-4 py-8 md:py-16">
 				<div className="mx-auto max-w-6xl">
 					{/* Header with back button */}
 					<div className="mb-8 flex items-center justify-between">
@@ -142,7 +142,7 @@ function ChallengesContent() {
 						/>
 					)}
 				</div>
-			</div>
+			</main>
 		</WoodFrame>
 	);
 }

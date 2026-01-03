@@ -28,17 +28,15 @@ export default function StartModal({ isOpen, onClose }: StartModalProps) {
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center p-4">
 			{/* Overlay */}
-			<div
-				role="button"
-				tabIndex={-1}
-				className="absolute inset-0 bg-black/50"
-				onClick={onClose}
-				onKeyDown={(e) => e.key === "Escape" && onClose()}
-				aria-label="모달 닫기"
-			/>
+			<div className="absolute inset-0 bg-black/50" onClick={onClose} aria-hidden="true" />
 
 			{/* Modal */}
-			<div className="relative z-10 w-full max-w-md animate-fade-in rounded-lg bg-chalkboard-bg p-8 shadow-2xl">
+			<div
+				role="dialog"
+				aria-modal="true"
+				aria-labelledby="modal-title"
+				className="relative z-10 w-full max-w-md animate-fade-in rounded-lg bg-chalkboard-bg p-8 shadow-2xl"
+			>
 				{/* Close button */}
 				<button
 					type="button"
@@ -50,14 +48,20 @@ export default function StartModal({ isOpen, onClose }: StartModalProps) {
 				</button>
 
 				{/* Title */}
-				<h2 className="chalk-text mb-6 text-3xl font-bold text-chalk-white">시작하기</h2>
+				<h2 id="modal-title" className="chalk-text mb-6 text-3xl font-bold text-chalk-white">
+					시작하기
+				</h2>
 
 				{/* Privacy selection */}
 				<div className="mb-6">
 					<p className="mb-3 text-lg text-chalk-white">공개 설정</p>
 					<div className="space-y-2">
-						<label className="flex cursor-pointer items-center gap-3 rounded-md border-2 border-chalk-white/30 p-3 transition-colors hover:border-chalk-white/60">
+						<label
+							htmlFor="visibility-public"
+							className="flex cursor-pointer items-center gap-3 rounded-md border-2 border-chalk-white/30 p-3 transition-colors hover:border-chalk-white/60"
+						>
 							<input
+								id="visibility-public"
 								type="radio"
 								name="visibility"
 								value="public"
@@ -73,8 +77,12 @@ export default function StartModal({ isOpen, onClose }: StartModalProps) {
 							</div>
 						</label>
 
-						<label className="flex cursor-pointer items-center gap-3 rounded-md border-2 border-chalk-white/30 p-3 transition-colors hover:border-chalk-white/60">
+						<label
+							htmlFor="visibility-private"
+							className="flex cursor-pointer items-center gap-3 rounded-md border-2 border-chalk-white/30 p-3 transition-colors hover:border-chalk-white/60"
+						>
 							<input
+								id="visibility-private"
 								type="radio"
 								name="visibility"
 								value="private"

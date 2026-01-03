@@ -7,12 +7,12 @@ import { LandingHero } from "@/widgets/landing-hero";
 export default function Home() {
 	return (
 		<WoodFrame>
-			<div className="bg-chalkboard-bg">
+			<main id="main-content" className="bg-chalkboard-bg">
 				<LandingHero />
 				<FeatureShowcase />
 				<LandingFeed />
 				<LandingFooter />
-			</div>
+			</main>
 		</WoodFrame>
 	);
 }
