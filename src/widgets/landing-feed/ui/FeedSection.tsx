@@ -50,6 +50,11 @@ export default function FeedSection() {
 											thumbnail={challenge.thumbnail}
 											viewCount={challenge.viewCount}
 											isPublic={challenge.isPublic}
+											difficultyStats={{
+												easy: challenge.difficultyEasy,
+												normal: challenge.difficultyNormal,
+												hard: challenge.difficultyHard,
+											}}
 											onClick={() => {
 												router.push(`/play/${challenge.id}`);
 											}}

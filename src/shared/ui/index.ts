@@ -2,6 +2,8 @@ export { default as ChalkButton } from "./ChalkButton";
 export { default as ChalkCard } from "./ChalkCard";
 export { default as ChalkDust } from "./ChalkDust";
 export { default as ChalkSelect } from "./ChalkSelect";
+export { default as DifficultyBadge } from "./DifficultyBadge";
+export { default as DifficultyText } from "./DifficultyText";
 export { EmptyState } from "./EmptyState";
 export { ErrorDisplay } from "./ErrorDisplay";
 export { LoadingState } from "./LoadingState";

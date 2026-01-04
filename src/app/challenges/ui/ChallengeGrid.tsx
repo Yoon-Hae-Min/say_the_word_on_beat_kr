@@ -17,6 +17,9 @@ interface Challenge {
 	thumbnail: string;
 	isPublic: boolean;
 	createdAt: string;
+	difficultyEasy: number;
+	difficultyNormal: number;
+	difficultyHard: number;
 }
 
 interface ChallengeGridProps {
@@ -58,6 +61,11 @@ export default function ChallengeGrid({ challenges, className = "" }: ChallengeG
 						thumbnail={challenge.thumbnail}
 						viewCount={challenge.viewCount}
 						isPublic={challenge.isPublic}
+						difficultyStats={{
+							easy: challenge.difficultyEasy,
+							normal: challenge.difficultyNormal,
+							hard: challenge.difficultyHard,
+						}}
 						onClick={() => {
 							router.push(`/play/${challenge.id}`);
 						}}

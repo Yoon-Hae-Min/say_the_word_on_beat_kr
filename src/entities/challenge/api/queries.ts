@@ -39,6 +39,9 @@ export function usePopularChallenges(limit: number = 9): UseQueryResult<
 		showNames: boolean;
 		isPublic: boolean;
 		createdAt: string;
+		difficultyEasy: number;
+		difficultyNormal: number;
+		difficultyHard: number;
 	}>
 > {
 	return useQuery({
@@ -64,6 +67,9 @@ export function useAllChallenges(
 		showNames: boolean;
 		isPublic: boolean;
 		createdAt: string;
+		difficultyEasy: number;
+		difficultyNormal: number;
+		difficultyHard: number;
 	}>
 > {
 	return useQuery({
@@ -101,6 +107,9 @@ export function useMyChallenges(
 		showNames: boolean;
 		isPublic: boolean;
 		createdAt: string;
+		difficultyEasy: number;
+		difficultyNormal: number;
+		difficultyHard: number;
 	}>
 > {
 	return useQuery({

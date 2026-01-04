@@ -53,6 +53,9 @@ export interface UseChallengeListReturn {
 		thumbnail: string;
 		isPublic: boolean;
 		createdAt: string;
+		difficultyEasy: number;
+		difficultyNormal: number;
+		difficultyHard: number;
 	}>;
 
 	/**
