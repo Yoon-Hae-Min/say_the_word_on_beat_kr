@@ -23,6 +23,9 @@ export interface Challenge {
 	isPublic: boolean;
 	showNames: boolean;
 	createdAt: string;
+	difficultyEasy: number;
+	difficultyNormal: number;
+	difficultyHard: number;
 }
 
 export interface Slot {

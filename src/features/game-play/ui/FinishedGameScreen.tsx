@@ -7,12 +7,12 @@
 
 "use client";
 
+import Link from "next/link";
 import type { ClientSafeChallenge } from "@/entities/challenge";
 import { convertImagePathToUrl } from "@/entities/challenge/api/repository";
 import { DifficultyVoting } from "@/features/difficulty-voting";
 import { shareChallenge } from "@/shared/lib/share/shareUtils";
 import { ChalkButton } from "@/shared/ui";
-import Link from "next/link";
 
 interface FinishedGameScreenProps {
 	/**

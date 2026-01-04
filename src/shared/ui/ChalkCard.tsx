@@ -3,12 +3,18 @@
 import { Eye } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
+import DifficultyText from "./DifficultyText";
 
 interface ChalkCardProps {
 	title: string;
 	thumbnail: string;
 	viewCount: number;
 	isPublic: boolean;
+	difficultyStats?: {
+		easy: number;
+		normal: number;
+		hard: number;
+	};
 	onClick?: () => void;
 	className?: string;
 }
@@ -18,6 +24,7 @@ export default function ChalkCard({
 	thumbnail,
 	viewCount,
 	isPublic,
+	difficultyStats,
 	onClick,
 	className = "",
 }: ChalkCardProps) {
@@ -39,14 +46,14 @@ export default function ChalkCard({
         bg-chalkboard-bg
         chalk-border border-chalk-white
         chalk-dust
-        p-4
+        overflow-hidden
         transition-all duration-300
         hover:scale-105 hover:brightness-110
         ${className}
       `}
 		>
 			{/* Thumbnail */}
-			<div className="relative mb-3 aspect-video overflow-hidden rounded-md">
+			<div className="relative aspect-video overflow-hidden">
 				<Image
 					src={thumbnail}
 					alt={title}
@@ -64,13 +71,23 @@ export default function ChalkCard({
 				)}
 			</div>
 
-			{/* Title */}
-			<h3 className="chalk-text mb-2 line-clamp-2 text-xl text-chalk-white">{title}</h3>
+			{/* Content Area */}
+			<div className="p-4">
+				{/* Difficulty */}
+				{difficultyStats && (
+					<div className="mb-2">
+						<DifficultyText stats={difficultyStats} />
+					</div>
+				)}
 
-			{/* View Count */}
-			<div className="flex items-center gap-1 text-chalk-yellow">
-				<Eye size={16} />
-				<span className="chalk-text text-sm">{viewCount}</span>
+				{/* Title */}
+				<h3 className="chalk-text mb-2 line-clamp-2 text-xl text-chalk-white">{title}</h3>
+
+				{/* View Count */}
+				<div className="flex items-center gap-1 text-chalk-yellow">
+					<Eye size={16} />
+					<span className="chalk-text text-sm">{viewCount}</span>
+				</div>
 			</div>
 		</div>
 	);

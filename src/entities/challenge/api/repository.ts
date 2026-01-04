@@ -158,6 +158,9 @@ export async function getPopularChallenges(limit: number = 9): Promise<
 		showNames: boolean;
 		isPublic: boolean;
 		createdAt: string;
+		difficultyEasy: number;
+		difficultyNormal: number;
+		difficultyHard: number;
 	}>
 > {
 	try {
@@ -186,6 +189,9 @@ export async function getPopularChallenges(limit: number = 9): Promise<
 				showNames: node.show_names,
 				isPublic: node.is_public,
 				createdAt: node.created_at,
+				difficultyEasy: node.difficulty_easy ?? 0,
+				difficultyNormal: node.difficulty_normal ?? 0,
+				difficultyHard: node.difficulty_hard ?? 0,
 			};
 		});
 
@@ -234,6 +240,9 @@ export async function getAllChallenges(
 		showNames: boolean;
 		isPublic: boolean;
 		createdAt: string;
+		difficultyEasy: number;
+		difficultyNormal: number;
+		difficultyHard: number;
 	}>
 > {
 	try {
@@ -265,6 +274,9 @@ export async function getAllChallenges(
 				showNames: node.show_names,
 				isPublic: node.is_public,
 				createdAt: node.created_at,
+				difficultyEasy: node.difficulty_easy ?? 0,
+				difficultyNormal: node.difficulty_normal ?? 0,
+				difficultyHard: node.difficulty_hard ?? 0,
 			};
 		});
 
@@ -293,6 +305,9 @@ export async function getMyChallenges(
 		showNames: boolean;
 		isPublic: boolean;
 		createdAt: string;
+		difficultyEasy: number;
+		difficultyNormal: number;
+		difficultyHard: number;
 	}>
 > {
 	try {
@@ -324,6 +339,9 @@ export async function getMyChallenges(
 				showNames: node.show_names,
 				isPublic: node.is_public,
 				createdAt: node.created_at,
+				difficultyEasy: node.difficulty_easy ?? 0,
+				difficultyNormal: node.difficulty_normal ?? 0,
+				difficultyHard: node.difficulty_hard ?? 0,
 			};
 		});
 
