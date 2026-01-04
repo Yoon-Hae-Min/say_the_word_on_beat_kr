@@ -47,7 +47,7 @@ export interface ChallengeData {
 }
 
 // Sort options for challenge queries
-export type ChallengeSortBy = "latest" | "views";
+export type ChallengeSortBy = "latest" | "views" | "recommended";
 
 // Filter options for challenge queries
 export type ChallengeFilter = "all" | "mine";

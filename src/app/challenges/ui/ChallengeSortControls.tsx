@@ -43,6 +43,7 @@ const FILTER_OPTIONS = [
 
 // Sort options
 const SORT_OPTIONS = [
+	{ value: "recommended", label: "추천순" },
 	{ value: "views", label: "조회순" },
 	{ value: "latest", label: "최신순" },
 ] as const;

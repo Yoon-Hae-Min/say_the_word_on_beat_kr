@@ -246,6 +246,38 @@ export async function getAllChallenges(
 	}>
 > {
 	try {
+		// Use RPC function for recommended sort
+		if (sortBy === "recommended") {
+			const { data, error } = await supabase.rpc("get_recommended_challenges", {
+				limit_count: limit,
+				offset_count: offset,
+			});
+
+			if (error) {
+				console.error("Failed to fetch recommended challenges:", error);
+				return [];
+			}
+
+			const challenges = (data || []).map((node) => {
+				const thumbnailUrl = convertImagePathToUrl(node);
+
+				return {
+					id: node.id,
+					title: node.title,
+					viewCount: Number(node.view_count), // Convert BIGINT to number
+					thumbnail: thumbnailUrl,
+					showNames: node.show_names,
+					isPublic: node.is_public,
+					createdAt: node.created_at,
+					difficultyEasy: node.difficulty_easy ?? 0,
+					difficultyNormal: node.difficulty_normal ?? 0,
+					difficultyHard: node.difficulty_hard ?? 0,
+				};
+			});
+
+			return challenges;
+		}
+
 		// Determine sort configuration based on sortBy parameter
 		const orderColumn = sortBy === "views" ? "view_count" : "created_at";
 

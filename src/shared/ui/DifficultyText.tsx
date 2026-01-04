@@ -44,7 +44,9 @@ export default function DifficultyText({ stats, className = "" }: DifficultyText
 	return (
 		<div className={`flex items-center gap-1.5`}>
 			<span className={`${dotColorClasses[dominant.level]} ${dotSize}`}>●</span>
-			<span className={`chalk-text ${textColorClasses[dominant.level]} ${textSize} ${className} font-semibold`}>
+			<span
+				className={`chalk-text ${textColorClasses[dominant.level]} ${textSize} ${className} font-semibold`}
+			>
 				{label}
 			</span>
 		</div>
