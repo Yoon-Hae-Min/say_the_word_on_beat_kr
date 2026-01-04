@@ -44,6 +44,48 @@ export const validateChallengeTitle = (title: string): ValidationResult => {
 };
 
 /**
+ * Validate minimum number of unique images used in challenge slots
+ */
+export const validateMinimumUniqueImagesUsed = (
+	rounds: ChallengeData["rounds"]
+): ValidationResult => {
+	const MIN_UNIQUE_IMAGES = 3;
+
+	// Extract all resourceIds from all slots across all rounds
+	const usedResourceIds = rounds.flatMap((round) =>
+		round.slots.map((slot) => slot.resourceId).filter((id) => id !== null)
+	);
+
+	// Get unique resource IDs using Set
+	const uniqueResourceIds = new Set(usedResourceIds);
+	const uniqueCount = uniqueResourceIds.size;
+
+	if (uniqueCount < MIN_UNIQUE_IMAGES) {
+		return {
+			isValid: false,
+			errorMessage: `챌린지에 최소 ${MIN_UNIQUE_IMAGES}개의 서로 다른 이미지를 사용해야 합니다 (현재: ${uniqueCount}개)`,
+		};
+	}
+
+	return { isValid: true };
+};
+
+/**
+ * Calculate number of unique images used across all slots
+ * Used for real-time UI feedback
+ */
+export const calculateUniqueImagesUsed = (rounds: ChallengeData["rounds"]): number => {
+	// Extract all resourceIds from all slots across all rounds
+	const usedResourceIds = rounds.flatMap((round) =>
+		round.slots.map((slot) => slot.resourceId).filter((id) => id !== null)
+	);
+
+	// Get unique resource IDs using Set
+	const uniqueResourceIds = new Set(usedResourceIds);
+	return uniqueResourceIds.size;
+};
+
+/**
  * Validate that all slots are filled with resources
  */
 export const validateAllSlotsFilled = (rounds: ChallengeData["rounds"]): ValidationResult => {
@@ -112,6 +154,12 @@ export const validateChallengeData = (data: ChallengeData): ValidationResult => 
 	const slotsValidation = validateAllSlotsFilled(data.rounds);
 	if (!slotsValidation.isValid) {
 		return slotsValidation;
+	}
+
+	// Validate minimum unique images used
+	const uniqueImagesValidation = validateMinimumUniqueImagesUsed(data.rounds);
+	if (!uniqueImagesValidation.isValid) {
+		return uniqueImagesValidation;
 	}
 
 	// Validate resource names (if showNames is enabled)

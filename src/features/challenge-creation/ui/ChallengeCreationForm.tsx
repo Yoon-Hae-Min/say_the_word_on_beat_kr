@@ -12,6 +12,7 @@
 import { ChalkDust, ErrorDisplay } from "@/shared/ui";
 import { useChallengeForm } from "../hooks/useChallengeForm";
 import { useChallengeSubmission } from "../hooks/useChallengeSubmission";
+import { calculateUniqueImagesUsed } from "../lib/validation";
 import FooterSection from "./FooterSection";
 import HeaderSection from "./HeaderSection";
 import NameToggleControl from "./NameToggleControl";
@@ -30,6 +31,10 @@ export default function ChallengeCreationForm({ isPublic }: ChallengeCreationFor
 	// Use custom hooks for state management
 	const form = useChallengeForm(isPublic);
 	const submission = useChallengeSubmission();
+
+	// Calculate unique images used in real-time
+	const uniqueImagesUsed = calculateUniqueImagesUsed(form.challengeData.rounds);
+	const needsMoreImages = uniqueImagesUsed < 3;
 
 	// Handle challenge generation
 	const handleGenerate = async () => {
@@ -123,6 +128,15 @@ export default function ChallengeCreationForm({ isPublic }: ChallengeCreationFor
 								onSlotClear={form.handlers.onSlotClear}
 								showNames={form.challengeData.showNames}
 							/>
+
+							{/* Real-time validation warning */}
+							{needsMoreImages && uniqueImagesUsed > 0 && (
+								<div className="mt-4 rounded-lg border-2 border-chalk-yellow/50 bg-chalk-yellow/10 p-3">
+									<p className="text-sm text-chalk-yellow text-center">
+										⚠️ 최소 3개의 서로 다른 이미지를 사용해야 합니다 (현재: {uniqueImagesUsed}개)
+									</p>
+								</div>
+							)}
 
 							<div className="mt-6">
 								<RoundControl
