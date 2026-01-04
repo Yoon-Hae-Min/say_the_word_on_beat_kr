@@ -30,7 +30,7 @@ function ChallengesContent() {
 
 	// Manage state via URL query parameters
 	const urlParams = useURLSearchParams({
-		defaults: { page: "1", sort: "views", filter: "all" },
+		defaults: { page: "1", sort: "recommended", filter: "all" },
 		basePath: "/challenges",
 	});
 

@@ -119,6 +119,23 @@ export type Database = {
 					view_count: number;
 				}[];
 			};
+			get_recommended_challenges: {
+				Args: { limit_count?: number; offset_count?: number };
+				Returns: {
+					created_at: string;
+					difficulty_easy: number;
+					difficulty_hard: number;
+					difficulty_normal: number;
+					game_config: Database["public"]["CompositeTypes"]["game_config_struct"][];
+					id: string;
+					is_public: boolean;
+					recommendation_score: number;
+					show_names: boolean;
+					thumbnail_url: string;
+					title: string;
+					view_count: number;
+				}[];
+			};
 			increment_view_count: { Args: { row_id: string }; Returns: undefined };
 		};
 		Enums: {
