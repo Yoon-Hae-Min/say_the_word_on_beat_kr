@@ -32,11 +32,29 @@ export default function Footer() {
 					))}
 				</div>
 
-				{/* Privacy Policy Link */}
-				<div className="mb-4 text-center">
+				{/* Site Links */}
+				<div className="mb-4 flex flex-wrap justify-center gap-4 text-sm">
+					<Link
+						href="/guide"
+						className="text-chalk-white/70 underline transition-colors hover:text-chalk-yellow"
+					>
+						게임 가이드
+					</Link>
+					<Link
+						href="/faq"
+						className="text-chalk-white/70 underline transition-colors hover:text-chalk-yellow"
+					>
+						자주 묻는 질문
+					</Link>
+					<Link
+						href="/about"
+						className="text-chalk-white/70 underline transition-colors hover:text-chalk-yellow"
+					>
+						소개
+					</Link>
 					<Link
 						href="/privacy"
-						className="text-chalk-white/70 hover:text-chalk-yellow transition-colors text-sm underline"
+						className="text-chalk-white/70 underline transition-colors hover:text-chalk-yellow"
 					>
 						개인정보 처리방침
 					</Link>
