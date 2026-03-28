@@ -8,6 +8,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { trackVoteSubmit } from "@/shared/lib/analytics/gtag";
 import type { DifficultyLevel } from "@/shared/lib/difficulty";
 import { getUserId } from "@/shared/lib/user/fingerprint";
 import { getUserVote, getVoteStats, submitVote } from "../api/voteService";
@@ -104,6 +105,8 @@ function useDifficultyVoting(challengeId: string) {
 				setError(result.error ?? "투표 중 오류가 발생했습니다");
 				return;
 			}
+
+			trackVoteSubmit(challengeId, difficulty);
 
 			// Fetch updated stats
 			const updatedStats = await getVoteStats(challengeId);

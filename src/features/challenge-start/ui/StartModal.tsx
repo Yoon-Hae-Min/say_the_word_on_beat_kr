@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { trackChallengeCreateStart } from "@/shared/lib/analytics/gtag";
 import { ChalkButton } from "@/shared/ui";
 
 interface StartModalProps {
@@ -22,6 +23,7 @@ export default function StartModal({ isOpen, onClose }: StartModalProps) {
 	const handleSubmit = () => {
 		if (!agreed) return;
 		if (visibility === "public" && !contentPolicyAgreed) return;
+		trackChallengeCreateStart();
 		router.push(`/maker?visibility=${visibility}`);
 	};
 

@@ -10,7 +10,8 @@
 import Link from "next/link";
 import type { ClientSafeChallenge } from "@/entities/challenge";
 import { convertImagePathToUrl } from "@/entities/challenge";
-import { shareChallenge } from "@/shared/lib/share/shareUtils";
+import { trackShareClick } from "@/shared/lib/analytics/gtag";
+import { appendUtmParams, shareChallenge } from "@/shared/lib/share/shareUtils";
 import { ChalkButton } from "@/shared/ui";
 
 interface FinishedGameScreenProps {
@@ -65,10 +66,18 @@ export default function FinishedGameScreen({
 	votingSlot,
 	className = "",
 }: FinishedGameScreenProps) {
-	const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+	const baseUrl = typeof window !== "undefined" ? window.location.href : "";
+	const shareUrl = baseUrl
+		? appendUtmParams(baseUrl, {
+				source: "share",
+				medium: "social",
+				campaign: "challenge_complete",
+			})
+		: "";
 	const thumbnailUrl = convertImagePathToUrl(challengeData);
 
 	const handleShare = async () => {
+		trackShareClick(challengeId, "native_share");
 		try {
 			await shareChallenge(title, `"${title}" 챌린지를 완료했어요!`, shareUrl);
 		} catch (error) {

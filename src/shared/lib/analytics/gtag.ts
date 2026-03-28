@@ -37,6 +37,54 @@ export function sendGAEvent(event: GTagEvent) {
 	});
 }
 
+// ── 커스텀 이벤트 헬퍼 ──
+
+export function trackChallengeCreateStart() {
+	sendGAEvent({ action: "challenge_create_start", category: "challenge" });
+}
+
+export function trackChallengeCreateComplete(challengeId: string) {
+	sendGAEvent({
+		action: "challenge_create_complete",
+		category: "challenge",
+		challenge_id: challengeId,
+	});
+}
+
+export function trackGameStart(challengeId: string) {
+	sendGAEvent({
+		action: "game_start",
+		category: "game",
+		challenge_id: challengeId,
+	});
+}
+
+export function trackGameComplete(challengeId: string) {
+	sendGAEvent({
+		action: "game_complete",
+		category: "game",
+		challenge_id: challengeId,
+	});
+}
+
+export function trackVoteSubmit(challengeId: string, difficulty: string) {
+	sendGAEvent({
+		action: "vote_submit",
+		category: "engagement",
+		challenge_id: challengeId,
+		difficulty,
+	});
+}
+
+export function trackShareClick(challengeId: string, method: string) {
+	sendGAEvent({
+		action: "share_click",
+		category: "engagement",
+		challenge_id: challengeId,
+		share_method: method,
+	});
+}
+
 /**
  * GA에 사용자 ID 설정
  */
