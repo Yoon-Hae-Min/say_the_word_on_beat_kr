@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye } from "lucide-react";
+import { Eye, Lock, User } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "@/shared/ui/badge";
 import DifficultyText from "./DifficultyText";
@@ -10,6 +10,7 @@ interface ChalkCardProps {
 	thumbnail: string;
 	viewCount: number;
 	isPublic: boolean;
+	isMine?: boolean;
 	difficultyStats?: {
 		easy: number;
 		normal: number;
@@ -24,6 +25,7 @@ export default function ChalkCard({
 	thumbnail,
 	viewCount,
 	isPublic,
+	isMine = false,
 	difficultyStats,
 	onClick,
 	className = "",
@@ -61,14 +63,21 @@ export default function ChalkCard({
 					className="object-cover"
 					sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
 				/>
-				{/* Private Badge */}
-				{!isPublic && (
-					<div className="absolute right-2 top-2">
-						<Badge variant="secondary" className="bg-chalk-white/90 text-chalkboard-bg">
-							Private
+				{/* Badges */}
+				<div className="absolute right-2 top-2 flex gap-1.5">
+					{isMine && (
+						<Badge variant="secondary" className="bg-chalk-yellow/90 text-chalkboard-bg">
+							<User size={12} className="mr-1" />
+							내 챌린지
 						</Badge>
-					</div>
-				)}
+					)}
+					{!isPublic && (
+						<Badge variant="secondary" className="bg-chalk-white/90 text-chalkboard-bg">
+							<Lock size={12} className="mr-1" />
+							비공개
+						</Badge>
+					)}
+				</div>
 			</div>
 
 			{/* Content Area */}

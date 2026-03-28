@@ -29,6 +29,7 @@ export default function ChalkButton({
 			disabled={disabled}
 			className={`
         chalk-text
+        flex items-center justify-center gap-1.5
         border-2 rounded-lg
         px-6 py-3
         transition-all duration-300

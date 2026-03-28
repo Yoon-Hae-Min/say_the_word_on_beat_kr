@@ -1,21 +1,16 @@
 /**
- * ChallengesPage Component (Refactored)
+ * ChallengesPage Component
  *
  * Page for browsing all public challenges.
- * Clean architecture: page manages UI state via URL, hook manages data.
- *
- * Architecture:
- * - Page level: currentPage, sortBy from URL query parameters
- * - useChallengeList: Data fetching only
- * - usePagination: Pagination calculation utilities
+ * Filter removed — "내 챌린지" is now a separate /my page.
  */
 
 "use client";
 
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, UserCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Suspense } from "react";
-import type { ChallengeFilter, ChallengeSortBy } from "@/entities/challenge";
+import type { ChallengeSortBy } from "@/entities/challenge";
 import { usePagination, useURLSearchParams } from "@/shared/hooks";
 import { getUserId } from "@/shared/lib/user/fingerprint";
 import { EmptyState, LoadingState, PaginationControls, WoodFrame } from "@/shared/ui";
@@ -28,33 +23,24 @@ const ITEMS_PER_PAGE = 12;
 function ChallengesContent() {
 	const router = useRouter();
 
-	// Manage state via URL query parameters
 	const urlParams = useURLSearchParams({
-		defaults: { page: "1", sort: "recommended", filter: "all" },
+		defaults: { page: "1", sort: "recommended" },
 		basePath: "/challenges",
 	});
 
-	// Get current state from URL
 	const currentPage = Number(urlParams.get("page"));
 	const sortBy = urlParams.get("sort") as ChallengeSortBy;
-	const filter = urlParams.get("filter") as ChallengeFilter;
-
-	// Get userId for filtering
 	const userId = getUserId();
-
-	// Calculate offset
 	const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
-	// Fetch challenge data
 	const challengeList = useChallengeList({
 		itemsPerPage: ITEMS_PER_PAGE,
 		offset,
 		sortBy,
-		filter,
+		filter: "all",
 		userId,
 	});
 
-	// Use pagination for UI calculations only (not for state management)
 	const pagination = usePagination({
 		totalCount: challengeList.totalCount,
 		itemsPerPage: ITEMS_PER_PAGE,
@@ -64,13 +50,6 @@ function ChallengesContent() {
 		},
 	});
 
-	// Handle filter change - reset to page 1
-	const handleFilterChange = (newFilter: ChallengeFilter) => {
-		urlParams.set({ filter: newFilter, page: "1" });
-		window.scrollTo({ top: 0, behavior: "smooth" });
-	};
-
-	// Handle sort change - reset to page 1
 	const handleSortChange = (newSort: ChallengeSortBy) => {
 		urlParams.set({ sort: newSort, page: "1" });
 		window.scrollTo({ top: 0, behavior: "smooth" });
@@ -80,7 +59,7 @@ function ChallengesContent() {
 		<WoodFrame>
 			<main id="main-content" className="min-h-screen bg-chalkboard-bg px-4 py-8 md:py-16">
 				<div className="mx-auto max-w-6xl">
-					{/* Header with back button */}
+					{/* Header */}
 					<div className="mb-8 flex items-center justify-between">
 						<button
 							type="button"
@@ -89,6 +68,14 @@ function ChallengesContent() {
 						>
 							<ArrowLeft size={24} />
 							<span className="chalk-text text-lg md:text-xl">홈으로</span>
+						</button>
+						<button
+							type="button"
+							onClick={() => router.push("/my")}
+							className="flex h-10 items-center gap-2 rounded-lg border-2 border-chalk-white/40 bg-chalkboard-bg/80 px-3 transition-all hover:border-chalk-yellow hover:scale-105 md:h-11 md:px-4"
+						>
+							<UserCircle className="h-5 w-5 text-chalk-white" />
+							<span className="chalk-text text-sm text-chalk-white">내 챌린지</span>
 						</button>
 					</div>
 
@@ -104,27 +91,18 @@ function ChallengesContent() {
 					<ChallengeSortControls
 						sortBy={sortBy}
 						onSortChange={handleSortChange}
-						filter={filter}
-						onFilterChange={handleFilterChange}
 						className="mb-8"
 					/>
 
-					{/* Loading state */}
 					{challengeList.isLoading && <LoadingState />}
 
-					{/* Empty state */}
 					{!challengeList.isLoading && challengeList.challenges.length === 0 && (
 						<EmptyState
-							message={
-								filter === "mine"
-									? "아직 만든 챌린지가 없습니다."
-									: "아직 공개된 챌린지가 없습니다."
-							}
+							message="아직 공개된 챌린지가 없습니다."
 							description="첫 번째 챌린지를 만들어보세요!"
 						/>
 					)}
 
-					{/* Challenge grid and pagination */}
 					{!challengeList.isLoading && challengeList.challenges.length > 0 && (
 						<ChallengeGrid challenges={challengeList.challenges} />
 					)}
