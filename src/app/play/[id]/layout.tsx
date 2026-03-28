@@ -126,8 +126,8 @@ export default async function PlayLayout({ children, params }: PlayLayoutProps) 
 					<div className="sr-only">
 						<h1>{challengeInfo.title} - 단어리듬게임 챌린지</h1>
 						<p>
-							{challengeInfo.title} 챌린지를 플레이해보세요. 비트에 맞춰 이미지의 이름을
-							말하는 리듬 퀴즈 게임입니다.
+							{challengeInfo.title} 챌린지를 플레이해보세요. 비트에 맞춰 이미지의 이름을 말하는 리듬
+							퀴즈 게임입니다.
 						</p>
 						<p>
 							이 챌린지는 {challengeInfo.totalRounds}라운드로 구성되어 있으며, 각 라운드에{" "}
@@ -136,8 +136,8 @@ export default async function PlayLayout({ children, params }: PlayLayoutProps) 
 						{totalVotes > 0 && (
 							<p>
 								난이도 투표: 쉬움 {challengeInfo.difficultyEasy}표, 보통{" "}
-								{challengeInfo.difficultyNormal}표, 어려움 {challengeInfo.difficultyHard}표
-								(총 {totalVotes}명 참여)
+								{challengeInfo.difficultyNormal}표, 어려움 {challengeInfo.difficultyHard}표 (총{" "}
+								{totalVotes}명 참여)
 							</p>
 						)}
 						<p>조회수: {challengeInfo.viewCount.toLocaleString()}회</p>

@@ -11,7 +11,7 @@
  */
 export const appendUtmParams = (
 	url: string,
-	params: { source: string; medium: string; campaign: string },
+	params: { source: string; medium: string; campaign: string }
 ): string => {
 	const urlObj = new URL(url);
 	// Remove existing UTM params
@@ -91,7 +91,7 @@ export const isShareSupported = (): boolean => {
 export const getShareUrl = (
 	platform: "twitter" | "facebook" | "line",
 	url: string,
-	text?: string,
+	text?: string
 ): string => {
 	const utmUrl = appendUtmParams(url, {
 		source: platform,
