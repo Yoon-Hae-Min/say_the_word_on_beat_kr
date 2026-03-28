@@ -7,9 +7,9 @@
 
 "use client";
 
+import type { DifficultyLevel } from "@/shared/lib/difficulty";
+import { getDifficultyEmoji, getDifficultyLabel } from "@/shared/lib/difficulty";
 import { ChalkButton } from "@/shared/ui";
-import type { DifficultyLevel } from "../model/types";
-import { getDifficultyEmoji, getDifficultyLabel } from "../model/types";
 
 interface VoteButtonsProps {
 	/**

@@ -1,4 +1,4 @@
-import type { Resource } from "@/entities/resource/model/types";
+import type { Resource } from "@/shared/types/resource";
 import type { Database } from "../../../../database.types";
 
 // Type aliases from Supabase Database schema

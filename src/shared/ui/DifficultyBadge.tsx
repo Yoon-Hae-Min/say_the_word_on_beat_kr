@@ -1,8 +1,7 @@
 "use client";
 
-import { getDifficultyLabel } from "@/features/difficulty-voting/model/types";
 import type { DifficultyStats } from "@/shared/lib/difficulty";
-import { calculateDominantDifficulty } from "@/shared/lib/difficulty";
+import { calculateDominantDifficulty, getDifficultyLabel } from "@/shared/lib/difficulty";
 
 interface DifficultyBadgeProps {
 	stats: DifficultyStats;

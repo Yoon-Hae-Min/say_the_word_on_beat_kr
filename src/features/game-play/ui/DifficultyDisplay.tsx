@@ -1,9 +1,11 @@
 "use client";
 
-import type { DifficultyLevel } from "@/features/difficulty-voting/model/types";
-import { calculatePercentages, getDifficultyLabel } from "@/features/difficulty-voting/model/types";
-import type { DifficultyStats } from "@/shared/lib/difficulty";
-import { calculateDominantDifficulty } from "@/shared/lib/difficulty";
+import type { DifficultyLevel, DifficultyStats } from "@/shared/lib/difficulty";
+import {
+	calculateDominantDifficulty,
+	calculatePercentages,
+	getDifficultyLabel,
+} from "@/shared/lib/difficulty";
 
 interface DifficultyDisplayProps {
 	stats: DifficultyStats;
@@ -22,12 +24,7 @@ export default function DifficultyDisplay({ stats, className = "" }: DifficultyD
 	}
 
 	const label = getDifficultyLabel(dominant.level);
-	const percentages = calculatePercentages({
-		easy: stats.easy,
-		normal: stats.normal,
-		hard: stats.hard,
-		total: dominant.total,
-	});
+	const percentages = calculatePercentages(stats);
 
 	const difficulties: DifficultyLevel[] = ["easy", "normal", "hard"];
 

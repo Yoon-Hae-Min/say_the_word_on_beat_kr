@@ -7,9 +7,14 @@
 
 "use client";
 
+import type { DifficultyLevel } from "@/shared/lib/difficulty";
+import {
+	calculatePercentages,
+	getDifficultyEmoji,
+	getDifficultyLabel,
+} from "@/shared/lib/difficulty";
 import { ChalkButton } from "@/shared/ui";
-import type { DifficultyLevel, VoteStats as VoteStatsType } from "../model/types";
-import { calculatePercentages, getDifficultyEmoji, getDifficultyLabel } from "../model/types";
+import type { VoteStats as VoteStatsType } from "../model/types";
 
 interface VoteStatsProps {
 	/**
