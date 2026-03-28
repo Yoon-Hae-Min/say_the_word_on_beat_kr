@@ -47,7 +47,11 @@ interface ChallengeGridProps {
  * <ChallengeGrid challenges={challenges} />
  * ```
  */
-export default function ChallengeGrid({ challenges, showMineBadge = false, className = "" }: ChallengeGridProps) {
+export default function ChallengeGrid({
+	challenges,
+	showMineBadge = false,
+	className = "",
+}: ChallengeGridProps) {
 	const router = useRouter();
 
 	return (

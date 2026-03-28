@@ -11,7 +11,12 @@ import { ChevronRight, RotateCcw, Share2, Trophy } from "lucide-react";
 import Link from "next/link";
 import type { ClientSafeChallenge } from "@/entities/challenge";
 import { convertImagePathToUrl } from "@/entities/challenge";
-import { trackShareClick } from "@/shared/lib/analytics/gtag";
+import {
+	trackBrowseOtherClick,
+	trackGameReplay,
+	trackShareClick,
+	trackShareComplete,
+} from "@/shared/lib/analytics/gtag";
 import { appendUtmParams, shareChallenge } from "@/shared/lib/share/shareUtils";
 import { ChalkButton, ChalkDust } from "@/shared/ui";
 
@@ -49,11 +54,20 @@ export default function FinishedGameScreen({
 		trackShareClick(challengeId, "native_share");
 		try {
 			await shareChallenge(title, `"${title}" 챌린지를 완료했어요!`, shareUrl);
+			trackShareComplete(challengeId, "web_share_api", "play_complete");
 		} catch (error) {
 			if (error instanceof Error) {
+				if (error.message.includes("클립보드")) {
+					trackShareComplete(challengeId, "clipboard", "play_complete");
+				}
 				alert(error.message);
 			}
 		}
+	};
+
+	const handleRestart = () => {
+		trackGameReplay(challengeId);
+		onRestart();
 	};
 
 	return (
@@ -129,7 +143,7 @@ export default function FinishedGameScreen({
 					{/* Secondary: Replay */}
 					<ChalkButton
 						variant="white-outline"
-						onClick={onRestart}
+						onClick={handleRestart}
 						className="flex w-full items-center justify-center gap-2 px-6 py-3 text-lg"
 					>
 						<RotateCcw size={18} />
@@ -139,6 +153,7 @@ export default function FinishedGameScreen({
 					{/* Tertiary: Browse */}
 					<Link
 						href="/challenges"
+						onClick={() => trackBrowseOtherClick(challengeId)}
 						className="flex items-center gap-1 text-sm text-chalk-white/60 transition-colors hover:text-chalk-yellow"
 					>
 						다른 챌린지 구경하기

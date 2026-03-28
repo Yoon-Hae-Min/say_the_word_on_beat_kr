@@ -85,6 +85,109 @@ export function trackShareClick(challengeId: string, method: string) {
 	});
 }
 
+export function trackPlayPageView(challengeId: string) {
+	sendGAEvent({ action: "play_page_view", category: "page", challenge_id: challengeId });
+}
+
+export function trackRoundComplete(challengeId: string, roundIndex: number) {
+	sendGAEvent({
+		action: "round_complete",
+		category: "game",
+		challenge_id: challengeId,
+		round_index: roundIndex,
+	});
+}
+
+export function trackGameReplay(challengeId: string) {
+	sendGAEvent({ action: "game_replay", category: "game", challenge_id: challengeId });
+}
+
+export function trackMakerStepComplete(
+	step: "resource_upload" | "round_config",
+	resourceCount: number
+) {
+	sendGAEvent({
+		action: "maker_step_complete",
+		category: "challenge",
+		step,
+		resource_count: resourceCount,
+	});
+}
+
+export function trackImageUploadFail(
+	errorType: "compression" | "presigned_url" | "storage_upload"
+) {
+	sendGAEvent({ action: "image_upload_fail", category: "error", error_type: errorType });
+}
+
+export function trackChallengeCreateShare(
+	challengeId: string,
+	method: "copy_link" | "native_share"
+) {
+	sendGAEvent({
+		action: "challenge_create_share",
+		category: "engagement",
+		challenge_id: challengeId,
+		method,
+	});
+}
+
+export function trackShareComplete(
+	challengeId: string,
+	method: "web_share_api" | "clipboard",
+	context: "play_complete" | "create_success"
+) {
+	sendGAEvent({
+		action: "share_complete",
+		category: "engagement",
+		challenge_id: challengeId,
+		method,
+		context,
+	});
+}
+
+export function trackMyPageView(challengeCount: number) {
+	sendGAEvent({ action: "my_page_view", category: "page", challenge_count: challengeCount });
+}
+
+export function trackBrowseOtherClick(challengeId: string) {
+	sendGAEvent({
+		action: "browse_other_click",
+		category: "engagement",
+		challenge_id: challengeId,
+	});
+}
+
+export function trackDeviceLinkAction(actionType: "copy_code" | "import_code", success: boolean) {
+	sendGAEvent({
+		action: "device_link_action",
+		category: "engagement",
+		action_type: actionType,
+		success: success ? 1 : 0,
+	});
+}
+
+export function trackChallengeManageAction(
+	actionType: "toggle_public" | "delete",
+	challengeId: string
+) {
+	sendGAEvent({
+		action: "challenge_manage_action",
+		category: "engagement",
+		action_type: actionType,
+		challenge_id: challengeId,
+	});
+}
+
+export function trackChallengeSearch(sortType: string, pageNumber: number) {
+	sendGAEvent({
+		action: "challenge_search",
+		category: "engagement",
+		sort_type: sortType,
+		page_number: pageNumber,
+	});
+}
+
 /**
  * GA에 사용자 ID 설정
  */

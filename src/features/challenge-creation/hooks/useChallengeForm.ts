@@ -10,6 +10,7 @@
 import { useState } from "react";
 import type { ChallengeData, Slot } from "@/entities/challenge";
 import type { Resource } from "@/entities/resource";
+import { trackMakerStepComplete } from "@/shared/lib/analytics/gtag";
 
 const TOTAL_ROUNDS = 5;
 const SLOTS_PER_ROUND = 8;
@@ -90,10 +91,11 @@ export const useChallengeForm = (isPublic: boolean): UseChallengeFormReturn => {
 
 	// Handler: Add new resource
 	const handleResourceUpload = (resource: Resource) => {
-		setChallengeData((prev) => ({
-			...prev,
-			resources: [...prev.resources, resource],
-		}));
+		setChallengeData((prev) => {
+			const newResources = [...prev.resources, resource];
+			trackMakerStepComplete("resource_upload", newResources.length);
+			return { ...prev, resources: newResources };
+		});
 	};
 
 	// Handler: Select resource for placement

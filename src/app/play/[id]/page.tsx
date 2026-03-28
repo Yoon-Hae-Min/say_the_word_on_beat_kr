@@ -3,6 +3,7 @@
 import { useParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { GameStage, incrementViewCount, useChallengeQuery } from "@/features/game-play";
+import { trackPlayPageView } from "@/shared/lib/analytics/gtag";
 import { getUserId } from "@/shared/lib/user/fingerprint";
 import { WoodFrame } from "@/shared/ui";
 
@@ -19,6 +20,7 @@ export default function PlayPage() {
 		if (challengeData && !viewCountedRef.current) {
 			viewCountedRef.current = true;
 			incrementViewCount(challengeId);
+			trackPlayPageView(challengeId);
 		}
 	}, [challengeData, challengeId]);
 

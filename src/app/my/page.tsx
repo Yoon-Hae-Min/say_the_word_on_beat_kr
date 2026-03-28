@@ -1,16 +1,36 @@
 "use client";
 
-import { ArrowLeft, Check, ClipboardCopy, Eye, Globe, Link2, Lock, Plus, Trash2, X } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+	ArrowLeft,
+	Check,
+	ClipboardCopy,
+	Eye,
+	Globe,
+	Link2,
+	Lock,
+	Plus,
+	Trash2,
+	X,
+} from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Suspense, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { challengeKeys, useMyChallenges, useMyChallengesCount } from "@/entities/challenge";
+import { Suspense, useEffect, useRef, useState } from "react";
+import {
+	challengeKeys,
+	updateChallengePublicStatus,
+	useMyChallenges,
+	useMyChallengesCount,
+} from "@/entities/challenge";
 import { usePagination, useURLSearchParams } from "@/shared/hooks";
+import {
+	trackChallengeManageAction,
+	trackDeviceLinkAction,
+	trackMyPageView,
+} from "@/shared/lib/analytics/gtag";
 import { getUserId, importUserId } from "@/shared/lib/user/fingerprint";
 import { ChalkButton, LoadingState, PaginationControls, WoodFrame } from "@/shared/ui";
 import { Badge } from "@/shared/ui/badge";
-import { updateChallengePublicStatus } from "@/entities/challenge";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -33,7 +53,8 @@ function MyChallengeCard({
 	onTogglePublic: (id: string, currentStatus: boolean) => void;
 }) {
 	const router = useRouter();
-	const totalVotes = challenge.difficultyEasy + challenge.difficultyNormal + challenge.difficultyHard;
+	const totalVotes =
+		challenge.difficultyEasy + challenge.difficultyNormal + challenge.difficultyHard;
 
 	return (
 		<div className="group overflow-hidden rounded-lg bg-chalk-white/5 transition-all hover:bg-chalkboard-bg/80 hover:shadow-[0_0_20px_rgba(255,255,255,0.08)]">
@@ -83,9 +104,7 @@ function MyChallengeCard({
 						<Eye size={14} />
 						조회 {challenge.viewCount}
 					</span>
-					{totalVotes > 0 && (
-						<span>투표 {totalVotes}</span>
-					)}
+					{totalVotes > 0 && <span>투표 {totalVotes}</span>}
 				</div>
 
 				{/* Actions */}
@@ -137,8 +156,21 @@ function MyPageContent() {
 	const currentPage = Number(urlParams.get("page"));
 	const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
-	const { data: challenges = [], isLoading } = useMyChallenges(userId, ITEMS_PER_PAGE, offset, "latest");
+	const { data: challenges = [], isLoading } = useMyChallenges(
+		userId,
+		ITEMS_PER_PAGE,
+		offset,
+		"latest"
+	);
 	const { data: totalCount = 0 } = useMyChallengesCount(userId);
+	const pageViewTrackedRef = useRef(false);
+
+	useEffect(() => {
+		if (!isLoading && !pageViewTrackedRef.current) {
+			pageViewTrackedRef.current = true;
+			trackMyPageView(totalCount);
+		}
+	}, [isLoading, totalCount]);
 
 	const pagination = usePagination({
 		totalCount,
@@ -158,7 +190,12 @@ function MyPageContent() {
 	const [importError, setImportError] = useState("");
 
 	const handleCopyCode = async () => {
-		await navigator.clipboard.writeText(userId);
+		try {
+			await navigator.clipboard.writeText(userId);
+			trackDeviceLinkAction("copy_code", true);
+		} catch {
+			trackDeviceLinkAction("copy_code", false);
+		}
 		setCopied(true);
 		setTimeout(() => setCopied(false), 2000);
 	};
@@ -167,16 +204,20 @@ function MyPageContent() {
 		const code = importCode.trim();
 		if (!code) {
 			setImportError("코드를 입력해주세요.");
+			trackDeviceLinkAction("import_code", false);
 			return;
 		}
 		if (!code.startsWith("fp_")) {
 			setImportError("올바른 코드 형식이 아닙니다.");
+			trackDeviceLinkAction("import_code", false);
 			return;
 		}
 		if (code === userId) {
 			setImportError("현재 기기의 코드와 동일합니다.");
+			trackDeviceLinkAction("import_code", false);
 			return;
 		}
+		trackDeviceLinkAction("import_code", true);
 		importUserId(code);
 		window.location.reload();
 	};
@@ -187,10 +228,15 @@ function MyPageContent() {
 
 	// Optimistic delete
 	const handleDelete = async (challengeId: string) => {
+		trackChallengeManageAction("delete", challengeId);
 		setIsDeleting(true);
 
 		// Snapshot for rollback
-		const queryKey = challengeKeys.mine(userId, { limit: ITEMS_PER_PAGE, offset, sortBy: "latest" });
+		const queryKey = challengeKeys.mine(userId, {
+			limit: ITEMS_PER_PAGE,
+			offset,
+			sortBy: "latest",
+		});
 		const previousData = queryClient.getQueryData(queryKey);
 
 		// Optimistic: remove from UI immediately
@@ -221,14 +267,17 @@ function MyPageContent() {
 
 	// Optimistic toggle public/private
 	const handleTogglePublic = async (challengeId: string, currentStatus: boolean) => {
-		const queryKey = challengeKeys.mine(userId, { limit: ITEMS_PER_PAGE, offset, sortBy: "latest" });
+		trackChallengeManageAction("toggle_public", challengeId);
+		const queryKey = challengeKeys.mine(userId, {
+			limit: ITEMS_PER_PAGE,
+			offset,
+			sortBy: "latest",
+		});
 		const previousData = queryClient.getQueryData(queryKey);
 
 		// Optimistic: toggle in UI immediately
 		queryClient.setQueryData(queryKey, (old: typeof challenges | undefined) =>
-			old
-				? old.map((c) => (c.id === challengeId ? { ...c, isPublic: !currentStatus } : c))
-				: []
+			old ? old.map((c) => (c.id === challengeId ? { ...c, isPublic: !currentStatus } : c)) : []
 		);
 
 		try {
@@ -336,9 +385,7 @@ function MyPageContent() {
 								<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 									{/* Send: copy my code */}
 									<div className="rounded-lg border-2 border-chalk-white/20 bg-chalk-white/5 p-5">
-										<p className="chalk-text mb-1 text-base text-chalk-white">
-											내 코드 보내기
-										</p>
+										<p className="chalk-text mb-1 text-base text-chalk-white">내 코드 보내기</p>
 										<p className="mb-4 text-xs text-chalk-white/40">
 											이 코드를 다른 기기에서 입력하면 돼요
 										</p>
@@ -350,16 +397,18 @@ function MyPageContent() {
 											onClick={handleCopyCode}
 											className="flex w-full items-center justify-center gap-1.5 rounded-md border border-chalk-white/30 py-2.5 text-sm text-chalk-white transition-all hover:bg-chalk-white/10"
 										>
-											{copied ? <Check size={16} className="text-chalk-yellow" /> : <ClipboardCopy size={16} />}
+											{copied ? (
+												<Check size={16} className="text-chalk-yellow" />
+											) : (
+												<ClipboardCopy size={16} />
+											)}
 											{copied ? "복사 완료!" : "코드 복사"}
 										</button>
 									</div>
 
 									{/* Receive: enter other device's code */}
 									<div className="rounded-lg border-2 border-chalk-white/20 bg-chalk-white/5 p-5">
-										<p className="chalk-text mb-1 text-base text-chalk-white">
-											코드 입력하기
-										</p>
+										<p className="chalk-text mb-1 text-base text-chalk-white">코드 입력하기</p>
 										<p className="mb-4 text-xs text-chalk-white/40">
 											다른 기기에서 복사해 온 코드를 여기에 넣으세요
 										</p>
@@ -373,12 +422,14 @@ function MyPageContent() {
 											placeholder="여기에 코드 붙여넣기"
 											className="mb-3 w-full rounded-md border border-chalk-white/30 bg-chalkboard-bg/80 px-3 py-2.5 text-sm text-chalk-white placeholder:text-chalk-white/30 focus:border-chalk-yellow focus:outline-none"
 										/>
-										<ChalkButton variant="white-outline" onClick={handleImportCode} className="w-full py-2.5 text-sm">
+										<ChalkButton
+											variant="white-outline"
+											onClick={handleImportCode}
+											className="w-full py-2.5 text-sm"
+										>
 											연결하기
 										</ChalkButton>
-										{importError && (
-											<p className="mt-2 text-xs text-danger">{importError}</p>
-										)}
+										{importError && <p className="mt-2 text-xs text-danger">{importError}</p>}
 									</div>
 								</div>
 							</div>
@@ -464,7 +515,12 @@ function MyPageContent() {
 							<p className="text-sm text-chalk-white/70">삭제된 챌린지는 복구할 수 없습니다.</p>
 						</div>
 						<div className="flex gap-3">
-							<ChalkButton variant="white" onClick={() => setDeleteTarget(null)} disabled={isDeleting} className="flex-1">
+							<ChalkButton
+								variant="white"
+								onClick={() => setDeleteTarget(null)}
+								disabled={isDeleting}
+								className="flex-1"
+							>
 								취소
 							</ChalkButton>
 							<ChalkButton
