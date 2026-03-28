@@ -6,7 +6,8 @@
  */
 
 import { supabase } from "@/shared/api/supabase/client";
-import type { DifficultyLevel, UserVote, VoteStats } from "../model/types";
+import type { DifficultyLevel } from "@/shared/lib/difficulty";
+import type { UserVote, VoteStats } from "../model/types";
 
 /**
  * Submit or update a difficulty vote

@@ -4,4 +4,5 @@
  */
 
 export * from "./calculator";
+export * from "./labels";
 export * from "./types";

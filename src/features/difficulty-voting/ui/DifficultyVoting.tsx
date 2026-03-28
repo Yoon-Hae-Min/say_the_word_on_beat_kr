@@ -8,9 +8,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { DifficultyLevel } from "@/shared/lib/difficulty";
 import { getUserId } from "@/shared/lib/user/fingerprint";
 import { getUserVote, getVoteStats, submitVote } from "../api/voteService";
-import type { DifficultyLevel, VoteStats } from "../model/types";
+import type { VoteStats } from "../model/types";
 import VoteButtons from "./VoteButtons";
 import VoteStatsDisplay from "./VoteStats";
 
