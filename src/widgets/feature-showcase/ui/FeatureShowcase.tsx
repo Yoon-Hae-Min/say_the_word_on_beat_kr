@@ -1,103 +1,54 @@
-import { Gamepad2, Mic, Users, Video } from "lucide-react";
+import { Mic, MousePointerClick, Play, Share2 } from "lucide-react";
 
 const playSteps = [
 	{
 		id: "step1",
-		step: "1",
-		icon: Gamepad2,
-		label: "게임 선택하기",
-		description: "원하는 게임을 선택하세요",
+		icon: MousePointerClick,
+		label: "챌린지 선택",
 		color: "text-chalk-yellow",
 	},
 	{
 		id: "step2",
-		step: "2",
-		icon: Video,
-		label: "영상 보기",
-		description: "비트에 맞춰 화면에 이미지가 나타나요",
+		icon: Play,
+		label: "시작하기",
 		color: "text-chalk-white",
 	},
 	{
 		id: "step3",
-		step: "3",
 		icon: Mic,
-		label: "박자에 맞춰 말하기",
-		description: "리듬에 맞춰 각 항목의 이름을 말하세요!",
+		label: "비트에 맞춰 말하기",
 		color: "text-chalk-blue",
 	},
 	{
 		id: "step4",
-		step: "4",
-		icon: Users,
-		label: "친구들과 대결하기",
-		description: "누가 더 오래 박자를 맞출 수 있는지 겨뤄보세요!",
+		icon: Share2,
+		label: "친구에게 공유",
 		color: "text-chalk-yellow",
 	},
 ];
 
-const targetAudience = [
-	{ text: "친구한테 퀴즈 보내고 싶은 분", sub: "만들고 링크만 보내면 끝" },
-	{ text: "SNS 챌린지가 궁금했던 분", sub: "영상 편집 없이 바로 만들기" },
-	{ text: "모임에서 아이스브레이킹이 필요한 분", sub: "다 같이 화면 보고 플레이" },
-	{ text: "덕질 퀴즈를 만들고 싶은 분", sub: "아이돌, 애니, 음식 뭐든 가능" },
-];
-
 export default function FeatureShowcase() {
 	return (
-		<section className="px-4 py-16">
+		<section className="px-4 py-36 md:py-44">
 			<div className="mx-auto max-w-6xl">
-				{/* Container with blue chalk border */}
-				<div className="chalk-border chalk-dust border-chalk-blue bg-chalkboard-bg/80 p-8 organic-rotate-2">
-					{/* Title */}
-					<div className="mb-8 text-center">
-						<h2 className="chalk-text text-2xl md:text-3xl font-bold text-chalk-white mb-2">
-							플레이 방법
-						</h2>
-						<p className="text-chalk-white/70 text-sm md:text-base">
-							박자에 맞춰 단어를 말하는 간단한 리듬 게임입니다
-						</p>
-					</div>
+				<h2 className="chalk-text mb-14 text-center text-2xl font-bold text-chalk-white md:text-3xl">
+					플레이 방법
+				</h2>
 
-					{/* Grid of play steps */}
-					<div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:gap-6">
-						{playSteps.map((step) => (
-							<div
-								key={step.id}
-								className="flex flex-col items-center justify-center gap-3 rounded-md border-2 border-chalk-white/30 bg-chalkboard-bg/50 p-6 transition-all hover:scale-105 hover:border-chalk-white/60"
-							>
-								{/* Step number badge */}
-								<div className="relative">
-									<step.icon className={`${step.color}`} size={32} />
-									<div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-chalk-yellow text-chalkboard-bg flex items-center justify-center text-xs font-bold">
-										{step.step}
-									</div>
-								</div>
-								<div className="text-center space-y-1">
-									<p className="chalk-text text-sm font-bold text-chalk-white md:text-base">
-										{step.label}
-									</p>
-									<p className="text-xs text-chalk-white/60 md:text-sm">{step.description}</p>
-								</div>
+				<div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
+					{playSteps.map((step) => (
+						<div
+							key={step.id}
+							className="flex flex-col items-center rounded-lg bg-chalk-white/5 px-4 py-10 text-center md:py-12"
+						>
+							<div className="mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-chalk-white/10">
+								<step.icon className={step.color} size={40} />
 							</div>
-						))}
-					</div>
-				</div>
-				{/* Target Audience */}
-				<div className="mt-12 text-center">
-					<h3 className="chalk-text text-xl md:text-2xl font-bold text-chalk-white mb-6">
-						이런 분들에게 딱 맞아요
-					</h3>
-					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-3 max-w-4xl mx-auto">
-						{targetAudience.map((item) => (
-							<div key={item.text} className="flex items-start gap-2 text-left">
-								<span className="text-chalk-yellow shrink-0 mt-0.5">✦</span>
-								<div>
-									<p className="text-chalk-white text-sm md:text-base">{item.text}</p>
-									<p className="text-chalk-white/50 text-xs">{item.sub}</p>
-								</div>
-							</div>
-						))}
-					</div>
+							<p className="chalk-text text-base font-bold text-chalk-white md:text-lg">
+								{step.label}
+							</p>
+						</div>
+					))}
 				</div>
 			</div>
 		</section>

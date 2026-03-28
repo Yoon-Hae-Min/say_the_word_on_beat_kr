@@ -16,7 +16,7 @@ const socialLinks = [
 
 export default function Footer() {
 	return (
-		<footer className="border-t-4 border-chalk-white/30 px-4 py-8">
+		<footer className="border-t border-chalk-white/10 px-4 py-8">
 			<div className="mx-auto max-w-6xl">
 				{/* Social media icons */}
 				<div className="mb-6 flex justify-center gap-6">
@@ -62,7 +62,7 @@ export default function Footer() {
 
 				{/* Copyright text */}
 				<p className="chalk-text text-center text-sm text-chalk-white/70">
-					© 2025 단어리듬게임. All rights reserved.
+					© 2026 단어리듬게임. All rights reserved.
 				</p>
 			</div>
 		</footer>

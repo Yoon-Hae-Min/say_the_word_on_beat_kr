@@ -1,51 +1,25 @@
-/**
- * VoteStats Component
- *
- * Displays voting statistics with horizontal bar charts.
- * Highlights the current user's vote.
- */
-
 "use client";
 
+import type { LucideIcon } from "lucide-react";
+import { Flame, Smile, Zap } from "lucide-react";
 import type { DifficultyLevel } from "@/shared/lib/difficulty";
-import {
-	calculatePercentages,
-	getDifficultyEmoji,
-	getDifficultyLabel,
-} from "@/shared/lib/difficulty";
-import { ChalkButton } from "@/shared/ui";
+import { calculatePercentages } from "@/shared/lib/difficulty";
 import type { VoteStats as VoteStatsType } from "../model/types";
 
 interface VoteStatsProps {
-	/**
-	 * Vote statistics
-	 */
 	stats: VoteStatsType;
-
-	/**
-	 * User's current vote (to highlight)
-	 */
 	currentVote: DifficultyLevel | null;
-
-	/**
-	 * Show change vote button
-	 */
 	showChangeButton?: boolean;
-
-	/**
-	 * Callback when user wants to change their vote
-	 */
 	onChangeVote?: () => void;
-
-	/**
-	 * Additional CSS classes
-	 */
 	className?: string;
 }
 
-/**
- * Single bar in the vote statistics
- */
+const difficultyConfig: Record<DifficultyLevel, { icon: LucideIcon; label: string }> = {
+	easy: { icon: Smile, label: "쉬움" },
+	normal: { icon: Zap, label: "보통" },
+	hard: { icon: Flame, label: "어려움" },
+};
+
 function VoteBar({
 	difficulty,
 	count,
@@ -57,8 +31,7 @@ function VoteBar({
 	percentage: number;
 	isUserVote: boolean;
 }) {
-	const emoji = getDifficultyEmoji(difficulty);
-	const label = getDifficultyLabel(difficulty);
+	const { icon: Icon, label } = difficultyConfig[difficulty];
 
 	return (
 		<div
@@ -66,30 +39,32 @@ function VoteBar({
 				space-y-2 rounded-lg border-2 p-4 transition-all
 				${
 					isUserVote
-						? "border-chalk-yellow bg-chalk-yellow/10"
-						: "border-chalk-white/20 bg-chalkboard-bg/10"
+						? "border-chalk-yellow/40 bg-chalk-yellow/5"
+						: "border-chalk-white/10 bg-chalk-white/5"
 				}
 			`}
 		>
 			<div className="flex items-center justify-between">
-				<span className={`chalk-text ${isUserVote ? "text-chalk-yellow" : "text-chalk-white"}`}>
-					<span className="text-lg">{emoji}</span>
-					<span className="ml-2">{label}</span>
-					{isUserVote && <span className="ml-2 text-xs">← 내 투표</span>}
+				<span
+					className={`flex items-center gap-2 chalk-text ${isUserVote ? "text-chalk-yellow" : "text-chalk-white"}`}
+				>
+					<Icon size={18} />
+					<span>{label}</span>
+					{isUserVote && <span className="text-xs text-chalk-yellow/70">← 내 투표</span>}
 				</span>
 				<span
 					className={`chalk-text text-sm ${
-						isUserVote ? "text-chalk-yellow" : "text-chalk-white/80"
+						isUserVote ? "text-chalk-yellow" : "text-chalk-white/60"
 					}`}
 				>
 					{count}표 ({percentage.toFixed(1)}%)
 				</span>
 			</div>
 
-			<div className="h-2 overflow-hidden rounded-full bg-chalkboard-bg/30">
+			<div className="h-2 overflow-hidden rounded-full bg-chalk-white/10">
 				<div
 					className={`h-full transition-all duration-500 ease-out ${
-						isUserVote ? "bg-chalk-yellow" : "bg-chalk-white/60"
+						isUserVote ? "bg-chalk-yellow" : "bg-chalk-white/40"
 					}`}
 					style={{ width: `${percentage}%` }}
 				/>
@@ -98,19 +73,6 @@ function VoteBar({
 	);
 }
 
-/**
- * Vote statistics display with bar charts
- *
- * @example
- * ```tsx
- * <VoteStats
- *   stats={{ easy: 10, normal: 25, hard: 5, total: 40 }}
- *   currentVote="normal"
- *   showChangeButton={true}
- *   onChangeVote={() => setShowButtons(true)}
- * />
- * ```
- */
 export default function VoteStats({
 	stats,
 	currentVote,
@@ -119,11 +81,10 @@ export default function VoteStats({
 	className = "",
 }: VoteStatsProps) {
 	const percentages = calculatePercentages(stats);
-
 	const difficulties: DifficultyLevel[] = ["easy", "normal", "hard"];
 
 	return (
-		<div className={`space-y-6 ${className}`}>
+		<div className={`space-y-5 ${className}`}>
 			{stats.total === 0 ? (
 				<p className="chalk-text text-center text-sm text-chalk-white/50">아직 투표가 없습니다</p>
 			) : (
@@ -141,10 +102,14 @@ export default function VoteStats({
 			)}
 
 			{showChangeButton && onChangeVote && (
-				<div className="mt-4 flex justify-center">
-					<ChalkButton variant="white-outline" onClick={onChangeVote} className="px-6 py-2 text-sm">
+				<div className="flex justify-center">
+					<button
+						type="button"
+						onClick={onChangeVote}
+						className="chalk-text text-sm text-chalk-white/50 underline transition-colors hover:text-chalk-white"
+					>
 						투표 변경하기
-					</ChalkButton>
+					</button>
 				</div>
 			)}
 		</div>

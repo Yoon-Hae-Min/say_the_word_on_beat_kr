@@ -7,61 +7,29 @@
 
 "use client";
 
+import { ChevronRight, RotateCcw, Share2, Trophy } from "lucide-react";
 import Link from "next/link";
 import type { ClientSafeChallenge } from "@/entities/challenge";
 import { convertImagePathToUrl } from "@/entities/challenge";
 import { trackShareClick } from "@/shared/lib/analytics/gtag";
 import { appendUtmParams, shareChallenge } from "@/shared/lib/share/shareUtils";
-import { ChalkButton } from "@/shared/ui";
+import { ChalkButton, ChalkDust } from "@/shared/ui";
 
 interface FinishedGameScreenProps {
-	/**
-	 * Challenge title
-	 */
 	title: string;
-
-	/**
-	 * Challenge ID for voting
-	 */
 	challengeId: string;
-
-	/**
-	 * Challenge data for thumbnail
-	 */
 	challengeData: Pick<ClientSafeChallenge, "thumbnail_url" | "game_config">;
-
-	/**
-	 * Callback to restart the game
-	 */
+	viewCount?: number;
 	onRestart: () => void;
-
-	/**
-	 * Slot for difficulty voting UI (injected from parent to avoid cross-feature import)
-	 */
 	votingSlot?: React.ReactNode;
-
-	/**
-	 * Additional CSS classes
-	 */
 	className?: string;
 }
 
-/**
- * Finished game screen with restart, share, and voting options
- *
- * @example
- * ```tsx
- * <FinishedGameScreen
- *   title="Challenge Title"
- *   challengeId="abc-123"
- *   onRestart={() => setGamePhase('idle')}
- * />
- * ```
- */
 export default function FinishedGameScreen({
 	title,
 	challengeId,
 	challengeData,
+	viewCount,
 	onRestart,
 	votingSlot,
 	className = "",
@@ -88,47 +56,92 @@ export default function FinishedGameScreen({
 	};
 
 	return (
-		<div className={`h-full p-4 md:p-6 ${className}`}>
-			<div className="flex h-full flex-col gap-6 lg:flex-row lg:gap-8 max-w-5xl mx-auto">
-				{/* Left Section: Thumbnail + Voting */}
+		<div className={`relative h-full p-4 md:p-6 ${className}`}>
+			{/* Celebration particles */}
+			<ChalkDust position="top-right" intensity="low" color="yellow" />
+			<ChalkDust position="bottom-left" intensity="low" color="blue" />
+
+			<div className="mx-auto flex h-full max-w-5xl flex-col gap-6 lg:flex-row lg:gap-8">
+				{/* Left Section: Result */}
 				<div className="flex flex-1 flex-col gap-6">
-					<p className="chalk-text text-center text-xl text-chalk-yellow md:text-2xl">
-						모든 라운드 완료! 🎉
-					</p>
+					{/* Celebration heading */}
+					<div
+						className="animate-fade-in flex flex-col items-center gap-3 text-center"
+						style={{ animationFillMode: "both" }}
+					>
+						<Trophy className="text-chalk-yellow" size={48} />
+						<p className="chalk-text text-2xl font-bold text-chalk-yellow md:text-3xl">
+							모든 라운드 완료!
+						</p>
+					</div>
 
 					{/* Thumbnail */}
 					{thumbnailUrl && thumbnailUrl !== "/placeholder.svg" && (
-						<div className="mx-auto w-full max-w-sm overflow-hidden rounded-lg border-4 border-chalk-white/20">
+						<div
+							className="animate-fade-in mx-auto w-full max-w-sm overflow-hidden rounded-lg"
+							style={{ animationDelay: "80ms", animationFillMode: "both" }}
+						>
 							<img src={thumbnailUrl} alt={title} className="h-auto w-full object-cover" />
 						</div>
 					)}
 
 					{/* Difficulty Voting */}
-					{votingSlot && <div className="w-full">{votingSlot}</div>}
+					{votingSlot && (
+						<div
+							className="animate-fade-in w-full"
+							style={{ animationDelay: "160ms", animationFillMode: "both" }}
+						>
+							{votingSlot}
+						</div>
+					)}
 				</div>
 
-				{/* Right Section: Action Buttons */}
-				<div className="flex w-full flex-col items-center justify-center gap-4 lg:w-80">
-					<ChalkButton
-						variant="white-outline"
-						onClick={onRestart}
-						className="w-full px-6 py-3 text-lg"
-					>
-						처음부터 다시하기
-					</ChalkButton>
+				{/* Right Section: Actions */}
+				<div
+					className="animate-fade-in flex w-full flex-col items-center justify-center gap-4 lg:w-80"
+					style={{ animationDelay: "240ms", animationFillMode: "both" }}
+				>
+					{/* Social proof — speech bubble above share button */}
+					{viewCount != null && viewCount > 0 && (
+						<div className="relative mx-auto w-fit rounded-lg bg-chalk-white/10 px-4 py-2">
+							<p className="text-sm text-chalk-white/70">
+								{viewCount.toLocaleString("ko-KR")}명이 플레이했어요
+							</p>
+							{/* Bubble arrow pointing down */}
+							<div className="absolute -bottom-2 left-1/2 h-0 w-0 -translate-x-1/2 border-x-[6px] border-t-[8px] border-x-transparent border-t-chalk-white/10" />
+						</div>
+					)}
 
+					{/* Primary CTA: Share */}
 					<ChalkButton
-						variant="white-outline"
+						variant="yellow"
 						onClick={handleShare}
-						className="w-full px-6 py-3 text-lg"
+						className="flex w-full items-center justify-center gap-2 px-6 py-3 text-lg"
 					>
+						<Share2 size={20} />
 						공유하기
 					</ChalkButton>
 
-					<Link href="/challenges" className="w-full">
-						<ChalkButton variant="white-outline" className="w-full px-6 py-3 text-lg">
-							다른 챌린지 구경하기
-						</ChalkButton>
+					{/* Divider on mobile */}
+					<div className="my-1 h-px w-full bg-chalk-white/10 lg:hidden" />
+
+					{/* Secondary: Replay */}
+					<ChalkButton
+						variant="white-outline"
+						onClick={onRestart}
+						className="flex w-full items-center justify-center gap-2 px-6 py-3 text-lg"
+					>
+						<RotateCcw size={18} />
+						처음부터 다시하기
+					</ChalkButton>
+
+					{/* Tertiary: Browse */}
+					<Link
+						href="/challenges"
+						className="flex items-center gap-1 text-sm text-chalk-white/60 transition-colors hover:text-chalk-yellow"
+					>
+						다른 챌린지 구경하기
+						<ChevronRight size={16} />
 					</Link>
 				</div>
 			</div>

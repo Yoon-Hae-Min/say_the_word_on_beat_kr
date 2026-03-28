@@ -1,92 +1,81 @@
-/**
- * VoteButtons Component
- *
- * Displays 3 horizontal difficulty voting buttons using ChalkButton.
- * Shows active state for current vote and disabled state during submission.
- */
-
 "use client";
 
+import type { LucideIcon } from "lucide-react";
+import { Flame, Smile, Zap } from "lucide-react";
 import type { DifficultyLevel } from "@/shared/lib/difficulty";
-import { getDifficultyEmoji, getDifficultyLabel } from "@/shared/lib/difficulty";
-import { ChalkButton } from "@/shared/ui";
 
 interface VoteButtonsProps {
-	/**
-	 * Current user's vote (if any)
-	 */
 	currentVote: DifficultyLevel | null;
-
-	/**
-	 * Whether voting is in progress
-	 */
 	isSubmitting: boolean;
-
-	/**
-	 * Callback when user clicks a difficulty button
-	 */
 	onVote: (difficulty: DifficultyLevel) => void;
-
-	/**
-	 * Additional CSS classes
-	 */
 	className?: string;
 }
 
-/**
- * Voting buttons for difficulty selection
- *
- * @example
- * ```tsx
- * <VoteButtons
- *   currentVote="normal"
- *   isSubmitting={false}
- *   onVote={(difficulty) => handleVote(difficulty)}
- * />
- * ```
- */
+interface VoteOption {
+	difficulty: DifficultyLevel;
+	icon: LucideIcon;
+	label: string;
+	color: string;
+	activeColor: string;
+}
+
+const voteOptions: VoteOption[] = [
+	{
+		difficulty: "easy",
+		icon: Smile,
+		label: "쉬움",
+		color:
+			"text-chalk-white/60 border-chalk-white/20 hover:border-chalk-white/40 hover:text-chalk-white",
+		activeColor: "text-green-400 border-green-400/60 bg-green-400/10",
+	},
+	{
+		difficulty: "normal",
+		icon: Zap,
+		label: "보통",
+		color:
+			"text-chalk-white/60 border-chalk-white/20 hover:border-chalk-blue/40 hover:text-chalk-blue",
+		activeColor: "text-chalk-blue border-chalk-blue/60 bg-chalk-blue/10",
+	},
+	{
+		difficulty: "hard",
+		icon: Flame,
+		label: "어려움",
+		color:
+			"text-chalk-white/60 border-chalk-white/20 hover:border-chalk-yellow/40 hover:text-chalk-yellow",
+		activeColor: "text-chalk-yellow border-chalk-yellow/60 bg-chalk-yellow/10",
+	},
+];
+
 export default function VoteButtons({
 	currentVote,
 	isSubmitting,
 	onVote,
 	className = "",
 }: VoteButtonsProps) {
-	const buttons: Array<{
-		difficulty: DifficultyLevel;
-		variant: "white" | "blue" | "yellow";
-	}> = [
-		{ difficulty: "easy", variant: "white" },
-		{ difficulty: "normal", variant: "blue" },
-		{ difficulty: "hard", variant: "yellow" },
-	];
-
 	return (
-		<div className={`space-y-6 ${className}`}>
-			<p className="chalk-text text-center text-lg text-chalk-white">
-				이 챌린지의 난이도는 어땠나요?
-			</p>
+		<div className={`space-y-5 ${className}`}>
+			<p className="chalk-text text-center text-lg text-chalk-white">난이도를 투표해주세요</p>
 
-			<div className="flex flex-col gap-3 md:flex-row md:gap-4">
-				{buttons.map(({ difficulty, variant }) => {
+			<div className="flex justify-center gap-4">
+				{voteOptions.map(({ difficulty, icon: Icon, label, color, activeColor }) => {
 					const isActive = currentVote === difficulty;
-					const emoji = getDifficultyEmoji(difficulty);
-					const label = getDifficultyLabel(difficulty);
 
 					return (
-						<ChalkButton
+						<button
 							key={difficulty}
-							variant={variant}
+							type="button"
 							onClick={() => onVote(difficulty)}
 							disabled={isSubmitting}
 							className={`
-								flex-1 px-6 py-4 text-base transition-all
-								${isActive ? "ring-2 ring-offset-2 ring-offset-chalkboard-bg brightness-110" : ""}
-								${isSubmitting ? "cursor-not-allowed opacity-50" : ""}
+								flex flex-col items-center gap-2 rounded-lg border-2 px-6 py-4
+								transition-all duration-200
+								disabled:cursor-not-allowed disabled:opacity-50
+								${isActive ? activeColor : color}
 							`}
 						>
-							<span className="text-xl">{emoji}</span>
-							<span className="ml-2">{label}</span>
-						</ChalkButton>
+							<Icon size={28} />
+							<span className="chalk-text text-sm font-bold">{label}</span>
+						</button>
 					);
 				})}
 			</div>
