@@ -85,7 +85,7 @@ export default function DeleteConfirmModal({
 				</div>
 
 				{error && (
-					<div className="mb-4 rounded-md border-2 border-red-500 bg-red-500/20 p-3">
+					<div className="mb-4 rounded-md border-2 border-danger bg-danger/20 p-3">
 						<p className="text-sm text-chalk-white">{error}</p>
 					</div>
 				)}
