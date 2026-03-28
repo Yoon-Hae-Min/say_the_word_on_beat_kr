@@ -1,13 +1,13 @@
 "use client";
 
-import { ArrowLeft, Eye, Globe, Lock, Plus, Trash2, X } from "lucide-react";
+import { ArrowLeft, Check, ClipboardCopy, Eye, Globe, Link2, Lock, Plus, Trash2, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Suspense, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { challengeKeys, useMyChallenges, useMyChallengesCount } from "@/entities/challenge";
 import { usePagination, useURLSearchParams } from "@/shared/hooks";
-import { getUserId } from "@/shared/lib/user/fingerprint";
+import { getUserId, importUserId } from "@/shared/lib/user/fingerprint";
 import { ChalkButton, LoadingState, PaginationControls, WoodFrame } from "@/shared/ui";
 import { Badge } from "@/shared/ui/badge";
 import { updateChallengePublicStatus } from "@/entities/challenge";
@@ -151,6 +151,36 @@ function MyPageContent() {
 
 	const queryClient = useQueryClient();
 
+	// Device link state
+	const [showLinkPanel, setShowLinkPanel] = useState(false);
+	const [copied, setCopied] = useState(false);
+	const [importCode, setImportCode] = useState("");
+	const [importError, setImportError] = useState("");
+
+	const handleCopyCode = async () => {
+		await navigator.clipboard.writeText(userId);
+		setCopied(true);
+		setTimeout(() => setCopied(false), 2000);
+	};
+
+	const handleImportCode = () => {
+		const code = importCode.trim();
+		if (!code) {
+			setImportError("코드를 입력해주세요.");
+			return;
+		}
+		if (!code.startsWith("fp_")) {
+			setImportError("올바른 코드 형식이 아닙니다.");
+			return;
+		}
+		if (code === userId) {
+			setImportError("현재 기기의 코드와 동일합니다.");
+			return;
+		}
+		importUserId(code);
+		window.location.reload();
+	};
+
 	// Delete state
 	const [deleteTarget, setDeleteTarget] = useState<{ id: string; title: string } | null>(null);
 	const [isDeleting, setIsDeleting] = useState(false);
@@ -252,6 +282,106 @@ function MyPageContent() {
 								<Lock size={14} />
 								비공개 {privateCount}
 							</span>
+						</div>
+					)}
+
+					{/* Device link trigger */}
+					<div className="mb-8 flex justify-center">
+						<button
+							type="button"
+							onClick={() => setShowLinkPanel(true)}
+							className="flex items-center gap-1.5 text-sm text-chalk-white/40 transition-colors hover:text-chalk-white/70"
+						>
+							<Link2 size={14} />
+							<span className="chalk-text">다른 기기 연결</span>
+						</button>
+					</div>
+
+					{/* Device link modal (desktop) / bottom sheet (mobile) */}
+					{showLinkPanel && (
+						<div className="fixed inset-0 z-50 flex items-end md:items-center md:justify-center">
+							{/* Backdrop */}
+							<div
+								role="button"
+								tabIndex={-1}
+								className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+								onClick={() => setShowLinkPanel(false)}
+								onKeyDown={(e) => e.key === "Escape" && setShowLinkPanel(false)}
+								aria-label="닫기"
+							/>
+
+							{/* Content: bottom sheet on mobile, centered modal on desktop */}
+							<div className="relative z-10 w-full animate-fade-in rounded-t-2xl bg-chalkboard-bg p-6 pb-8 shadow-2xl md:max-w-2xl md:rounded-2xl md:p-8">
+								{/* Handle bar (mobile) */}
+								<div className="mb-4 flex justify-center md:hidden">
+									<div className="h-1 w-10 rounded-full bg-chalk-white/30" />
+								</div>
+
+								{/* Close button (desktop) */}
+								<button
+									type="button"
+									onClick={() => setShowLinkPanel(false)}
+									className="absolute right-4 top-4 hidden text-chalk-white/50 transition-colors hover:text-chalk-white md:block"
+								>
+									<X size={24} />
+								</button>
+
+								<h2 className="chalk-text mb-2 text-center text-xl text-chalk-white md:text-2xl">
+									다른 기기 연결
+								</h2>
+								<p className="chalk-text mb-6 text-center text-sm text-chalk-white/50">
+									다른 핸드폰이나 컴퓨터에서도 내 챌린지를 관리할 수 있어요
+								</p>
+
+								<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+									{/* Send: copy my code */}
+									<div className="rounded-lg border-2 border-chalk-white/20 bg-chalk-white/5 p-5">
+										<p className="chalk-text mb-1 text-base text-chalk-white">
+											내 코드 보내기
+										</p>
+										<p className="mb-4 text-xs text-chalk-white/40">
+											이 코드를 다른 기기에서 입력하면 돼요
+										</p>
+										<code className="mb-3 block overflow-hidden text-ellipsis whitespace-nowrap rounded-md bg-chalkboard-bg/80 px-3 py-2.5 text-sm text-chalk-white/70">
+											{userId}
+										</code>
+										<button
+											type="button"
+											onClick={handleCopyCode}
+											className="flex w-full items-center justify-center gap-1.5 rounded-md border border-chalk-white/30 py-2.5 text-sm text-chalk-white transition-all hover:bg-chalk-white/10"
+										>
+											{copied ? <Check size={16} className="text-chalk-yellow" /> : <ClipboardCopy size={16} />}
+											{copied ? "복사 완료!" : "코드 복사"}
+										</button>
+									</div>
+
+									{/* Receive: enter other device's code */}
+									<div className="rounded-lg border-2 border-chalk-white/20 bg-chalk-white/5 p-5">
+										<p className="chalk-text mb-1 text-base text-chalk-white">
+											코드 입력하기
+										</p>
+										<p className="mb-4 text-xs text-chalk-white/40">
+											다른 기기에서 복사해 온 코드를 여기에 넣으세요
+										</p>
+										<input
+											type="text"
+											value={importCode}
+											onChange={(e) => {
+												setImportCode(e.target.value);
+												setImportError("");
+											}}
+											placeholder="여기에 코드 붙여넣기"
+											className="mb-3 w-full rounded-md border border-chalk-white/30 bg-chalkboard-bg/80 px-3 py-2.5 text-sm text-chalk-white placeholder:text-chalk-white/30 focus:border-chalk-yellow focus:outline-none"
+										/>
+										<ChalkButton variant="white-outline" onClick={handleImportCode} className="w-full py-2.5 text-sm">
+											연결하기
+										</ChalkButton>
+										{importError && (
+											<p className="mt-2 text-xs text-danger">{importError}</p>
+										)}
+									</div>
+								</div>
+							</div>
 						</div>
 					)}
 
