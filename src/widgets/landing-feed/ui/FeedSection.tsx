@@ -2,19 +2,23 @@
 
 import { useRouter } from "next/navigation";
 import { usePopularChallenges } from "@/entities/challenge";
-import { ChalkCard } from "@/shared/ui";
+import { sendGAEvent } from "@/shared/lib/analytics/gtag";
+import { ChalkButton, ChalkCard } from "@/shared/ui";
 
 export default function FeedSection() {
 	const router = useRouter();
-	const { data: challenges = [], isLoading } = usePopularChallenges(9);
+	const { data: challenges = [], isLoading } = usePopularChallenges(6);
 
 	return (
 		<section className="px-4 py-16">
 			<div className="mx-auto max-w-6xl">
 				{/* Section title */}
-				<h2 className="chalk-text mb-8 text-center text-4xl font-bold text-chalk-white md:text-5xl">
+				<h2 className="chalk-text mb-2 text-center text-4xl font-bold text-chalk-white md:text-5xl">
 					인기 챌린지
 				</h2>
+				<p className="chalk-text mb-8 text-center text-lg text-chalk-white/70">
+					지금 가장 많이 플레이되는 챌린지
+				</p>
 
 				{/* Loading state */}
 				{isLoading && (
@@ -56,6 +60,11 @@ export default function FeedSection() {
 												hard: challenge.difficultyHard,
 											}}
 											onClick={() => {
+												sendGAEvent({
+													action: "challenge_card_click",
+													category: "landing_feed",
+													label: challenge.title,
+												});
 												router.push(`/play/${challenge.id}`);
 											}}
 										/>
@@ -66,12 +75,19 @@ export default function FeedSection() {
 
 						{/* View all button */}
 						<div className="mt-12 text-center">
-							<button
-								onClick={() => router.push("/challenges")}
-								className="chalk-text inline-block rounded-lg border-2 border-chalk-yellow bg-chalkboard-bg/60 px-8 py-4 text-xl font-bold text-chalk-yellow hover:bg-chalk-yellow hover:text-chalkboard-bg transition-all md:text-2xl"
+							<ChalkButton
+								variant="white-outline"
+								className="px-8 py-4 text-xl md:text-2xl"
+								onClick={() => {
+									sendGAEvent({
+										action: "view_all_click",
+										category: "landing_feed",
+									});
+									router.push("/challenges");
+								}}
 							>
 								모든 챌린지 보기 →
-							</button>
+							</ChalkButton>
 						</div>
 					</>
 				)}

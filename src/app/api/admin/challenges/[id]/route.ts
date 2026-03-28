@@ -49,7 +49,7 @@ export async function DELETE(request: NextRequest, { params }: ChallengeParams) 
 
 			return NextResponse.json(
 				{ error: "Unauthorized: You are not the creator of this challenge" },
-				{ status: 403 },
+				{ status: 403 }
 			);
 		}
 
@@ -103,7 +103,7 @@ export async function PATCH(request: NextRequest, { params }: ChallengeParams) {
 
 			return NextResponse.json(
 				{ error: "Unauthorized: You are not the creator of this challenge" },
-				{ status: 403 },
+				{ status: 403 }
 			);
 		}
 
