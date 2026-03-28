@@ -1,44 +1,26 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import type { ClientSafeChallenge } from "@/entities/challenge";
-import { getChallengeById, incrementViewCount } from "@/features/game-play/api/challengeService";
-import GameStage from "@/features/game-play/ui/GameStage";
+import { useEffect, useRef } from "react";
+import { GameStage, incrementViewCount, useChallengeQuery } from "@/features/game-play";
 import { getUserId } from "@/shared/lib/user/fingerprint";
 import { WoodFrame } from "@/shared/ui";
 
 export default function PlayPage() {
 	const params = useParams();
 	const challengeId = params.id as string;
+	const userId = getUserId();
+	const viewCountedRef = useRef(false);
 
-	const [challengeData, setChallengeData] = useState<ClientSafeChallenge | null>(null);
-	const [isLoading, setIsLoading] = useState(true);
+	const { data: challengeData, isLoading } = useChallengeQuery(challengeId, userId);
 
+	// Increment view count once on successful load (external side effect)
 	useEffect(() => {
-		// Load challenge data from Supabase
-		const loadChallenge = async () => {
-			try {
-				const userId = getUserId();
-				const data = await getChallengeById(challengeId, userId);
-
-				if (data) {
-					setChallengeData(data);
-
-					// Increment view count (non-blocking, checks localStorage for duplicates)
-					incrementViewCount(challengeId);
-				} else {
-					console.error("Challenge not found");
-				}
-			} catch (error) {
-				console.error("Error loading challenge:", error);
-			} finally {
-				setIsLoading(false);
-			}
-		};
-
-		loadChallenge();
-	}, [challengeId]);
+		if (challengeData && !viewCountedRef.current) {
+			viewCountedRef.current = true;
+			incrementViewCount(challengeId);
+		}
+	}, [challengeData, challengeId]);
 
 	if (isLoading) {
 		return (

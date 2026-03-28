@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getAllChallenges, getPublicChallengesCount } from "@/entities/challenge/api/repository";
+import { getAllChallenges, getPublicChallengesCount } from "@/entities/challenge";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	const baseUrl = "https://say-the-word-on-beat.vercel.app";
@@ -17,6 +17,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 			lastModified: new Date(),
 			changeFrequency: "hourly",
 			priority: 0.8,
+		},
+		{
+			url: `${baseUrl}/guide`,
+			lastModified: new Date(),
+			changeFrequency: "monthly",
+			priority: 0.6,
+		},
+		{
+			url: `${baseUrl}/faq`,
+			lastModified: new Date(),
+			changeFrequency: "monthly",
+			priority: 0.6,
+		},
+		{
+			url: `${baseUrl}/about`,
+			lastModified: new Date(),
+			changeFrequency: "monthly",
+			priority: 0.5,
 		},
 		{
 			url: `${baseUrl}/privacy`,

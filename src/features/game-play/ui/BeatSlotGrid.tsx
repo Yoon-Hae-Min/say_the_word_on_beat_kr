@@ -6,7 +6,7 @@
  */
 
 import Image from "next/image";
-import type { BeatSlot } from "@/entities/challenge/model/types";
+import type { BeatSlot } from "@/entities/challenge";
 
 interface BeatSlotGridProps {
 	/**

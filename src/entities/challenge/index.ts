@@ -6,6 +6,15 @@ export {
 	getPublicChallengesCount,
 	incrementViewCount,
 } from "./api";
+export {
+	challengeKeys,
+	useAllChallenges,
+	useMyChallenges,
+	useMyChallengesCount,
+	usePopularChallenges,
+	usePublicChallengesCount,
+} from "./api/queries";
+export { convertImagePathToUrl, updateChallengePublicStatus } from "./api/repository";
 export type {
 	BeatSlot,
 	Challenge,
