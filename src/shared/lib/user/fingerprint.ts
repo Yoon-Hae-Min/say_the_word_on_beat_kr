@@ -72,6 +72,18 @@ export function getUserId(): string {
 }
 
 /**
+ * 다른 기기의 사용자 ID를 현재 기기에 적용
+ * - 기존 ID를 백업하고 새 ID로 교체
+ */
+export function importUserId(newUserId: string): string | null {
+	if (typeof window === "undefined") return null;
+
+	const previousId = localStorage.getItem(USER_ID_KEY);
+	localStorage.setItem(USER_ID_KEY, newUserId);
+	return previousId;
+}
+
+/**
  * 사용자 ID 초기화 (테스트용)
  */
 export function resetUserId(): void {
