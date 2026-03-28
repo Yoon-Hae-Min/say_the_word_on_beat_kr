@@ -29,6 +29,11 @@ interface ChallengeGridProps {
 	challenges: Challenge[];
 
 	/**
+	 * Whether to show "my challenge" badge on cards
+	 */
+	showMineBadge?: boolean;
+
+	/**
 	 * Additional CSS classes
 	 */
 	className?: string;
@@ -42,7 +47,7 @@ interface ChallengeGridProps {
  * <ChallengeGrid challenges={challenges} />
  * ```
  */
-export default function ChallengeGrid({ challenges, className = "" }: ChallengeGridProps) {
+export default function ChallengeGrid({ challenges, showMineBadge = false, className = "" }: ChallengeGridProps) {
 	const router = useRouter();
 
 	return (
@@ -61,6 +66,7 @@ export default function ChallengeGrid({ challenges, className = "" }: ChallengeG
 						thumbnail={challenge.thumbnail}
 						viewCount={challenge.viewCount}
 						isPublic={challenge.isPublic}
+						isMine={showMineBadge}
 						difficultyStats={{
 							easy: challenge.difficultyEasy,
 							normal: challenge.difficultyNormal,

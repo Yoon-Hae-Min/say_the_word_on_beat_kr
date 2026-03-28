@@ -48,7 +48,7 @@ export default function DeleteConfirmModal({
 				throw new Error(errorData.error || "삭제에 실패했습니다");
 			}
 
-			router.push("/challenges");
+			router.push("/my");
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "삭제 중 오류가 발생했습니다");
 			setIsDeleting(false);

@@ -49,10 +49,11 @@ export default function GameNavigationBar({
 				<button
 					type="button"
 					onClick={() => router.push("/challenges")}
-					className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-chalk-white bg-transparent transition-all hover:scale-105 hover:bg-chalk-white/10 md:h-14 md:w-14"
+					className="flex h-12 items-center gap-2 rounded-lg border-2 border-chalk-white bg-transparent px-3 transition-all hover:scale-105 hover:bg-chalk-white/10 md:h-14 md:px-4"
 					aria-label="챌린지 목록으로"
 				>
-					<Home className="h-6 w-6 text-chalk-white md:h-7 md:w-7" />
+					<Home className="h-5 w-5 text-chalk-white md:h-6 md:w-6" />
+					<span className="chalk-text hidden text-sm text-chalk-white md:inline">목록</span>
 				</button>
 
 				{/* Public/Private Toggle Button - Only visible to owner */}
@@ -61,7 +62,7 @@ export default function GameNavigationBar({
 						type="button"
 						onClick={handleTogglePublic}
 						disabled={isUpdating}
-						className={`flex h-12 w-12 items-center justify-center rounded-lg border-2 transition-all hover:scale-105 md:h-14 md:w-14 ${
+						className={`flex h-12 items-center gap-2 rounded-lg border-2 px-3 transition-all hover:scale-105 md:h-14 md:px-4 ${
 							isPublic
 								? "border-chalk-white bg-transparent hover:bg-chalk-white/10"
 								: "border-chalk-yellow bg-transparent hover:bg-chalk-yellow/10"
@@ -69,9 +70,15 @@ export default function GameNavigationBar({
 						aria-label={isPublic ? "비공개로 변경" : "공개로 변경"}
 					>
 						{isPublic ? (
-							<Globe className="h-6 w-6 text-chalk-white md:h-7 md:w-7" />
+							<>
+								<Globe className="h-5 w-5 text-chalk-white md:h-6 md:w-6" />
+								<span className="chalk-text hidden text-sm text-chalk-white md:inline">공개</span>
+							</>
 						) : (
-							<Lock className="h-6 w-6 text-chalk-yellow md:h-7 md:w-7" />
+							<>
+								<Lock className="h-5 w-5 text-chalk-yellow md:h-6 md:w-6" />
+								<span className="chalk-text hidden text-sm text-chalk-yellow md:inline">비공개</span>
+							</>
 						)}
 					</button>
 				)}
@@ -81,10 +88,11 @@ export default function GameNavigationBar({
 					<button
 						type="button"
 						onClick={() => setIsDeleteModalOpen(true)}
-						className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-danger bg-transparent transition-all hover:scale-105 hover:bg-danger/20 md:h-14 md:w-14"
+						className="flex h-12 items-center gap-2 rounded-lg border-2 border-danger bg-transparent px-3 transition-all hover:scale-105 hover:bg-danger/20 md:h-14 md:px-4"
 						aria-label="챌린지 삭제"
 					>
-						<Trash2 className="h-6 w-6 text-danger md:h-7 md:w-7" />
+						<Trash2 className="h-5 w-5 text-danger md:h-6 md:w-6" />
+						<span className="chalk-text hidden text-sm text-danger md:inline">삭제</span>
 					</button>
 				)}
 			</div>

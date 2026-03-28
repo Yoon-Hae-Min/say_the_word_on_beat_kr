@@ -1,4 +1,5 @@
 import { WoodFrame } from "@/shared/ui";
+import MyPageButton from "@/shared/ui/MyPageButton";
 import { CtaBanner } from "@/widgets/cta-banner";
 import { FeatureShowcase } from "@/widgets/feature-showcase";
 import { LandingFeed } from "@/widgets/landing-feed";
@@ -10,7 +11,8 @@ import LandingScrollTracker from "./_components/LandingScrollTracker";
 export default function Home() {
 	return (
 		<WoodFrame>
-			<main id="main-content" className="bg-chalkboard-bg">
+			<main id="main-content" className="relative bg-chalkboard-bg">
+				<MyPageButton />
 				<LandingScrollTracker />
 				<div data-section="hero">
 					<LandingHero />
