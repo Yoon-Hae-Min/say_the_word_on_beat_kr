@@ -1,0 +1,29 @@
+{
+	"hooks": {
+		"PostToolUse": [
+			{
+				"matcher": "Edit|Write",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "jq -r '.tool_input.file_path // .tool_response.filePath // empty' | { read -r f; [[ \"$f\" =~ \\.(ts|tsx|js|jsx)$ ]] && pnpm lint 2>/dev/null || true; }",
+						"timeout": 30,
+						"statusMessage": "Biome 린트 실행 중..."
+					}
+				]
+			}
+		],
+		"Stop": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "changed=$(git diff --name-only HEAD 2>/dev/null | head -1); [ -n \"$changed\" ] && echo '{\"systemMessage\":\"변경된 파일이 있습니다. code-reviewer 에이전트를 실행하여 코드 품질을 검토하세요.\"}' || true",
+						"timeout": 5,
+						"statusMessage": "변경사항 확인 중..."
+					}
+				]
+			}
+		]
+	}
+}
