@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { usePopularChallenges } from "@/entities/challenge/api/queries";
+import { usePopularChallenges } from "@/entities/challenge";
 import { ChalkCard } from "@/shared/ui";
 
 export default function FeedSection() {

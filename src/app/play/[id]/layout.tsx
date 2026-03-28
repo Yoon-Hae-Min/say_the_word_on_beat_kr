@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getChallengeById } from "@/features/game-play/api/challengeService";
+import { getChallengeById } from "@/features/game-play";
 
 interface PlayLayoutProps {
 	children: React.ReactNode;

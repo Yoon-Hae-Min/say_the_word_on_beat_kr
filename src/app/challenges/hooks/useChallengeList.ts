@@ -13,7 +13,7 @@ import {
 	useMyChallenges,
 	useMyChallengesCount,
 	usePublicChallengesCount,
-} from "@/entities/challenge/api/queries";
+} from "@/entities/challenge";
 
 export interface UseChallengeListOptions {
 	/**

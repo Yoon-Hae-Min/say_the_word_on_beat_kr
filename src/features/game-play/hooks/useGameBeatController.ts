@@ -8,8 +8,7 @@
  */
 
 import { useState } from "react";
-import type { ClientSafeChallenge } from "@/entities/challenge";
-import type { BeatSlot } from "@/entities/challenge/model/types";
+import type { BeatSlot, ClientSafeChallenge } from "@/entities/challenge";
 import {
 	calculateBlockIndex,
 	calculateFocusedIndex,
