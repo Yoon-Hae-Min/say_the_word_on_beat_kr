@@ -146,9 +146,9 @@ The project uses a **chalkboard theme** with Tailwind CSS 4. All design tokens a
 **Chalkboard Colors:**
 - `chalkboard-bg`: Dark slate green (#2F4F4F)
 - `wood-frame`: Saddle brown (#8B4513)
-- `chalk-white`: Off-white (#F5F5F5)
-- `chalk-yellow`: Vibrant yellow (#FFFF33)
-- `chalk-blue`: Sky blue (#87CEEB)
+- `chalk-white`: Warm Cream (#E8E4DF)
+- `chalk-yellow`: Soft Khaki Yellow (#F0E68C)
+- `chalk-blue`: Muted Chalk Blue (#B4D4E4)
 
 **Shared Components** (all in `src/shared/ui/`):
 - `ChalkButton`: Chalk-styled button with hover effects

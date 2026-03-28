@@ -1,9 +1,8 @@
 "use client";
 
-import type { LucideIcon } from "lucide-react";
-import { Flame, Smile, Zap } from "lucide-react";
 import type { DifficultyLevel } from "@/shared/lib/difficulty";
 import { calculatePercentages } from "@/shared/lib/difficulty";
+import { difficultyConfig } from "../model/difficultyConfig";
 import type { VoteStats as VoteStatsType } from "../model/types";
 
 interface VoteStatsProps {
@@ -13,12 +12,6 @@ interface VoteStatsProps {
 	onChangeVote?: () => void;
 	className?: string;
 }
-
-const difficultyConfig: Record<DifficultyLevel, { icon: LucideIcon; label: string }> = {
-	easy: { icon: Smile, label: "쉬움" },
-	normal: { icon: Zap, label: "보통" },
-	hard: { icon: Flame, label: "어려움" },
-};
 
 function VoteBar({
 	difficulty,
