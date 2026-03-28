@@ -93,14 +93,16 @@ export async function DELETE(request: NextRequest, { params }: ChallengeParams) 
 		// 2. Extract image paths before DB deletion
 		const imagePaths = extractImagePaths(challenge);
 
-		// 3. Delete from DB (CASCADE deletes votes too)
-		const { error: deleteError } = await supabaseServer
+		// 3. Delete from DB with ownership re-check (atomic) + verify deletion
+		const { data: deleted, error: deleteError } = await supabaseServer
 			.from("challenges")
 			.delete()
 			.eq("id", challengeId)
-			.eq("creator_id", requestUserId);
+			.eq("creator_id", requestUserId)
+			.select("id")
+			.single();
 
-		if (deleteError) {
+		if (deleteError || !deleted) {
 			return NextResponse.json({ error: "Failed to delete challenge" }, { status: 500 });
 		}
 
