@@ -10,6 +10,7 @@
 "use client";
 
 import type { ClientSafeChallenge } from "@/entities/challenge";
+import { DifficultyVoting } from "@/features/difficulty-voting";
 import { useGamePhase } from "../hooks/useGamePhase";
 import CountDownGameState from "./CountDownGameState";
 import FinishedGameScreen from "./FinishedGameScreen";
@@ -28,12 +29,22 @@ export default function GameStage({ challengeData }: GameStageProps) {
 	return (
 		<>
 			{/* Navigation Bar - Hidden on finished screen */}
-			{!gamePhase.is.finished && <GameNavigationBar challengeData={challengeData} />}
+			{!gamePhase.is.finished && (
+				<GameNavigationBar
+					challengeId={challengeData.id}
+					title={challengeData.title}
+					isPublic={challengeData.is_public}
+					isMine={challengeData.isMine}
+				/>
+			)}
 
 			{/* Idle 화면 */}
 			{gamePhase.is.idle && (
 				<IdleGameStage
-					challengeData={challengeData}
+					title={challengeData.title}
+					difficultyEasy={challengeData.difficulty_easy ?? 0}
+					difficultyNormal={challengeData.difficulty_normal ?? 0}
+					difficultyHard={challengeData.difficulty_hard ?? 0}
 					onStartClick={gamePhase.actions.startCountdown}
 				/>
 			)}
@@ -62,6 +73,7 @@ export default function GameStage({ challengeData }: GameStageProps) {
 					challengeId={challengeData.id}
 					challengeData={challengeData}
 					onRestart={gamePhase.actions.resetGame}
+					votingSlot={<DifficultyVoting challengeId={challengeData.id} />}
 				/>
 			)}
 		</>

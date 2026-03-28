@@ -9,8 +9,7 @@
 
 import Link from "next/link";
 import type { ClientSafeChallenge } from "@/entities/challenge";
-import { convertImagePathToUrl } from "@/entities/challenge/api/repository";
-import { DifficultyVoting } from "@/features/difficulty-voting";
+import { convertImagePathToUrl } from "@/entities/challenge";
 import { shareChallenge } from "@/shared/lib/share/shareUtils";
 import { ChalkButton } from "@/shared/ui";
 
@@ -36,6 +35,11 @@ interface FinishedGameScreenProps {
 	onRestart: () => void;
 
 	/**
+	 * Slot for difficulty voting UI (injected from parent to avoid cross-feature import)
+	 */
+	votingSlot?: React.ReactNode;
+
+	/**
 	 * Additional CSS classes
 	 */
 	className?: string;
@@ -58,6 +62,7 @@ export default function FinishedGameScreen({
 	challengeId,
 	challengeData,
 	onRestart,
+	votingSlot,
 	className = "",
 }: FinishedGameScreenProps) {
 	const shareUrl = typeof window !== "undefined" ? window.location.href : "";
@@ -90,9 +95,7 @@ export default function FinishedGameScreen({
 					)}
 
 					{/* Difficulty Voting */}
-					<div className="w-full">
-						<DifficultyVoting challengeId={challengeId} />
-					</div>
+					{votingSlot && <div className="w-full">{votingSlot}</div>}
 				</div>
 
 				{/* Right Section: Action Buttons */}

@@ -3,19 +3,26 @@
 import { Globe, Home, Lock, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import type { ClientSafeChallenge } from "@/entities/challenge";
-import { updateChallengePublicStatus } from "@/entities/challenge/api/repository";
+import { updateChallengePublicStatus } from "@/entities/challenge";
 import { getUserId } from "@/shared/lib/user/fingerprint";
 import DeleteConfirmModal from "./DeleteConfirmModal";
 
 interface GameNavigationBarProps {
-	challengeData: ClientSafeChallenge;
+	challengeId: string;
+	title: string;
+	isPublic: boolean;
+	isMine: boolean;
 }
 
-export default function GameNavigationBar({ challengeData }: GameNavigationBarProps) {
+export default function GameNavigationBar({
+	challengeId,
+	title,
+	isPublic: initialIsPublic,
+	isMine,
+}: GameNavigationBarProps) {
 	const router = useRouter();
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-	const [isPublic, setIsPublic] = useState(challengeData.is_public);
+	const [isPublic, setIsPublic] = useState(initialIsPublic);
 	const [isUpdating, setIsUpdating] = useState(false);
 
 	const handleTogglePublic = async () => {
@@ -25,7 +32,7 @@ export default function GameNavigationBar({ challengeData }: GameNavigationBarPr
 			setIsUpdating(true);
 			const userId = getUserId();
 			const newStatus = !isPublic;
-			await updateChallengePublicStatus(challengeData.id, userId, newStatus);
+			await updateChallengePublicStatus(challengeId, userId, newStatus);
 			setIsPublic(newStatus);
 		} catch (error) {
 			console.error("Failed to update public status:", error);
@@ -49,7 +56,7 @@ export default function GameNavigationBar({ challengeData }: GameNavigationBarPr
 				</button>
 
 				{/* Public/Private Toggle Button - Only visible to owner */}
-				{challengeData.isMine && (
+				{isMine && (
 					<button
 						type="button"
 						onClick={handleTogglePublic}
@@ -70,14 +77,14 @@ export default function GameNavigationBar({ challengeData }: GameNavigationBarPr
 				)}
 
 				{/* Delete Button - Only visible to challenge owner */}
-				{challengeData.isMine && (
+				{isMine && (
 					<button
 						type="button"
 						onClick={() => setIsDeleteModalOpen(true)}
-						className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-red-500 bg-transparent transition-all hover:scale-105 hover:bg-red-500/20 md:h-14 md:w-14"
+						className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-danger bg-transparent transition-all hover:scale-105 hover:bg-danger/20 md:h-14 md:w-14"
 						aria-label="챌린지 삭제"
 					>
-						<Trash2 className="h-6 w-6 text-red-500 md:h-7 md:w-7" />
+						<Trash2 className="h-6 w-6 text-danger md:h-7 md:w-7" />
 					</button>
 				)}
 			</div>
@@ -85,8 +92,8 @@ export default function GameNavigationBar({ challengeData }: GameNavigationBarPr
 			<DeleteConfirmModal
 				isOpen={isDeleteModalOpen}
 				onClose={() => setIsDeleteModalOpen(false)}
-				challengeId={challengeData.id}
-				challengeTitle={challengeData.title}
+				challengeId={challengeId}
+				challengeTitle={title}
 			/>
 		</>
 	);
