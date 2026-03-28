@@ -1,3 +1,4 @@
+import { cache } from "react";
 import type { ClientSafeChallenge } from "@/entities/challenge";
 import {
 	getChallengeById as getChallengeFromDB,
@@ -6,17 +7,15 @@ import {
 import { markChallengeAsViewed } from "@/shared/lib/user/viewTracking";
 
 /**
- * Fetch a challenge by ID from the database
- * Returns database row with imagePath as public URLs
- * @param id - Challenge UUID
- * @param userId - Optional user ID to check ownership
+ * Fetch a challenge by ID from the database (memoized per render cycle).
+ * React cache() deduplicates calls within the same server render,
+ * so generateMetadata + PlayLayout share a single DB query.
  */
-export async function getChallengeById(
-	id: string,
-	userId?: string
-): Promise<ClientSafeChallenge | null> {
-	return getChallengeFromDB(id, userId);
-}
+export const getChallengeById = cache(
+	async (id: string, userId?: string): Promise<ClientSafeChallenge | null> => {
+		return getChallengeFromDB(id, userId);
+	},
+);
 
 /**
  * Increment the view count for a challenge
