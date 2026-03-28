@@ -1,28 +1,36 @@
 "use client";
 
-import type { ClientSafeChallenge } from "@/entities/challenge";
 import { ChalkButton, DifficultyText } from "@/shared/ui";
 
 interface IdleGameStageProps {
-	challengeData: ClientSafeChallenge;
+	title: string;
+	difficultyEasy: number;
+	difficultyNormal: number;
+	difficultyHard: number;
 	onStartClick: () => void;
 }
 
-const IdleGameStage = ({ challengeData, onStartClick }: IdleGameStageProps) => {
+const IdleGameStage = ({
+	title,
+	difficultyEasy,
+	difficultyNormal,
+	difficultyHard,
+	onStartClick,
+}: IdleGameStageProps) => {
 	return (
 		<div className="flex items-center justify-center h-full">
 			<div className="flex flex-col items-center gap-6">
 				<div className="flex flex-col items-center gap-3">
 					<DifficultyText
 						stats={{
-							easy: challengeData.difficulty_easy ?? 0,
-							normal: challengeData.difficulty_normal ?? 0,
-							hard: challengeData.difficulty_hard ?? 0,
+							easy: difficultyEasy,
+							normal: difficultyNormal,
+							hard: difficultyHard,
 						}}
 						className="text-base md:text-lg"
 					/>
 					<h1 className="chalk-text text-chalk-yellow text-2xl md:text-3xl lg:text-4xl font-bold text-center px-4">
-						"{challengeData.title}"
+						"{title}"
 					</h1>
 				</div>
 
