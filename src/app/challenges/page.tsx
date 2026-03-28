@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { Suspense } from "react";
 import type { ChallengeSortBy } from "@/entities/challenge";
 import { usePagination, useURLSearchParams } from "@/shared/hooks";
+import { trackChallengeSearch } from "@/shared/lib/analytics/gtag";
 import { getUserId } from "@/shared/lib/user/fingerprint";
 import { EmptyState, LoadingState, PaginationControls, WoodFrame } from "@/shared/ui";
 import { useChallengeList } from "./hooks/useChallengeList";
@@ -51,6 +52,7 @@ function ChallengesContent() {
 	});
 
 	const handleSortChange = (newSort: ChallengeSortBy) => {
+		trackChallengeSearch(newSort, 1);
 		urlParams.set({ sort: newSort, page: "1" });
 		window.scrollTo({ top: 0, behavior: "smooth" });
 	};
@@ -88,11 +90,7 @@ function ChallengesContent() {
 						총 {challengeList.totalCount}개의 챌린지
 					</p>
 
-					<ChallengeSortControls
-						sortBy={sortBy}
-						onSortChange={handleSortChange}
-						className="mb-8"
-					/>
+					<ChallengeSortControls sortBy={sortBy} onSortChange={handleSortChange} className="mb-8" />
 
 					{challengeList.isLoading && <LoadingState />}
 

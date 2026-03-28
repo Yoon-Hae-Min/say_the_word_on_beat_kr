@@ -1,7 +1,7 @@
 import type { BeatSlot, ChallengeData, GameConfigStruct } from "@/entities/challenge";
 import { createChallenge as createChallengeInDB } from "@/entities/challenge";
 import { supabase } from "@/shared/api/supabase/client";
-import { sendGAEvent } from "@/shared/lib/analytics/gtag";
+import { sendGAEvent, trackImageUploadFail } from "@/shared/lib/analytics/gtag";
 import { compressImage } from "@/shared/lib/image";
 import { getUserId } from "@/shared/lib/user/fingerprint";
 
@@ -70,27 +70,41 @@ async function uploadToPresignedUrl(presignedUrl: string, file: File): Promise<v
  * @returns Path to the uploaded image in storage
  */
 export async function compressAndUploadImage(file: File): Promise<string> {
+	let compressedFile: File;
 	try {
-		// Step 1: Compress the image
-		const compressedFile = await compressImage(file);
-
-		// Step 2: Generate unique filename (UUID-based)
-		const uniqueFileName = generateUniqueFileName(compressedFile.name);
-
-		// Step 3: Get presigned URL from edge function
-		const { uploadUrl } = await getPresignedUrl(uniqueFileName, compressedFile.type);
-
-		// Step 4: Upload to R2 using presigned URL
-		await uploadToPresignedUrl(uploadUrl, compressedFile);
-
-		// Step 5: Return the unique filename
-		return uniqueFileName;
+		compressedFile = await compressImage(file);
 	} catch (error) {
-		console.error("Error uploading image:", error);
+		trackImageUploadFail("compression");
+		console.error("Error compressing image:", error);
 		throw new Error(
 			`Failed to upload image: ${error instanceof Error ? error.message : "Unknown error"}`
 		);
 	}
+
+	const uniqueFileName = generateUniqueFileName(compressedFile.name);
+
+	let uploadUrl: string;
+	try {
+		({ uploadUrl } = await getPresignedUrl(uniqueFileName, compressedFile.type));
+	} catch (error) {
+		trackImageUploadFail("presigned_url");
+		console.error("Error getting presigned URL:", error);
+		throw new Error(
+			`Failed to upload image: ${error instanceof Error ? error.message : "Unknown error"}`
+		);
+	}
+
+	try {
+		await uploadToPresignedUrl(uploadUrl, compressedFile);
+	} catch (error) {
+		trackImageUploadFail("storage_upload");
+		console.error("Error uploading to storage:", error);
+		throw new Error(
+			`Failed to upload image: ${error instanceof Error ? error.message : "Unknown error"}`
+		);
+	}
+
+	return uniqueFileName;
 }
 
 /**

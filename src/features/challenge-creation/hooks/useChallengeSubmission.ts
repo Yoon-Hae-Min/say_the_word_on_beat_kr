@@ -9,6 +9,7 @@
 
 import { useState } from "react";
 import type { ChallengeData } from "@/entities/challenge";
+import { trackMakerStepComplete } from "@/shared/lib/analytics/gtag";
 import { createChallenge } from "../api/challengeService";
 import { validateChallengeData } from "../lib/validation";
 
@@ -82,6 +83,8 @@ export const useChallengeSubmission = (): UseChallengeSubmissionReturn => {
 		setUploadError(null);
 
 		try {
+			trackMakerStepComplete("round_config", challengeData.resources.length);
+
 			// Upload images and create challenge in Supabase
 			const challengeId = await createChallenge(challengeData);
 

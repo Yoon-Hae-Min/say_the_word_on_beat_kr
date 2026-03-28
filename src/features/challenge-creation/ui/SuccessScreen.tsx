@@ -4,7 +4,11 @@ import { Copy, Play } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { trackChallengeCreateComplete } from "@/shared/lib/analytics/gtag";
+import {
+	trackChallengeCreateComplete,
+	trackChallengeCreateShare,
+	trackShareComplete,
+} from "@/shared/lib/analytics/gtag";
 import { ChalkButton } from "@/shared/ui";
 
 interface SuccessScreenProps {
@@ -20,9 +24,15 @@ export default function SuccessScreen({ challengeId, thumbnail }: SuccessScreenP
 		trackChallengeCreateComplete(challengeId);
 	}, [challengeId]);
 
-	const handleCopyLink = () => {
+	const handleCopyLink = async () => {
+		trackChallengeCreateShare(challengeId, "copy_link");
 		const url = `${window.location.origin}/play/${challengeId}`;
-		navigator.clipboard.writeText(url);
+		try {
+			await navigator.clipboard.writeText(url);
+			trackShareComplete(challengeId, "clipboard", "create_success");
+		} catch {
+			// clipboard write failed silently
+		}
 		setCopied(true);
 		setTimeout(() => setCopied(false), 2000);
 	};

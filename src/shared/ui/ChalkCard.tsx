@@ -67,8 +67,7 @@ export default function ChalkCard({
 				<div className="absolute right-2 top-2 flex gap-1.5">
 					{isMine && (
 						<Badge variant="secondary" className="bg-chalk-yellow/90 text-chalkboard-bg">
-							<User size={12} className="mr-1" />
-							내 챌린지
+							<User size={12} className="mr-1" />내 챌린지
 						</Badge>
 					)}
 					{!isPublic && (

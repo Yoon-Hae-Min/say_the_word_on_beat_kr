@@ -7,8 +7,9 @@
  * Integrates audio beat detection with visual game state (focused slot, current round).
  */
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { BeatSlot, ClientSafeChallenge } from "@/entities/challenge";
+import { trackRoundComplete } from "@/shared/lib/analytics/gtag";
 import {
 	calculateBlockIndex,
 	calculateFocusedIndex,
@@ -104,6 +105,7 @@ export const useGameBeatController = ({
 }: UseGameBeatControllerOptions): UseGameBeatControllerReturn => {
 	const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
 	const [currentRound, setCurrentRound] = useState(1);
+	const prevRoundRef = useRef(1);
 
 	const totalRounds = challengeData.game_config?.length ?? 0;
 	const currentSlots = challengeData.game_config?.[currentRound - 1]?.slots ?? [];
@@ -119,6 +121,10 @@ export const useGameBeatController = ({
 
 		// Calculate current round
 		const round = calculateRoundFromBeat(beat, ROUND_BEATS);
+		if (round !== prevRoundRef.current) {
+			trackRoundComplete(challengeData.id, prevRoundRef.current);
+			prevRoundRef.current = round;
+		}
 		setCurrentRound(round);
 
 		// Calculate block and check if it's active

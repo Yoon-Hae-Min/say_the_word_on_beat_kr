@@ -77,7 +77,9 @@ export default function GameNavigationBar({
 						) : (
 							<>
 								<Lock className="h-5 w-5 text-chalk-yellow md:h-6 md:w-6" />
-								<span className="chalk-text hidden text-sm text-chalk-yellow md:inline">비공개</span>
+								<span className="chalk-text hidden text-sm text-chalk-yellow md:inline">
+									비공개
+								</span>
 							</>
 						)}
 					</button>
