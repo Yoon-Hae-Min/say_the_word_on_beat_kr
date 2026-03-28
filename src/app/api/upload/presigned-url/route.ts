@@ -13,6 +13,9 @@ interface PresignedUrlResponse {
 	path: string;
 }
 
+const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const ALLOWED_EXTENSIONS = ["jpg", "jpeg", "png", "webp", "gif"];
+
 export async function POST(request: NextRequest) {
 	try {
 		const body = (await request.json()) as PresignedUrlRequest;
@@ -23,9 +26,18 @@ export async function POST(request: NextRequest) {
 			return NextResponse.json({ error: "fileName and fileType are required" }, { status: 400 });
 		}
 
-		// Validate file type (only allow images)
-		if (!fileType.startsWith("image/")) {
-			return NextResponse.json({ error: "Only image files are allowed" }, { status: 400 });
+		// Validate MIME type - whitelist only (blocks SVG, BMP, TIFF, etc.)
+		if (!ALLOWED_MIME_TYPES.includes(fileType)) {
+			return NextResponse.json(
+				{ error: "Only JPEG, PNG, WebP, GIF files are allowed" },
+				{ status: 400 },
+			);
+		}
+
+		// Validate file extension - whitelist only (prevents .php, .svg, .html etc.)
+		const fileExtension = fileName.split(".").pop()?.toLowerCase() || "";
+		if (!ALLOWED_EXTENSIONS.includes(fileExtension)) {
+			return NextResponse.json({ error: "Invalid file extension" }, { status: 400 });
 		}
 
 		// Validate environment variables
@@ -40,8 +52,7 @@ export async function POST(request: NextRequest) {
 			return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
 		}
 
-		// Generate unique file path
-		const fileExtension = fileName.split(".").pop() || "jpg";
+		// Generate unique file path (always use validated extension)
 		const uniqueId = crypto.randomUUID();
 		const path = `${uniqueId}.${fileExtension}`;
 
@@ -55,7 +66,7 @@ export async function POST(request: NextRequest) {
 			},
 		});
 
-		// Create presigned URL for upload to R2 (60 second expiry)
+		// Create presigned URL for upload to R2 (120 second expiry - accounts for client-side compression)
 		const command = new PutObjectCommand({
 			Bucket: bucketName,
 			Key: path,
@@ -63,7 +74,7 @@ export async function POST(request: NextRequest) {
 			CacheControl: "public, max-age=31536000, immutable",
 		});
 
-		const uploadUrl = await getSignedUrl(r2Client, command, { expiresIn: 60 });
+		const uploadUrl = await getSignedUrl(r2Client, command, { expiresIn: 120 });
 		const publicUrl = `${r2PublicUrl}/${path}`;
 
 		const response: PresignedUrlResponse = {

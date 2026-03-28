@@ -31,12 +31,17 @@ interface GameJsonLdProps {
 	};
 }
 
+// Sanitize user-provided strings to prevent script injection in JSON-LD context
+function sanitizeForJsonLd(str: string): string {
+	return str.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/&/g, "&amp;");
+}
+
 export function GameJsonLd({ challenge }: GameJsonLdProps) {
 	const jsonLd = {
 		"@context": "https://schema.org",
 		"@type": "Game",
-		name: challenge.title,
-		url: `https://say-the-word-on-beat.vercel.app/play/${challenge.id}`,
+		name: sanitizeForJsonLd(challenge.title),
+		url: `https://say-the-word-on-beat.vercel.app/play/${encodeURIComponent(challenge.id)}`,
 		gamePlatform: "Web Browser",
 		genre: "Rhythm Game",
 		aggregateRating: {
