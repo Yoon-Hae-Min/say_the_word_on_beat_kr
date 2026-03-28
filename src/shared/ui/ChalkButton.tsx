@@ -28,7 +28,8 @@ export default function ChalkButton({
 			onClick={onClick}
 			disabled={disabled}
 			className={`
-        chalk-text chalk-border 
+        chalk-text
+        border-2 rounded-lg
         px-6 py-3
         transition-all duration-300
         hover:scale-105 hover-wiggle

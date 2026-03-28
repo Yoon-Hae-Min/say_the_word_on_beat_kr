@@ -79,6 +79,7 @@ export default function GameStage({ challengeData }: GameStageProps) {
 					title={challengeData.title}
 					challengeId={challengeData.id}
 					challengeData={challengeData}
+					viewCount={challengeData.view_count}
 					onRestart={gamePhase.actions.resetGame}
 					votingSlot={<DifficultyVoting challengeId={challengeData.id} />}
 				/>

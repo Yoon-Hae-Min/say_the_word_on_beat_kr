@@ -43,12 +43,12 @@ export default function ChalkCard({
 			tabIndex={0}
 			className={`
         group cursor-pointer
-        bg-chalkboard-bg
-        chalk-border border-chalk-white
-        chalk-dust
+        bg-chalk-white/5
+        rounded-lg
         overflow-hidden
         transition-all duration-300
-        hover:scale-105 hover:brightness-110
+        hover:scale-[1.03] hover:bg-chalkboard-bg/80
+        hover:shadow-[0_0_20px_rgba(255,255,255,0.08)]
         ${className}
       `}
 		>

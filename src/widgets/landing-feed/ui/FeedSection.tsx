@@ -10,15 +10,12 @@ export default function FeedSection() {
 	const { data: challenges = [], isLoading } = usePopularChallenges(6);
 
 	return (
-		<section className="px-4 py-16">
+		<section className="px-4 py-32">
 			<div className="mx-auto max-w-6xl">
 				{/* Section title */}
-				<h2 className="chalk-text mb-2 text-center text-4xl font-bold text-chalk-white md:text-5xl">
+				<h2 className="chalk-text mb-14 text-center text-2xl font-bold text-chalk-white md:text-3xl">
 					인기 챌린지
 				</h2>
-				<p className="chalk-text mb-8 text-center text-lg text-chalk-white/70">
-					지금 가장 많이 플레이되는 챌린지
-				</p>
 
 				{/* Loading state */}
 				{isLoading && (
