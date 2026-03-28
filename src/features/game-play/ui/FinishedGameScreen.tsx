@@ -34,6 +34,7 @@ export default function FinishedGameScreen({
 	votingSlot,
 	className = "",
 }: FinishedGameScreenProps) {
+	const STAGGER_MS = 80;
 	const baseUrl = typeof window !== "undefined" ? window.location.href : "";
 	const shareUrl = baseUrl
 		? appendUtmParams(baseUrl, {
@@ -79,7 +80,7 @@ export default function FinishedGameScreen({
 					{thumbnailUrl && thumbnailUrl !== "/placeholder.svg" && (
 						<div
 							className="animate-fade-in mx-auto w-full max-w-sm overflow-hidden rounded-lg"
-							style={{ animationDelay: "80ms", animationFillMode: "both" }}
+							style={{ animationDelay: `${STAGGER_MS}ms`, animationFillMode: "both" }}
 						>
 							<img src={thumbnailUrl} alt={title} className="h-auto w-full object-cover" />
 						</div>
@@ -89,7 +90,7 @@ export default function FinishedGameScreen({
 					{votingSlot && (
 						<div
 							className="animate-fade-in w-full"
-							style={{ animationDelay: "160ms", animationFillMode: "both" }}
+							style={{ animationDelay: `${STAGGER_MS * 2}ms`, animationFillMode: "both" }}
 						>
 							{votingSlot}
 						</div>
@@ -99,7 +100,7 @@ export default function FinishedGameScreen({
 				{/* Right Section: Actions */}
 				<div
 					className="animate-fade-in flex w-full flex-col items-center justify-center gap-4 lg:w-80"
-					style={{ animationDelay: "240ms", animationFillMode: "both" }}
+					style={{ animationDelay: `${STAGGER_MS * 3}ms`, animationFillMode: "both" }}
 				>
 					{/* Social proof — speech bubble above share button */}
 					{viewCount != null && viewCount > 0 && (
