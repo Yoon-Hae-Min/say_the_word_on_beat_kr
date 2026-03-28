@@ -225,6 +225,28 @@ export async function getPublicChallengesCount(): Promise<number> {
 }
 
 /**
+ * Get total play count (sum of view_count) of all public challenges
+ */
+export async function getTotalPlayCount(): Promise<number> {
+	try {
+		const { data, error } = await supabase
+			.from("challenges")
+			.select("view_count")
+			.eq("is_public", true);
+
+		if (error) {
+			console.error("Failed to fetch total play count:", error);
+			return 0;
+		}
+
+		return (data || []).reduce((sum, row) => sum + (row.view_count ?? 0), 0);
+	} catch (error) {
+		console.error("Failed to fetch total play count:", error);
+		return 0;
+	}
+}
+
+/**
  * Get all public challenges ordered by creation date using REST API
  */
 export async function getAllChallenges(

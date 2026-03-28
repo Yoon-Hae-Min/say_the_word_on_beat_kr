@@ -8,6 +8,7 @@ import {
 	getMyChallengesCount,
 	getPopularChallenges,
 	getPublicChallengesCount,
+	getTotalPlayCount,
 } from "./repository";
 
 /**
@@ -87,6 +88,17 @@ export function usePublicChallengesCount(): UseQueryResult<number> {
 		queryKey: challengeKeys.count(),
 		queryFn: getPublicChallengesCount,
 		staleTime: 10 * 60 * 1000, // 총 개수는 자주 안 바뀌므로 10분 캐시
+	});
+}
+
+/**
+ * 총 플레이 수 조회 Query Hook (view_count 합계)
+ */
+export function useTotalPlayCount(): UseQueryResult<number> {
+	return useQuery({
+		queryKey: [...challengeKeys.all, "totalPlayCount"] as const,
+		queryFn: getTotalPlayCount,
+		staleTime: 10 * 60 * 1000,
 	});
 }
 

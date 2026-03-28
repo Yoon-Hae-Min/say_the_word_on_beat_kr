@@ -35,6 +35,13 @@ const playSteps = [
 	},
 ];
 
+const targetAudience = [
+	{ text: "친구한테 퀴즈 보내고 싶은 분", sub: "만들고 링크만 보내면 끝" },
+	{ text: "SNS 챌린지가 궁금했던 분", sub: "영상 편집 없이 바로 만들기" },
+	{ text: "모임에서 아이스브레이킹이 필요한 분", sub: "다 같이 화면 보고 플레이" },
+	{ text: "덕질 퀴즈를 만들고 싶은 분", sub: "아이돌, 애니, 음식 뭐든 가능" },
+];
+
 export default function FeatureShowcase() {
 	return (
 		<section className="px-4 py-16">
@@ -70,6 +77,23 @@ export default function FeatureShowcase() {
 										{step.label}
 									</p>
 									<p className="text-xs text-chalk-white/60 md:text-sm">{step.description}</p>
+								</div>
+							</div>
+						))}
+					</div>
+				</div>
+				{/* Target Audience */}
+				<div className="mt-12 text-center">
+					<h3 className="chalk-text text-xl md:text-2xl font-bold text-chalk-white mb-6">
+						이런 분들에게 딱 맞아요
+					</h3>
+					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-3 max-w-4xl mx-auto">
+						{targetAudience.map((item) => (
+							<div key={item.text} className="flex items-start gap-2 text-left">
+								<span className="text-chalk-yellow shrink-0 mt-0.5">✦</span>
+								<div>
+									<p className="text-chalk-white text-sm md:text-base">{item.text}</p>
+									<p className="text-chalk-white/50 text-xs">{item.sub}</p>
 								</div>
 							</div>
 						))}

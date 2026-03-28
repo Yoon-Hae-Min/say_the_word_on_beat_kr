@@ -13,6 +13,7 @@ export {
 	useMyChallengesCount,
 	usePopularChallenges,
 	usePublicChallengesCount,
+	useTotalPlayCount,
 } from "./api/queries";
 export { convertImagePathToUrl, updateChallengePublicStatus } from "./api/repository";
 export type {

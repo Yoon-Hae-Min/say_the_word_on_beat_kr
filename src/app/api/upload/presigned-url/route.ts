@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
 		if (!ALLOWED_MIME_TYPES.includes(fileType)) {
 			return NextResponse.json(
 				{ error: "Only JPEG, PNG, WebP, GIF files are allowed" },
-				{ status: 400 },
+				{ status: 400 }
 			);
 		}
 
