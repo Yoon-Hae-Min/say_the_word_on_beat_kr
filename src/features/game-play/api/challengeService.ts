@@ -14,7 +14,7 @@ import { markChallengeAsViewed } from "@/shared/lib/user/viewTracking";
 export const getChallengeById = cache(
 	async (id: string, userId?: string): Promise<ClientSafeChallenge | null> => {
 		return getChallengeFromDB(id, userId);
-	},
+	}
 );
 
 /**
