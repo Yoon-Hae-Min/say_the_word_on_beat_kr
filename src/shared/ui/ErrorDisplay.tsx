@@ -36,9 +36,9 @@ interface ErrorDisplayProps {
  */
 export function ErrorDisplay({ message, className = "", severity = "error" }: ErrorDisplayProps) {
 	const severityStyles = {
-		error: "bg-red-500/20 border-red-500",
-		warning: "bg-yellow-500/20 border-yellow-500",
-		info: "bg-blue-500/20 border-blue-500",
+		error: "bg-danger/20 border-danger",
+		warning: "bg-warning/20 border-warning",
+		info: "bg-info/20 border-info",
 	};
 
 	return (

@@ -48,6 +48,8 @@ body {
   --color-text-main: var(--color-slate-900);
   --color-text-inverse: var(--color-white);
   --color-danger: var(--color-red-500);
+  --color-warning: #eab308;
+  --color-info: var(--color-chalk-blue);
 
   /* Spacing */
   --spacing-4: 1rem;
@@ -154,6 +156,8 @@ body {
   --color-text-main: var(--color-text-main);
   --color-text-inverse: var(--color-text-inverse);
   --color-danger: var(--color-danger);
+  --color-warning: var(--color-warning);
+  --color-info: var(--color-info);
 
   /* Spacing */
   --spacing-4: var(--spacing-4);
