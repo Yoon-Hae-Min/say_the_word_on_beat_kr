@@ -3,7 +3,8 @@
 import { Copy, Play } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { trackChallengeCreateComplete } from "@/shared/lib/analytics/gtag";
 import { ChalkButton } from "@/shared/ui";
 
 interface SuccessScreenProps {
@@ -14,6 +15,10 @@ interface SuccessScreenProps {
 export default function SuccessScreen({ challengeId, thumbnail }: SuccessScreenProps) {
 	const router = useRouter();
 	const [copied, setCopied] = useState(false);
+
+	useEffect(() => {
+		trackChallengeCreateComplete(challengeId);
+	}, [challengeId]);
 
 	const handleCopyLink = () => {
 		const url = `${window.location.origin}/play/${challengeId}`;

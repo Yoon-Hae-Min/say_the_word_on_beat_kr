@@ -6,6 +6,25 @@
  */
 
 /**
+ * Append UTM parameters to a URL for tracking shared links in GA4.
+ * Strips any existing UTM params to avoid duplication.
+ */
+export const appendUtmParams = (
+	url: string,
+	params: { source: string; medium: string; campaign: string },
+): string => {
+	const urlObj = new URL(url);
+	// Remove existing UTM params
+	for (const key of ["utm_source", "utm_medium", "utm_campaign"]) {
+		urlObj.searchParams.delete(key);
+	}
+	urlObj.searchParams.set("utm_source", params.source);
+	urlObj.searchParams.set("utm_medium", params.medium);
+	urlObj.searchParams.set("utm_campaign", params.campaign);
+	return urlObj.toString();
+};
+
+/**
  * Share content using Web Share API or fallback to clipboard
  *
  * @param title - Title of the shared content
@@ -72,9 +91,14 @@ export const isShareSupported = (): boolean => {
 export const getShareUrl = (
 	platform: "twitter" | "facebook" | "line",
 	url: string,
-	text?: string
+	text?: string,
 ): string => {
-	const encodedUrl = encodeURIComponent(url);
+	const utmUrl = appendUtmParams(url, {
+		source: platform,
+		medium: "social",
+		campaign: "challenge_share",
+	});
+	const encodedUrl = encodeURIComponent(utmUrl);
 	const encodedText = text ? encodeURIComponent(text) : "";
 
 	switch (platform) {
@@ -85,6 +109,6 @@ export const getShareUrl = (
 		case "line":
 			return `https://social-plugins.line.me/lineit/share?url=${encodedUrl}`;
 		default:
-			return url;
+			return utmUrl;
 	}
 };

@@ -11,6 +11,7 @@
 
 import type { ClientSafeChallenge } from "@/entities/challenge";
 import { DifficultyVoting } from "@/features/difficulty-voting";
+import { trackGameComplete, trackGameStart } from "@/shared/lib/analytics/gtag";
 import { useGamePhase } from "../hooks/useGamePhase";
 import CountDownGameState from "./CountDownGameState";
 import FinishedGameScreen from "./FinishedGameScreen";
@@ -45,7 +46,10 @@ export default function GameStage({ challengeData }: GameStageProps) {
 					difficultyEasy={challengeData.difficulty_easy ?? 0}
 					difficultyNormal={challengeData.difficulty_normal ?? 0}
 					difficultyHard={challengeData.difficulty_hard ?? 0}
-					onStartClick={gamePhase.actions.startCountdown}
+					onStartClick={() => {
+						trackGameStart(challengeData.id);
+						gamePhase.actions.startCountdown();
+					}}
 				/>
 			)}
 
@@ -62,7 +66,10 @@ export default function GameStage({ challengeData }: GameStageProps) {
 			{gamePhase.is.playing && (
 				<PlayingGameStage
 					challengeData={challengeData}
-					onPlayingEnd={gamePhase.actions.finishGame}
+					onPlayingEnd={() => {
+						trackGameComplete(challengeData.id);
+						gamePhase.actions.finishGame();
+					}}
 				/>
 			)}
 
