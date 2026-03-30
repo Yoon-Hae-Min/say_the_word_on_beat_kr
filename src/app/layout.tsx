@@ -64,6 +64,7 @@ export default function RootLayout({
 	return (
 		<html lang="ko">
 			<head>
+				<meta name="referrer" content="no-referrer-when-downgrade" />
 				<meta name="google-adsense-account" content="ca-pub-2140562646099975" />
 				<meta
 					name="google-site-verification"
