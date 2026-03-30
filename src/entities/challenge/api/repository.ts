@@ -1,5 +1,21 @@
+import dayjs from "dayjs";
+import isoWeek from "dayjs/plugin/isoWeek";
 import { supabase } from "@/shared/api/supabase/client";
-import type { ClientSafeChallenge, GameConfigStruct } from "../model/types";
+
+dayjs.extend(isoWeek);
+
+import type { ChallengeSortBy, ClientSafeChallenge, GameConfigStruct } from "../model/types";
+
+/**
+ * 기간별 정렬의 cutoff 날짜를 계산한다.
+ * - views_week: 이번주 월요일 00:00 (ISO 기준)
+ * - views_month: 이번달 1일 00:00
+ */
+export function getTimeBoundCutoff(sortBy: ChallengeSortBy): dayjs.Dayjs {
+	return sortBy === "views_week"
+		? dayjs().startOf("isoWeek") // 이번주 월요일 00:00
+		: dayjs().startOf("month"); // 이번달 1일 00:00
+}
 
 /**
  * Helper function to convert storage image paths to public URLs
@@ -300,15 +316,22 @@ export async function getAllChallenges(
 			return challenges;
 		}
 
-		// Determine sort configuration based on sortBy parameter
-		const orderColumn = sortBy === "views" ? "view_count" : "created_at";
+		// 기간별 조회수 정렬: created_at 필터 + view_count 정렬
+		const isTimeBoundViews = sortBy === "views_week" || sortBy === "views_month";
+		const orderColumn = sortBy === "latest" ? "created_at" : "view_count";
 
-		const { data, error } = await supabase
+		let query = supabase
 			.from("challenges")
 			.select(
 				"id, title, is_public, show_names, thumbnail_url, game_config, view_count, created_at, difficulty_easy, difficulty_hard, difficulty_normal"
 			)
-			.eq("is_public", true)
+			.eq("is_public", true);
+
+		if (isTimeBoundViews) {
+			query = query.gte("created_at", getTimeBoundCutoff(sortBy).toISOString());
+		}
+
+		const { data, error } = await query
 			.order(orderColumn, { ascending: false })
 			.range(offset, offset + limit - 1);
 
