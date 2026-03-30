@@ -19,6 +19,7 @@ import {
 } from "@/shared/lib/analytics/gtag";
 import { appendUtmParams, shareChallenge } from "@/shared/lib/share/shareUtils";
 import { ChalkButton, ChalkDust } from "@/shared/ui";
+import SurveyBanner from "@/shared/ui/SurveyBanner";
 
 interface FinishedGameScreenProps {
 	title: string;
@@ -159,6 +160,9 @@ export default function FinishedGameScreen({
 						다른 챌린지 구경하기
 						<ChevronRight size={16} />
 					</Link>
+
+					{/* Survey Banner */}
+					<SurveyBanner />
 				</div>
 			</div>
 		</div>

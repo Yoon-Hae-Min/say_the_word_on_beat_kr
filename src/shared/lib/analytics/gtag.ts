@@ -188,6 +188,14 @@ export function trackChallengeSearch(sortType: string, pageNumber: number) {
 	});
 }
 
+export function trackSurveyAction(actionType: "shown" | "clicked" | "dismissed") {
+	sendGAEvent({
+		action: "survey_action",
+		category: "engagement",
+		action_type: actionType,
+	});
+}
+
 /**
  * GA에 사용자 ID 설정
  */

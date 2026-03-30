@@ -11,6 +11,7 @@ import {
 } from "@/shared/lib/analytics/gtag";
 import { appendUtmParams } from "@/shared/lib/share/shareUtils";
 import { ChalkButton } from "@/shared/ui";
+import SurveyBanner from "@/shared/ui/SurveyBanner";
 
 interface SuccessScreenProps {
 	challengeId: string;
@@ -90,6 +91,9 @@ export default function SuccessScreen({ challengeId, thumbnail }: SuccessScreenP
 					>
 						챌린지 둘러보기
 					</ChalkButton>
+
+					{/* Survey Banner */}
+					<SurveyBanner />
 				</div>
 			</div>
 		</div>
