@@ -9,6 +9,7 @@ import {
 	trackChallengeCreateShare,
 	trackShareComplete,
 } from "@/shared/lib/analytics/gtag";
+import { appendUtmParams } from "@/shared/lib/share/shareUtils";
 import { ChalkButton } from "@/shared/ui";
 
 interface SuccessScreenProps {
@@ -26,7 +27,11 @@ export default function SuccessScreen({ challengeId, thumbnail }: SuccessScreenP
 
 	const handleCopyLink = async () => {
 		trackChallengeCreateShare(challengeId, "copy_link");
-		const url = `${window.location.origin}/play/${challengeId}`;
+		const url = appendUtmParams(`${window.location.origin}/play/${challengeId}`, {
+			source: "share",
+			medium: "clipboard",
+			campaign: "challenge_create",
+		});
 		try {
 			await navigator.clipboard.writeText(url);
 			trackShareComplete(challengeId, "clipboard", "create_success");
