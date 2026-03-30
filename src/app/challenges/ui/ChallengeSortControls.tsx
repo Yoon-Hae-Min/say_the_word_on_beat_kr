@@ -16,6 +16,8 @@ interface ChallengeSortControlsProps {
 const SORT_OPTIONS = [
 	{ value: "recommended", label: "추천순" },
 	{ value: "views", label: "조회순" },
+	{ value: "views_week", label: "이번주 인기" },
+	{ value: "views_month", label: "이번달 인기" },
 	{ value: "latest", label: "최신순" },
 ] as const;
 
