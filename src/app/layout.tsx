@@ -66,12 +66,6 @@ export default function RootLayout({
 			<head>
 				<meta name="referrer" content="no-referrer-when-downgrade" />
 				<meta name="google-adsense-account" content="ca-pub-2140562646099975" />
-				<link
-					rel="stylesheet"
-					as="style"
-					crossOrigin="anonymous"
-					href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
-				/>
 				<meta
 					name="google-site-verification"
 					content="oa97uVFj-uHbLA1T9v7vXrJP2N0fMyvjyorWnjtjTmQ"
