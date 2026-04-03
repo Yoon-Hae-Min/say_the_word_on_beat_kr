@@ -9,10 +9,12 @@
 
 "use client";
 
+import { useState } from "react";
 import type { ClientSafeChallenge } from "@/entities/challenge";
 import { DifficultyVoting } from "@/features/difficulty-voting";
-import { trackGameComplete, trackGameStart } from "@/shared/lib/analytics/gtag";
+import { trackGameComplete, trackGameStart, trackSpeedSelect } from "@/shared/lib/analytics/gtag";
 import { useGamePhase } from "../hooks/useGamePhase";
+import { DEFAULT_SPEED, type PlaybackSpeed } from "../lib/speedPresets";
 import CountDownGameState from "./CountDownGameState";
 import FinishedGameScreen from "./FinishedGameScreen";
 import GameNavigationBar from "./GameNavigationBar";
@@ -26,6 +28,7 @@ interface GameStageProps {
 export default function GameStage({ challengeData }: GameStageProps) {
 	// Use custom hook for game phase management
 	const gamePhase = useGamePhase();
+	const [playbackRate, setPlaybackRate] = useState<PlaybackSpeed>(DEFAULT_SPEED);
 
 	return (
 		<>
@@ -46,8 +49,11 @@ export default function GameStage({ challengeData }: GameStageProps) {
 					difficultyEasy={challengeData.difficulty_easy ?? 0}
 					difficultyNormal={challengeData.difficulty_normal ?? 0}
 					difficultyHard={challengeData.difficulty_hard ?? 0}
+					playbackRate={playbackRate}
+					onSpeedChange={setPlaybackRate}
 					onStartClick={() => {
 						trackGameStart(challengeData.id);
+						trackSpeedSelect(challengeData.id, playbackRate);
 						gamePhase.actions.startCountdown();
 					}}
 				/>
@@ -66,6 +72,7 @@ export default function GameStage({ challengeData }: GameStageProps) {
 			{gamePhase.is.playing && (
 				<PlayingGameStage
 					challengeData={challengeData}
+					playbackRate={playbackRate}
 					onPlayingEnd={() => {
 						trackGameComplete(challengeData.id);
 						gamePhase.actions.finishGame();

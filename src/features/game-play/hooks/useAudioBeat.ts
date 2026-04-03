@@ -6,6 +6,7 @@ interface UseAudioBeatOptions {
 	onBeat?: (beat: number) => void;
 	onBeatEnd?: () => void;
 	offsetSec?: number; // 🔑 박자 구간을 앞당길 시간 (초)
+	playbackRate?: number; // 재생 속도 (기본값: 1.0)
 	autoPlay?: boolean; // 자동 재생 여부 (기본값: true)
 }
 
@@ -21,6 +22,7 @@ export function useAudioBeat({
 	onBeat,
 	onBeatEnd,
 	offsetSec = 0,
+	playbackRate = 1,
 	autoPlay = true,
 }: UseAudioBeatOptions): UseAudioBeatReturn {
 	const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -99,6 +101,7 @@ export function useAudioBeat({
 	// 오디오 초기화 및 정리
 	useEffect(() => {
 		const audio = new Audio(src);
+		audio.playbackRate = playbackRate;
 		audioRef.current = audio;
 
 		audio.addEventListener("ended", handleEnded);
@@ -113,7 +116,7 @@ export function useAudioBeat({
 			audio.removeEventListener("ended", handleEnded);
 			audioRef.current = null;
 		};
-	}, [src, autoPlay]);
+	}, [src, playbackRate, autoPlay]);
 
 	return {
 		play,

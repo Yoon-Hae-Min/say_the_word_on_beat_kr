@@ -196,6 +196,15 @@ export function trackSurveyAction(actionType: "shown" | "clicked" | "dismissed")
 	});
 }
 
+export function trackSpeedSelect(challengeId: string, speed: number) {
+	sendGAEvent({
+		action: "speed_select",
+		category: "game",
+		challenge_id: challengeId,
+		speed,
+	});
+}
+
 /**
  * GA에 사용자 ID 설정
  */
