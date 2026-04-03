@@ -44,6 +44,12 @@ export interface UseGameBeatControllerOptions {
 	offsetSec?: number;
 
 	/**
+	 * Playback speed multiplier
+	 * @default 1
+	 */
+	playbackRate?: number;
+
+	/**
 	 * Callback when game is complete
 	 */
 	onComplete: () => void;
@@ -101,6 +107,7 @@ export const useGameBeatController = ({
 	challengeData,
 	bpm = BPM,
 	offsetSec = 0.05,
+	playbackRate = 1,
 	onComplete,
 }: UseGameBeatControllerOptions): UseGameBeatControllerReturn => {
 	const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
@@ -143,6 +150,7 @@ export const useGameBeatController = ({
 		src: "/song.mp3",
 		bpm,
 		offsetSec,
+		playbackRate,
 		onBeat: handleBeat,
 		onBeatEnd: onComplete,
 	});

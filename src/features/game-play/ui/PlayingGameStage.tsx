@@ -15,13 +15,15 @@ import RoundIndicator from "./RoundIndicator";
 
 interface PlayingGameStageProps {
 	challengeData: ClientSafeChallenge;
+	playbackRate?: number;
 	onPlayingEnd: () => void;
 }
 
-const PlayingGameStage = ({ challengeData, onPlayingEnd }: PlayingGameStageProps) => {
+const PlayingGameStage = ({ challengeData, playbackRate, onPlayingEnd }: PlayingGameStageProps) => {
 	// Use custom hook for beat controller
 	const beatController = useGameBeatController({
 		challengeData,
+		playbackRate,
 		onComplete: onPlayingEnd,
 	});
 
