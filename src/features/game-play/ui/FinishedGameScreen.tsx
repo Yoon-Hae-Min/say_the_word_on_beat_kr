@@ -19,7 +19,7 @@ import {
 } from "@/shared/lib/analytics/gtag";
 import { appendUtmParams, shareChallenge } from "@/shared/lib/share/shareUtils";
 import { ChalkButton, ChalkDust } from "@/shared/ui";
-import ResponsiveAdFit from "@/shared/ui/ResponsiveAdFit";
+import KakaoAdFit from "@/shared/ui/KakaoAdFit";
 import SurveyBanner from "@/shared/ui/SurveyBanner";
 
 interface FinishedGameScreenProps {
@@ -156,17 +156,17 @@ export default function FinishedGameScreen({
 					<Link
 						href="/challenges"
 						onClick={() => trackBrowseOtherClick(challengeId)}
-						className="flex items-center gap-1 text-sm text-chalk-white/60 transition-colors hover:text-chalk-yellow"
+						className="flex min-h-[44px] items-center gap-1 text-sm text-chalk-white/60 transition-colors hover:text-chalk-yellow"
 					>
 						다른 챌린지 구경하기
 						<ChevronRight size={16} />
 					</Link>
 
-					{/* Ad */}
-					<ResponsiveAdFit />
-
 					{/* Survey Banner */}
 					<SurveyBanner />
+
+					{/* Ad */}
+					<KakaoAdFit adUnitId="DAN-0Z0d3HpqLriPjqaA" adWidth={320} adHeight={50} />
 				</div>
 			</div>
 		</div>
