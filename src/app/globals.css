@@ -171,7 +171,7 @@ body {
 
   /* Legacy */
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono);
   --font-hand: var(--font-hand);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -219,12 +219,23 @@ body {
 
 body {
   background: var(--color-chalkboard-bg);
+  font-family: var(--font-sans);
 }
 
 /* Chalk Aesthetic Utilities */
 @layer utilities {
-  /* Chalk Text Effect */
+  /* Chalk Text Effect — 기본은 Pretendard 상속, 랜딩/로고에서만 손글씨 */
   .chalk-text {
+    font-family: inherit;
+  }
+
+  /* 랜딩 페이지 내에서는 손글씨(Gamja Flower) 유지 */
+  [data-landing] .chalk-text {
+    font-family: var(--font-hand);
+  }
+
+  /* 로고는 어디서든 손글씨 */
+  .logo-text {
     font-family: var(--font-hand);
   }
 
