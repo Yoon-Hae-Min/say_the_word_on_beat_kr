@@ -15,6 +15,7 @@ import { usePagination, useURLSearchParams } from "@/shared/hooks";
 import { trackChallengeSearch } from "@/shared/lib/analytics/gtag";
 import { getUserId } from "@/shared/lib/user/fingerprint";
 import { EmptyState, LoadingState, PaginationControls, WoodFrame } from "@/shared/ui";
+import ResponsiveAdFit from "@/shared/ui/ResponsiveAdFit";
 import { useChallengeList } from "./hooks/useChallengeList";
 import ChallengeGrid from "./ui/ChallengeGrid";
 import ChallengeSortControls from "./ui/ChallengeSortControls";
@@ -103,6 +104,10 @@ function ChallengesContent() {
 
 					{!challengeList.isLoading && challengeList.challenges.length > 0 && (
 						<ChallengeGrid challenges={challengeList.challenges} />
+					)}
+
+					{!challengeList.isLoading && challengeList.challenges.length > 0 && (
+						<ResponsiveAdFit className="mt-12" />
 					)}
 
 					{challengeList.challenges.length > 0 && (

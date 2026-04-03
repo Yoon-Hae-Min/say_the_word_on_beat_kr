@@ -10,7 +10,7 @@ import LandingScrollTracker from "./_components/LandingScrollTracker";
 export default function Home() {
 	return (
 		<WoodFrame>
-			<main id="main-content" className="bg-chalkboard-bg">
+			<main id="main-content" className="bg-chalkboard-bg" data-landing>
 				<LandingScrollTracker />
 				<div data-section="hero">
 					<LandingHero />
