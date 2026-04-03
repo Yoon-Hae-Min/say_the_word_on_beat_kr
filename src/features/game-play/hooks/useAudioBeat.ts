@@ -67,11 +67,12 @@ export function useAudioBeat({
 		setIsPlaying(true);
 
 		lastBeatRef.current = -1;
-		beatStartTimeRef.current = audioRef.current.currentTime;
 
 		audioRef.current
 			.play()
 			.then(() => {
+				if (!audioRef.current) return;
+				beatStartTimeRef.current = audioRef.current.currentTime;
 				tick();
 			})
 			.catch((error) => {

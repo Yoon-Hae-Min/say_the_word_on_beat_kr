@@ -39,7 +39,7 @@ export interface UseGameBeatControllerOptions {
 
 	/**
 	 * Offset in seconds to shift beat detection earlier
-	 * @default 0.03
+	 * @default 0.05
 	 */
 	offsetSec?: number;
 
@@ -100,7 +100,7 @@ export interface UseGameBeatControllerReturn {
 export const useGameBeatController = ({
 	challengeData,
 	bpm = BPM,
-	offsetSec = 0.03,
+	offsetSec = 0.05,
 	onComplete,
 }: UseGameBeatControllerOptions): UseGameBeatControllerReturn => {
 	const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
@@ -112,7 +112,6 @@ export const useGameBeatController = ({
 
 	// Handle beat events from audio
 	const handleBeat = (beat: number) => {
-		console.log(beat);
 		// Check if game is complete
 		if (isGameComplete(beat, ROUND_BEATS, totalRounds)) {
 			setFocusedIndex(null);
