@@ -5,10 +5,10 @@ export function WebSiteJsonLd() {
 		name: "단어리듬게임 - Say The Word On Beat",
 		description:
 			"웹에서 누구나 쉽게 'Say The Word On Beat' 챌린지를 만들고 공유하는 리듬 퀴즈 플랫폼",
-		url: "https://say-the-word-on-beat.vercel.app",
+		url: "https://say-the-word-on-beat-kr.vercel.app",
 		potentialAction: {
 			"@type": "SearchAction",
-			target: "https://say-the-word-on-beat.vercel.app/challenges?q={search_term_string}",
+			target: "https://say-the-word-on-beat-kr.vercel.app/challenges?q={search_term_string}",
 			"query-input": "required name=search_term_string",
 		},
 	};
@@ -41,7 +41,7 @@ export function GameJsonLd({ challenge }: GameJsonLdProps) {
 		"@context": "https://schema.org",
 		"@type": "Game",
 		name: sanitizeForJsonLd(challenge.title),
-		url: `https://say-the-word-on-beat.vercel.app/play/${encodeURIComponent(challenge.id)}`,
+		url: `https://say-the-word-on-beat-kr.vercel.app/play/${encodeURIComponent(challenge.id)}`,
 		gamePlatform: "Web Browser",
 		genre: "Rhythm Game",
 		aggregateRating: {
