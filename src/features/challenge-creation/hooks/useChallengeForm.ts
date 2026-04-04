@@ -11,9 +11,7 @@ import { useState } from "react";
 import type { ChallengeData, Slot } from "@/entities/challenge";
 import type { Resource } from "@/entities/resource";
 import { trackMakerStepComplete } from "@/shared/lib/analytics/gtag";
-
-const TOTAL_ROUNDS = 5;
-const SLOTS_PER_ROUND = 8;
+import { DEFAULT_ROUNDS, MAX_ROUNDS, MIN_ROUNDS, SLOTS_PER_ROUND } from "../lib/roundConfig";
 
 export interface UseChallengeFormReturn {
 	/**
@@ -46,12 +44,18 @@ export interface UseChallengeFormReturn {
 	currentRound: number;
 
 	/**
+	 * Total number of rounds
+	 */
+	totalRounds: number;
+
+	/**
 	 * Round navigation handlers
 	 */
 	roundHandlers: {
 		setCurrentRound: (round: number) => void;
 		goToPreviousRound: () => void;
 		goToNextRound: () => void;
+		onRoundCountChange: (count: number) => void;
 	};
 }
 
@@ -64,7 +68,7 @@ export const useChallengeForm = (isPublic: boolean): UseChallengeFormReturn => {
 	// Initialize challenge data with empty rounds and slots
 	const [challengeData, setChallengeData] = useState<ChallengeData>({
 		title: "",
-		rounds: Array(TOTAL_ROUNDS)
+		rounds: Array(DEFAULT_ROUNDS)
 			.fill(null)
 			.map((_, i) => ({
 				id: i + 1,
@@ -80,6 +84,9 @@ export const useChallengeForm = (isPublic: boolean): UseChallengeFormReturn => {
 		isPublic,
 		showNames: true,
 	});
+
+	// Derive totalRounds from single source of truth
+	const totalRounds = challengeData.rounds.length;
 
 	const [currentRound, setCurrentRound] = useState(1);
 	const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
@@ -147,38 +154,68 @@ export const useChallengeForm = (isPublic: boolean): UseChallengeFormReturn => {
 			return;
 		}
 
-		setChallengeData((prev) => {
-			const newRounds = [...prev.rounds];
-			newRounds[currentRound - 1].slots[slotIndex] = {
-				resourceId: selectedResource.id,
-			};
-			return { ...prev, rounds: newRounds };
-		});
+		setChallengeData((prev) => ({
+			...prev,
+			rounds: prev.rounds.map((round, idx) =>
+				idx === currentRound - 1
+					? {
+							...round,
+							slots: round.slots.map((slot, i) =>
+								i === slotIndex ? { resourceId: selectedResource.id } : slot
+							),
+						}
+					: round
+			),
+		}));
 	};
 
 	// Handler: Clear slot
 	const handleSlotClear = (slotIndex: number) => {
-		setChallengeData((prev) => {
-			const newRounds = [...prev.rounds];
-			newRounds[currentRound - 1].slots[slotIndex] = {
-				resourceId: null,
-			};
-			return { ...prev, rounds: newRounds };
-		});
+		setChallengeData((prev) => ({
+			...prev,
+			rounds: prev.rounds.map((round, idx) =>
+				idx === currentRound - 1
+					? {
+							...round,
+							slots: round.slots.map((slot, i) => (i === slotIndex ? { resourceId: null } : slot)),
+						}
+					: round
+			),
+		}));
 	};
 
 	// Handler: Go to previous round
 	const goToPreviousRound = () => {
-		if (currentRound > 1) {
-			setCurrentRound(currentRound - 1);
-		}
+		setCurrentRound((prev) => Math.max(1, prev - 1));
 	};
 
 	// Handler: Go to next round
 	const goToNextRound = () => {
-		if (currentRound < TOTAL_ROUNDS) {
-			setCurrentRound(currentRound + 1);
-		}
+		setCurrentRound((prev) => Math.min(totalRounds, prev + 1));
+	};
+
+	// Handler: Change total round count
+	const handleRoundCountChange = (newCount: number) => {
+		const clamped = Math.max(MIN_ROUNDS, Math.min(MAX_ROUNDS, newCount));
+
+		setChallengeData((prev) => {
+			if (clamped === prev.rounds.length) return prev;
+
+			if (clamped > prev.rounds.length) {
+				const additional = Array(clamped - prev.rounds.length)
+					.fill(null)
+					.map((_, i) => ({
+						id: prev.rounds.length + i + 1,
+						slots: Array(SLOTS_PER_ROUND)
+							.fill(null)
+							.map((): Slot => ({ resourceId: null })),
+					}));
+				return { ...prev, rounds: [...prev.rounds, ...additional] };
+			}
+			return { ...prev, rounds: prev.rounds.slice(0, clamped) };
+		});
+
+		setCurrentRound((prev) => Math.min(prev, clamped));
 	};
 
 	return {
@@ -195,10 +232,12 @@ export const useChallengeForm = (isPublic: boolean): UseChallengeFormReturn => {
 			onShowNamesToggle: handleShowNamesToggle,
 		},
 		currentRound,
+		totalRounds,
 		roundHandlers: {
 			setCurrentRound,
 			goToPreviousRound,
 			goToNextRound,
+			onRoundCountChange: handleRoundCountChange,
 		},
 	};
 };

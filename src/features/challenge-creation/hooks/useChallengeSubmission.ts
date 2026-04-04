@@ -83,7 +83,11 @@ export const useChallengeSubmission = (): UseChallengeSubmissionReturn => {
 		setUploadError(null);
 
 		try {
-			trackMakerStepComplete("round_config", challengeData.resources.length);
+			trackMakerStepComplete(
+				"round_config",
+				challengeData.resources.length,
+				challengeData.rounds.length
+			);
 
 			// Upload images and create challenge in Supabase
 			const challengeId = await createChallenge(challengeData);

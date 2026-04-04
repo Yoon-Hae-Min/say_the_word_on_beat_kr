@@ -52,7 +52,7 @@ export default function GameStage({ challengeData }: GameStageProps) {
 					playbackRate={playbackRate}
 					onSpeedChange={setPlaybackRate}
 					onStartClick={() => {
-						trackGameStart(challengeData.id);
+						trackGameStart(challengeData.id, challengeData.game_config?.length);
 						trackSpeedSelect(challengeData.id, playbackRate);
 						gamePhase.actions.startCountdown();
 					}}
@@ -74,7 +74,7 @@ export default function GameStage({ challengeData }: GameStageProps) {
 					challengeData={challengeData}
 					playbackRate={playbackRate}
 					onPlayingEnd={() => {
-						trackGameComplete(challengeData.id);
+						trackGameComplete(challengeData.id, challengeData.game_config?.length);
 						gamePhase.actions.finishGame();
 					}}
 				/>

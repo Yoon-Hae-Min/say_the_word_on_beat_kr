@@ -18,10 +18,9 @@ import HeaderSection from "./HeaderSection";
 import NameToggleControl from "./NameToggleControl";
 import ResourcePanel from "./ResourcePanel";
 import RoundControl from "./RoundControl";
+import RoundCountSelector from "./RoundCountSelector";
 import StageGrid from "./StageGrid";
 import SuccessScreen from "./SuccessScreen";
-
-const TOTAL_ROUNDS = 5;
 
 interface ChallengeCreationFormProps {
 	isPublic: boolean;
@@ -52,6 +51,7 @@ export default function ChallengeCreationForm({ isPublic }: ChallengeCreationFor
 			<SuccessScreen
 				challengeId={submission.generatedChallengeId}
 				thumbnail={form.challengeData.resources[0]?.imageUrl || "/placeholder.svg"}
+				roundCount={form.totalRounds}
 			/>
 		);
 	}
@@ -105,9 +105,15 @@ export default function ChallengeCreationForm({ isPublic }: ChallengeCreationFor
 						{/* Stage Grid Section */}
 						<div className="border-2 border-dashed border-chalk-blue/50 bg-chalkboard-bg/50 rounded-md p-6 lg:p-8">
 							<div className="mb-6">
-								<h2 className="chalk-text text-chalk-white text-xl lg:text-2xl font-bold mb-2 text-center">
-									라운드 {form.currentRound} / {TOTAL_ROUNDS}
-								</h2>
+								<div className="flex items-center justify-between mb-2">
+									<h2 className="chalk-text text-chalk-white text-xl lg:text-2xl font-bold text-center flex-1">
+										라운드 {form.currentRound} / {form.totalRounds}
+									</h2>
+									<RoundCountSelector
+										totalRounds={form.totalRounds}
+										onChange={form.roundHandlers.onRoundCountChange}
+									/>
+								</div>
 								<p className="text-chalk-white/60 text-sm text-center">
 									{form.selectedResource
 										? "슬롯을 클릭하여 이미지를 배치하세요"
@@ -141,7 +147,7 @@ export default function ChallengeCreationForm({ isPublic }: ChallengeCreationFor
 							<div className="mt-6">
 								<RoundControl
 									currentRound={form.currentRound}
-									totalRounds={TOTAL_ROUNDS}
+									totalRounds={form.totalRounds}
 									onPrevious={form.roundHandlers.goToPreviousRound}
 									onNext={form.roundHandlers.goToNextRound}
 								/>

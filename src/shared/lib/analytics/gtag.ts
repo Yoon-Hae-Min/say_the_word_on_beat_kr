@@ -43,27 +43,30 @@ export function trackChallengeCreateStart() {
 	sendGAEvent({ action: "challenge_create_start", category: "challenge" });
 }
 
-export function trackChallengeCreateComplete(challengeId: string) {
+export function trackChallengeCreateComplete(challengeId: string, roundCount?: number) {
 	sendGAEvent({
 		action: "challenge_create_complete",
 		category: "challenge",
 		challenge_id: challengeId,
+		round_count: roundCount,
 	});
 }
 
-export function trackGameStart(challengeId: string) {
+export function trackGameStart(challengeId: string, roundCount?: number) {
 	sendGAEvent({
 		action: "game_start",
 		category: "game",
 		challenge_id: challengeId,
+		round_count: roundCount,
 	});
 }
 
-export function trackGameComplete(challengeId: string) {
+export function trackGameComplete(challengeId: string, roundCount?: number) {
 	sendGAEvent({
 		action: "game_complete",
 		category: "game",
 		challenge_id: challengeId,
+		round_count: roundCount,
 	});
 }
 
@@ -104,13 +107,15 @@ export function trackGameReplay(challengeId: string) {
 
 export function trackMakerStepComplete(
 	step: "resource_upload" | "round_config",
-	resourceCount: number
+	resourceCount: number,
+	roundCount?: number
 ) {
 	sendGAEvent({
 		action: "maker_step_complete",
 		category: "challenge",
 		step,
 		resource_count: resourceCount,
+		round_count: roundCount,
 	});
 }
 

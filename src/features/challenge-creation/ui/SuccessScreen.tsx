@@ -16,15 +16,16 @@ import SurveyBanner from "@/shared/ui/SurveyBanner";
 interface SuccessScreenProps {
 	challengeId: string;
 	thumbnail: string;
+	roundCount?: number;
 }
 
-export default function SuccessScreen({ challengeId, thumbnail }: SuccessScreenProps) {
+export default function SuccessScreen({ challengeId, thumbnail, roundCount }: SuccessScreenProps) {
 	const router = useRouter();
 	const [copied, setCopied] = useState(false);
 
 	useEffect(() => {
-		trackChallengeCreateComplete(challengeId);
-	}, [challengeId]);
+		trackChallengeCreateComplete(challengeId, roundCount);
+	}, [challengeId, roundCount]);
 
 	const handleCopyLink = async () => {
 		trackChallengeCreateShare(challengeId, "copy_link");
