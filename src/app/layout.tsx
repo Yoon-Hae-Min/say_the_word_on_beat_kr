@@ -11,11 +11,13 @@ import QueryProvider from "@/shared/provider/QueryProvider";
 const geistSans = Geist({
 	variable: "--font-geist-sans",
 	subsets: ["latin"],
+	display: "swap",
 });
 
 const geistMono = Geist_Mono({
 	variable: "--font-geist-mono",
 	subsets: ["latin"],
+	display: "swap",
 });
 
 const gamjaFlower = Gamja_Flower({
@@ -33,7 +35,7 @@ export const metadata: Metadata = {
 	openGraph: {
 		type: "website",
 		locale: "ko_KR",
-		url: "https://say-the-word-on-beat.vercel.app",
+		url: "https://say-the-word-on-beat-kr.vercel.app",
 		siteName: "단어리듬게임",
 		title: "단어리듬게임 - Say The Word On Beat",
 		description:

@@ -6,4 +6,4 @@ Allow: /
 Disallow: /api/
 
 # Sitemap location
-Sitemap: https://say-the-word-on-beat.vercel.app/sitemap.xml
+Sitemap: https://say-the-word-on-beat-kr.vercel.app/sitemap.xml
