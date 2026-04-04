@@ -62,7 +62,6 @@ export default function ChallengeGrid({
 					className="animate-fade-in"
 					style={{
 						animationDelay: `${index * 50}ms`,
-						animationFillMode: "backwards",
 					}}
 				>
 					<ChalkCard

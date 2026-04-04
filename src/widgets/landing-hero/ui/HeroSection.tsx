@@ -62,10 +62,7 @@ export default function HeroSection() {
 				</p>
 
 				{/* Social Proof Stats */}
-				<div
-					className="animate-fade-in mx-auto mb-8 flex max-w-md items-center justify-center gap-8 md:gap-12"
-					style={{ animationDelay: "0.3s", animationFillMode: "both" }}
-				>
+				<div className="mx-auto mb-8 flex max-w-md items-center justify-center gap-8 md:gap-12">
 					<div className="text-center">
 						<p className="chalk-text text-3xl font-bold text-chalk-yellow md:text-4xl">
 							{isCountLoading ? "-" : formatNumber(challengeCount)}

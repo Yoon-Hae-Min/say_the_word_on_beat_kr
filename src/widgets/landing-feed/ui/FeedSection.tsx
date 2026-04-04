@@ -11,7 +11,7 @@ export default function FeedSection() {
 
 	return (
 		<section className="px-4 py-32">
-			<div className="mx-auto max-w-6xl">
+			<div className="mx-auto min-h-[400px] max-w-6xl">
 				{/* Section title */}
 				<h2 className="chalk-text mb-14 text-center text-2xl font-bold text-chalk-white md:text-3xl">
 					인기 챌린지
@@ -43,7 +43,6 @@ export default function FeedSection() {
 										className="animate-fade-in"
 										style={{
 											animationDelay: `${index * 100}ms`,
-											animationFillMode: "backwards",
 										}}
 									>
 										<ChalkCard
