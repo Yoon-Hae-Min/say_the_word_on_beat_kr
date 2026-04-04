@@ -7,7 +7,7 @@
 
 "use client";
 
-import { ArrowLeft, UserCircle } from "lucide-react";
+import { ArrowLeft, Plus, UserCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Suspense } from "react";
 import type { ChallengeSortBy } from "@/entities/challenge";
@@ -72,14 +72,24 @@ function ChallengesContent() {
 							<ArrowLeft size={24} />
 							<span className="chalk-text text-lg md:text-xl">홈으로</span>
 						</button>
-						<button
-							type="button"
-							onClick={() => router.push("/my")}
-							className="flex h-10 items-center gap-2 rounded-lg border-2 border-chalk-white/40 bg-chalkboard-bg/80 px-3 transition-all hover:border-chalk-yellow hover:scale-105 md:h-11 md:px-4"
-						>
-							<UserCircle className="h-5 w-5 text-chalk-white" />
-							<span className="chalk-text text-sm text-chalk-white">내 챌린지</span>
-						</button>
+						<div className="flex items-center gap-2">
+							<button
+								type="button"
+								onClick={() => router.push("/maker")}
+								className="flex h-10 items-center gap-2 rounded-lg border-2 border-chalk-yellow/60 bg-chalkboard-bg/80 px-3 transition-all hover:border-chalk-yellow hover:scale-105 md:h-11 md:px-4"
+							>
+								<Plus className="h-5 w-5 text-chalk-yellow" />
+								<span className="chalk-text text-sm text-chalk-yellow">만들기</span>
+							</button>
+							<button
+								type="button"
+								onClick={() => router.push("/my")}
+								className="flex h-10 items-center gap-2 rounded-lg border-2 border-chalk-white/40 bg-chalkboard-bg/80 px-3 transition-all hover:border-chalk-yellow hover:scale-105 md:h-11 md:px-4"
+							>
+								<UserCircle className="h-5 w-5 text-chalk-white" />
+								<span className="chalk-text text-sm text-chalk-white">내 챌린지</span>
+							</button>
+						</div>
 					</div>
 
 					{/* Page title */}
