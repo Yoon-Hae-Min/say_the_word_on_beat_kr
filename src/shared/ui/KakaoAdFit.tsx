@@ -45,7 +45,11 @@ export default function KakaoAdFit({
 	}, [adUnitId]);
 
 	return (
-		<div ref={containerRef} className={`flex justify-center ${className}`}>
+		<div
+			ref={containerRef}
+			className={`flex justify-center ${className}`}
+			style={{ minHeight: adHeight }}
+		>
 			<ins
 				className="kakao_ad_area"
 				style={{ display: "none", width: "100%" }}
