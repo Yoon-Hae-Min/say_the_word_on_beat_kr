@@ -13,6 +13,7 @@ interface UseAudioBeatOptions {
 interface UseAudioBeatReturn {
 	play: () => void;
 	stop: () => void;
+	seekTo: (timeSec: number) => void;
 	isPlaying: boolean;
 }
 
@@ -98,6 +99,19 @@ export function useAudioBeat({
 		lastBeatRef.current = -1;
 	};
 
+	// Seek 함수 — 비트 추적은 중단하고 오디오만 특정 위치로 이동
+	const seekTo = (timeSec: number) => {
+		if (!audioRef.current) return;
+
+		// 비트 추적 중단 (더 이상 onBeat 호출하지 않음)
+		if (rafRef.current) {
+			cancelAnimationFrame(rafRef.current);
+			rafRef.current = null;
+		}
+
+		audioRef.current.currentTime = timeSec;
+	};
+
 	// 오디오 초기화 및 정리
 	useEffect(() => {
 		const audio = new Audio(src);
@@ -121,6 +135,7 @@ export function useAudioBeat({
 	return {
 		play,
 		stop,
+		seekTo,
 		isPlaying,
 	};
 }

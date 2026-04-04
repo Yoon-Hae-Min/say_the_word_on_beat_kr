@@ -7,7 +7,7 @@
  * Integrates audio beat detection with visual game state (focused slot, current round).
  */
 
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import type { BeatSlot, ClientSafeChallenge } from "@/entities/challenge";
 import { trackRoundComplete } from "@/shared/lib/analytics/gtag";
 import {
@@ -24,6 +24,9 @@ const BPM = 182;
 const BLOCK_SIZE = 8;
 const STEPS = 8;
 const ROUND_BEATS = 16;
+
+// 노래 아웃트로 시작 지점 (5라운드 = 80비트 이후)
+const OUTRO_START_SEC = (ROUND_BEATS * 5 * 60) / BPM;
 
 export interface UseGameBeatControllerOptions {
 	/**
@@ -113,40 +116,49 @@ export const useGameBeatController = ({
 	const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
 	const [currentRound, setCurrentRound] = useState(1);
 	const prevRoundRef = useRef(1);
+	const gameCompletedRef = useRef(false);
+	const seekAudioRef = useRef<((timeSec: number) => void) | null>(null);
 
 	const totalRounds = challengeData.game_config?.length ?? 0;
 	const currentSlots = challengeData.game_config?.[currentRound - 1]?.slots ?? [];
 
 	// Handle beat events from audio
-	const handleBeat = (beat: number) => {
-		// Check if game is complete
-		if (isGameComplete(beat, ROUND_BEATS, totalRounds)) {
-			setFocusedIndex(null);
-			return;
-		}
+	const handleBeat = useCallback(
+		(beat: number) => {
+			// Check if game is complete — jump to outro, finish when audio ends
+			if (isGameComplete(beat, ROUND_BEATS, totalRounds)) {
+				if (!gameCompletedRef.current) {
+					gameCompletedRef.current = true;
+					seekAudioRef.current?.(OUTRO_START_SEC);
+				}
+				setFocusedIndex(null);
+				return;
+			}
 
-		// Calculate current round
-		const round = calculateRoundFromBeat(beat, ROUND_BEATS);
-		if (round !== prevRoundRef.current) {
-			trackRoundComplete(challengeData.id, prevRoundRef.current);
-			prevRoundRef.current = round;
-		}
-		setCurrentRound(round);
+			// Calculate current round
+			const round = calculateRoundFromBeat(beat, ROUND_BEATS);
+			if (round !== prevRoundRef.current) {
+				trackRoundComplete(challengeData.id, prevRoundRef.current);
+				prevRoundRef.current = round;
+			}
+			setCurrentRound(round);
 
-		// Calculate block and check if it's active
-		const blockIndex = calculateBlockIndex(beat, BLOCK_SIZE);
-		const shouldHighlight = isActiveBlock(blockIndex);
+			// Calculate block and check if it's active
+			const blockIndex = calculateBlockIndex(beat, BLOCK_SIZE);
+			const shouldHighlight = isActiveBlock(blockIndex);
 
-		if (!shouldHighlight) {
-			setFocusedIndex(null);
-		} else {
-			const focusedSlotIndex = calculateFocusedIndex(beat, STEPS);
-			setFocusedIndex(focusedSlotIndex);
-		}
-	};
+			if (!shouldHighlight) {
+				setFocusedIndex(null);
+			} else {
+				const focusedSlotIndex = calculateFocusedIndex(beat, STEPS);
+				setFocusedIndex(focusedSlotIndex);
+			}
+		},
+		[totalRounds, challengeData.id, onComplete]
+	);
 
 	// Use audio beat hook
-	useAudioBeat({
+	const { seekTo } = useAudioBeat({
 		src: "/song.mp3",
 		bpm,
 		offsetSec,
@@ -154,6 +166,7 @@ export const useGameBeatController = ({
 		onBeat: handleBeat,
 		onBeatEnd: onComplete,
 	});
+	seekAudioRef.current = seekTo;
 
 	return {
 		focusedIndex,
