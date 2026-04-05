@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+export const revalidate = 3600;
+
 export default function TermsPage() {
 	return (
 		<div className="min-h-screen bg-chalkboard-bg p-4 md:p-8">

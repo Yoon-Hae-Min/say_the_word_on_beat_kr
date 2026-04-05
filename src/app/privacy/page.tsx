@@ -2,6 +2,8 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { WoodFrame } from "@/shared/ui";
 
+export const revalidate = 3600;
+
 export default function PrivacyPage() {
 	return (
 		<WoodFrame>
