@@ -11,6 +11,7 @@ const COMPRESSION_OPTIONS = {
 	maxWidthOrHeight: 1280,
 	quality: 0.7,
 	useWebWorker: true,
+	fileType: "image/webp" as const,
 };
 
 /**
@@ -28,8 +29,10 @@ export async function compressImage(file: File): Promise<File> {
 		// Compress the image
 		const compressedFile = await imageCompression(file, COMPRESSION_OPTIONS);
 
-		// Return compressed file with original name
-		return new File([compressedFile], file.name, {
+		// Return compressed file with updated extension
+		const baseName = file.name.replace(/\.[^.]+$/, "");
+		const ext = compressedFile.type === "image/webp" ? "webp" : file.name.split(".").pop();
+		return new File([compressedFile], `${baseName}.${ext}`, {
 			type: compressedFile.type,
 		});
 	} catch (error) {

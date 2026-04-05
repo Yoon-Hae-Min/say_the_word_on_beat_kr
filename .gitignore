@@ -46,6 +46,7 @@ yarn-error.log*
 next-env.d.ts
 
 supabase/migrations
+supabase/seed.sql
 
 # migration downloads
 /migrations
