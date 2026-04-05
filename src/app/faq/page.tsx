@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { WoodFrame } from "@/shared/ui";
 
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
 	title: "자주 묻는 질문 - 단어리듬게임",
 	description:

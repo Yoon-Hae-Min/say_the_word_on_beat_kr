@@ -1,20 +1,8 @@
-"use client";
-
-import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import { ChallengeCreation } from "@/features/challenge-creation";
 import { WoodFrame } from "@/shared/ui";
+import MakerClient from "./MakerClient";
 
-function MakerContent() {
-	const searchParams = useSearchParams();
-	const visibility = searchParams.get("visibility") || "public";
-
-	return (
-		<WoodFrame>
-			<ChallengeCreation isPublic={visibility === "public"} />
-		</WoodFrame>
-	);
-}
+export const revalidate = 600;
 
 export default function MakerPage() {
 	return (
@@ -27,7 +15,7 @@ export default function MakerPage() {
 				</WoodFrame>
 			}
 		>
-			<MakerContent />
+			<MakerClient />
 		</Suspense>
 	);
 }

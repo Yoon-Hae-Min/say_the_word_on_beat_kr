@@ -7,6 +7,8 @@ import { LandingHero } from "@/widgets/landing-hero";
 import { TargetAudience } from "@/widgets/target-audience";
 import LandingScrollTracker from "./_components/LandingScrollTracker";
 
+export const revalidate = 300;
+
 export default function Home() {
 	return (
 		<WoodFrame>
