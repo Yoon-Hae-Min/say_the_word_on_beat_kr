@@ -70,6 +70,7 @@ export default function ChallengeGrid({
 						viewCount={challenge.viewCount}
 						isPublic={challenge.isPublic}
 						isMine={showMineBadge}
+						priority={index < 3}
 						difficultyStats={{
 							easy: challenge.difficultyEasy,
 							normal: challenge.difficultyNormal,

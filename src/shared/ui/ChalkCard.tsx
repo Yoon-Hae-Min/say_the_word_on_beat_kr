@@ -11,6 +11,7 @@ interface ChalkCardProps {
 	viewCount: number;
 	isPublic: boolean;
 	isMine?: boolean;
+	priority?: boolean;
 	difficultyStats?: {
 		easy: number;
 		normal: number;
@@ -26,6 +27,7 @@ export default function ChalkCard({
 	viewCount,
 	isPublic,
 	isMine = false,
+	priority = false,
 	difficultyStats,
 	onClick,
 	className = "",
@@ -62,6 +64,9 @@ export default function ChalkCard({
 					fill
 					className="object-cover"
 					sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+					priority={priority}
+					loading={priority ? "eager" : "lazy"}
+					fetchPriority={priority ? "high" : "auto"}
 				/>
 				{/* Badges */}
 				<div className="absolute right-2 top-2 flex gap-1.5">

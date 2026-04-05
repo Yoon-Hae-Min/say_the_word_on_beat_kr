@@ -50,6 +50,7 @@ export default function FeedSection() {
 											thumbnail={challenge.thumbnail}
 											viewCount={challenge.viewCount}
 											isPublic={challenge.isPublic}
+											priority={index < 3}
 											difficultyStats={{
 												easy: challenge.difficultyEasy,
 												normal: challenge.difficultyNormal,
