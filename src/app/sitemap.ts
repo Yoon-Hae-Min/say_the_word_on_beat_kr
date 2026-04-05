@@ -1,6 +1,9 @@
 import type { MetadataRoute } from "next";
 import { getAllChallenges, getPublicChallengesCount } from "@/entities/challenge";
 
+// 1시간마다 재생성 — Googlebot 요청 시 캐시된 버전을 즉시 반환
+export const revalidate = 3600;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	const baseUrl = "https://say-the-word-on-beat-kr.vercel.app";
 
