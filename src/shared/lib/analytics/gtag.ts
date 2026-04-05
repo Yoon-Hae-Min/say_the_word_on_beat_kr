@@ -52,21 +52,23 @@ export function trackChallengeCreateComplete(challengeId: string, roundCount?: n
 	});
 }
 
-export function trackGameStart(challengeId: string, roundCount?: number) {
+export function trackGameStart(challengeId: string, roundCount?: number, speed?: number) {
 	sendGAEvent({
 		action: "game_start",
 		category: "game",
 		challenge_id: challengeId,
 		round_count: roundCount,
+		speed,
 	});
 }
 
-export function trackGameComplete(challengeId: string, roundCount?: number) {
+export function trackGameComplete(challengeId: string, roundCount?: number, speed?: number) {
 	sendGAEvent({
 		action: "game_complete",
 		category: "game",
 		challenge_id: challengeId,
 		round_count: roundCount,
+		speed,
 	});
 }
 
@@ -201,9 +203,13 @@ export function trackSurveyAction(actionType: "shown" | "clicked" | "dismissed")
 	});
 }
 
-export function trackSpeedSelect(challengeId: string, speed: number) {
+/**
+ * 사용자가 기본 속도(1x)가 아닌 다른 속도로 게임을 시작할 때만 발화.
+ * 진짜 배속 채택률 측정용. game_start의 speed 파라미터와 구분.
+ */
+export function trackSpeedChange(challengeId: string, speed: number) {
 	sendGAEvent({
-		action: "speed_select",
+		action: "speed_change",
 		category: "game",
 		challenge_id: challengeId,
 		speed,
