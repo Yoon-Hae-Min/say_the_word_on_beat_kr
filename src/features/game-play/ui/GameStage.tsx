@@ -12,7 +12,7 @@
 import { useState } from "react";
 import type { ClientSafeChallenge } from "@/entities/challenge";
 import { DifficultyVoting } from "@/features/difficulty-voting";
-import { trackGameComplete, trackGameStart, trackSpeedSelect } from "@/shared/lib/analytics/gtag";
+import { trackGameComplete, trackGameStart, trackSpeedChange } from "@/shared/lib/analytics/gtag";
 import { useGamePhase } from "../hooks/useGamePhase";
 import { DEFAULT_SPEED, type PlaybackSpeed } from "../lib/speedPresets";
 import CountDownGameState from "./CountDownGameState";
@@ -52,8 +52,10 @@ export default function GameStage({ challengeData }: GameStageProps) {
 					playbackRate={playbackRate}
 					onSpeedChange={setPlaybackRate}
 					onStartClick={() => {
-						trackGameStart(challengeData.id, challengeData.game_config?.length);
-						trackSpeedSelect(challengeData.id, playbackRate);
+						trackGameStart(challengeData.id, challengeData.game_config?.length, playbackRate);
+						if (playbackRate !== DEFAULT_SPEED) {
+							trackSpeedChange(challengeData.id, playbackRate);
+						}
 						gamePhase.actions.startCountdown();
 					}}
 				/>
@@ -74,7 +76,7 @@ export default function GameStage({ challengeData }: GameStageProps) {
 					challengeData={challengeData}
 					playbackRate={playbackRate}
 					onPlayingEnd={() => {
-						trackGameComplete(challengeData.id, challengeData.game_config?.length);
+						trackGameComplete(challengeData.id, challengeData.game_config?.length, playbackRate);
 						gamePhase.actions.finishGame();
 					}}
 				/>
