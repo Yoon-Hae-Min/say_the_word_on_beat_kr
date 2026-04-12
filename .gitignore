@@ -54,3 +54,6 @@ supabase/seed.sql
 # local-only docs
 docs/local/
 docs/reports/
+
+# feature-report skill (contains DB schema, GA4 property ID, analysis patterns)
+.claude/skills/feature-report/
