@@ -53,3 +53,4 @@ supabase/seed.sql
 
 # local-only docs
 docs/local/
+docs/reports/
