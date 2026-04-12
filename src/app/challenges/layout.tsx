@@ -7,10 +7,10 @@ export const metadata: Metadata = {
 	openGraph: {
 		title: "모든 챌린지 - 단어리듬게임",
 		description: "커뮤니티가 만든 다양한 Say The Word On Beat 챌린지를 탐색하고 플레이하세요.",
-		url: "https://say-the-word-on-beat-kr.vercel.app/challenges",
+		url: "https://word-on-beat.store/challenges",
 	},
 	alternates: {
-		canonical: "https://say-the-word-on-beat-kr.vercel.app/challenges",
+		canonical: "https://word-on-beat.store/challenges",
 	},
 };
 

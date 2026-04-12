@@ -35,7 +35,7 @@ export const metadata: Metadata = {
 	openGraph: {
 		type: "website",
 		locale: "ko_KR",
-		url: "https://say-the-word-on-beat-kr.vercel.app",
+		url: "https://word-on-beat.store",
 		siteName: "단어리듬게임",
 		title: "단어리듬게임 - Say The Word On Beat",
 		description:

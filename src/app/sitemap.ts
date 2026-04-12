@@ -5,7 +5,7 @@ import { getAllChallenges, getPublicChallengesCount } from "@/entities/challenge
 export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-	const baseUrl = "https://say-the-word-on-beat-kr.vercel.app";
+	const baseUrl = "https://word-on-beat.store";
 
 	// Static pages
 	const staticPages: MetadataRoute.Sitemap = [
