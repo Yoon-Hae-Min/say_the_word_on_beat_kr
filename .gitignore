@@ -50,3 +50,6 @@ supabase/seed.sql
 
 # migration downloads
 /migrations
+
+# local-only docs
+docs/local/

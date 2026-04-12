@@ -204,6 +204,37 @@ The project uses a **chalkboard theme** with Tailwind CSS 4. All design tokens a
 - Audio files must be accessible via public URL
 - Beat timing uses `offsetSec` to compensate for render lag
 
+## Documentation
+
+```
+docs/
+├── local/                     # 로컬 전용 문서 (git-ignored, 인프라/운영 정보)
+│   └── infrastructure.md      # 시스템 아키텍처 전체 그림
+│                                - Request flow (Cloudflare → Vercel → Supabase/R2)
+│                                - Domain & DNS 구성 (word-on-beat.store)
+│                                - Cloudflare 설정 (SSL, Cache Rule)
+│                                - Vercel Hobby Plan 리소스 제한
+│                                - 외부 서비스 연동 (Supabase, R2, GA4)
+│                                - 비용 구조 (전 서비스 무료 티어)
+│
+├── metrics/                   # 기능별 지표 정의 (출시 전 작성)
+│   ├── README.md              # 지표 프레임워크 — 배경/가설/기준선/성공기준 템플릿
+│   ├── speed-control.md       # 배속 선택 기능 지표 (출시됨 2026-04-04, 결과 포함)
+│   └── flexible-round-count.md # 라운드 수 유연화 지표 (계획 중)
+│
+└── reports/                   # 기능별 주간 성과 리포트 (자동 생성)
+    ├── speed-control/
+    │   └── 2026-04-13.md
+    └── flexible-round-count/
+        └── 2026-04-13.md
+```
+
+**`docs/local/`** — git에 포함되지 않는 로컬 전용 문서. 인프라 구성, 시크릿 관련 맥락 등 외부에 공개하지 않는 정보를 담는다. 새 개발자 온보딩이나 인프라 의사결정 시 참조.
+
+**`docs/metrics/`** — 기능 출시 전 "어떤 지표로 성공을 판단할지" 사전 정의. README.md의 프레임워크(배경→가설→기준선→North Star→성공기준)를 따른다.
+
+**`docs/reports/`** — 출시된 기능의 실제 GA4 데이터 기반 주간 리포트. metrics에서 정의한 성공 기준과 대조하여 pass/fail 판정.
+
 ## Environment Variables
 
 Required in `.env.local`:
