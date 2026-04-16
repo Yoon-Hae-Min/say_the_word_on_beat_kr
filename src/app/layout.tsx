@@ -4,6 +4,7 @@ import { Gamja_Flower, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import GoogleAnalytics from "@/shared/components/GoogleAnalytics";
 import { WebSiteJsonLd } from "@/shared/components/JsonLd";
+import NoticeRoot from "@/shared/components/Notice/NoticeRoot";
 import UserInitializer from "@/shared/components/UserInitializer";
 import LocationJsProvider from "@/shared/provider/LocationJsProvider";
 import QueryProvider from "@/shared/provider/QueryProvider";
@@ -87,6 +88,7 @@ export default function RootLayout({
 				</a>
 				<QueryProvider>
 					<LocationJsProvider>{children}</LocationJsProvider>
+					<NoticeRoot />
 					<SpeedInsights />
 				</QueryProvider>
 			</body>
